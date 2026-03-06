@@ -1,0 +1,33 @@
+{
+  "title": "Get In Touch",
+  "subtitle": "Contact Me",
+  "description": "Have a project in mind? Let's talk! I'm available for freelance projects, consulting, and full-time opportunities. Fill out the form and I'll get back to you within 24 hours.",
+  "contactInfo": [
+    {
+      "icon": "email",
+      "label": "Email",
+      "value": "yousri@example.com",
+      "link": "mailto:yousri@example.com"
+    },
+    {
+      "icon": "whatsapp",
+      "label": "WhatsApp",
+      "value": "+1 234 567 8900",
+      "link": "https://wa.me/12345678900"
+    },
+    {
+      "icon": "linkedin",
+      "label": "LinkedIn",
+      "value": "linkedin.com/in/yousri",
+      "link": "https://linkedin.com/in/yousri"
+    },
+    {
+      "icon": "github",
+      "label": "GitHub",
+      "value": "github.com/yousri",
+      "link": "https://github.com/yousri"
+    }
+  ],
+  "availability": "Available for new projects",
+  "responseTime": "Usually responds within 24 hours"
+}

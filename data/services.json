@@ -1,0 +1,125 @@
+{
+  "title": "My Services",
+  "subtitle": "What I Offer",
+  "description": "I provide comprehensive web solutions tailored to your business needs. From building stunning WordPress websites to managing complex server infrastructures.",
+  "services": [
+    {
+      "id": 1,
+      "icon": "🌐",
+      "title": "WordPress Development",
+      "description": "Custom WordPress websites built from scratch or using premium themes. I create fully responsive, SEO-optimized websites that drive results.",
+      "features": [
+        "Custom Theme Development",
+        "Page Builder (Elementor/Divi)",
+        "WooCommerce Integration",
+        "Plugin Development",
+        "Speed Optimization",
+        "SEO Setup"
+      ],
+      "price": "Starting from $200",
+      "popular": true
+    },
+    {
+      "id": 2,
+      "icon": "🖥️",
+      "title": "VPS Server Setup & Management",
+      "description": "Complete VPS configuration from scratch. I set up secure, high-performance Linux servers optimized for WordPress and web applications.",
+      "features": [
+        "Linux Server Installation",
+        "LAMP/LEMP Stack Setup",
+        "cPanel/WHM Installation",
+        "SSL Certificate Setup",
+        "Security Hardening",
+        "Server Monitoring"
+      ],
+      "price": "Starting from $100",
+      "popular": false
+    },
+    {
+      "id": 3,
+      "icon": "🔒",
+      "title": "Domain & DNS Management",
+      "description": "Expert domain management including DNS configuration, email setup, CDN integration, and SSL certificate management.",
+      "features": [
+        "Domain Registration",
+        "DNS Configuration",
+        "Email Setup (cPanel/G Suite)",
+        "SSL Certificate Installation",
+        "CDN Integration",
+        "Domain Transfer"
+      ],
+      "price": "Starting from $50",
+      "popular": false
+    },
+    {
+      "id": 4,
+      "icon": "🚀",
+      "title": "WordPress Speed Optimization",
+      "description": "Make your WordPress site lightning fast. I optimize your site for Core Web Vitals, reducing load times and improving user experience.",
+      "features": [
+        "Core Web Vitals Optimization",
+        "Image Compression & WebP",
+        "Caching Setup (Redis/Varnish)",
+        "Database Optimization",
+        "CDN Configuration",
+        "Google PageSpeed 90+"
+      ],
+      "price": "Starting from $80",
+      "popular": false
+    },
+    {
+      "id": 5,
+      "icon": "🔄",
+      "title": "Website Migration",
+      "description": "Seamless migration of your WordPress site from any hosting to a new server or hosting provider with zero downtime.",
+      "features": [
+        "WordPress Migration",
+        "Database Migration",
+        "Email Migration",
+        "SSL Transfer",
+        "DNS Migration",
+        "Post-Migration Testing"
+      ],
+      "price": "Starting from $60",
+      "popular": false
+    },
+    {
+      "id": 6,
+      "icon": "🛡️",
+      "title": "WordPress Security & Maintenance",
+      "description": "Protect your WordPress site from hackers and malware. Regular maintenance, updates, backups, and security monitoring.",
+      "features": [
+        "Security Audit",
+        "Malware Removal",
+        "Firewall Setup",
+        "Regular Updates",
+        "Daily Backups",
+        "24/7 Monitoring"
+      ],
+      "price": "Starting from $50/month",
+      "popular": false
+    }
+  ],
+  "process": [
+    {
+      "step": "01",
+      "title": "Discovery",
+      "description": "We discuss your project requirements, goals, and timeline to understand exactly what you need."
+    },
+    {
+      "step": "02",
+      "title": "Planning",
+      "description": "I create a detailed project plan with milestones, deliverables, and technical specifications."
+    },
+    {
+      "step": "03",
+      "title": "Development",
+      "description": "I build your solution with clean code, best practices, and regular progress updates."
+    },
+    {
+      "step": "04",
+      "title": "Delivery",
+      "description": "Final testing, deployment, and handover with full documentation and support."
+    }
+  ]
+}

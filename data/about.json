@@ -1,0 +1,64 @@
+{
+  "title": "About Me",
+  "subtitle": "WordPress Developer & Web Specialist",
+  "bio": "I'm Yousri, a passionate WordPress developer with over 5 years of hands-on experience building and managing websites. My expertise goes beyond just WordPress development — I have deep knowledge in domain management, VPS server configuration, and hosting optimization that allows me to deliver complete web solutions.",
+  "bio2": "I believe in clean code, performance optimization, and creating websites that not only look great but also perform exceptionally. Whether it's setting up a fresh VPS, configuring DNS records, or building a complex WordPress theme from scratch, I handle every aspect of web development with precision.",
+  "image": "/about.jpg",
+  "details": [
+    { "label": "Name", "value": "Yousri" },
+    { "label": "Location", "value": "Available Worldwide" },
+    { "label": "Experience", "value": "5+ Years" },
+    { "label": "Specialty", "value": "WordPress & Server Management" },
+    { "label": "Languages", "value": "Arabic, English" },
+    { "label": "Availability", "value": "Open to Projects" }
+  ],
+  "expertise": [
+    {
+      "icon": "wordpress",
+      "title": "WordPress Development",
+      "description": "Custom themes, plugins, page builders (Elementor, Divi, Gutenberg), WooCommerce, and performance optimization."
+    },
+    {
+      "icon": "server",
+      "title": "VPS & Server Management",
+      "description": "Linux server setup (Ubuntu, CentOS), LAMP/LEMP stacks, cPanel/WHM installation, and security hardening."
+    },
+    {
+      "icon": "domain",
+      "title": "Domain & DNS Management",
+      "description": "Domain registration, DNS configuration, SSL certificates, email setup, and CDN integration."
+    },
+    {
+      "icon": "hosting",
+      "title": "Hosting Solutions",
+      "description": "Shared hosting setup, dedicated server configuration, cloud hosting (AWS, DigitalOcean), and migration services."
+    }
+  ],
+  "timeline": [
+    {
+      "year": "2019",
+      "title": "Started Web Development",
+      "description": "Began my journey with WordPress development, building my first client website."
+    },
+    {
+      "year": "2020",
+      "title": "Expanded to Server Management",
+      "description": "Started learning Linux servers, VPS configuration, and advanced hosting solutions."
+    },
+    {
+      "year": "2021",
+      "title": "Freelance Career Launch",
+      "description": "Launched my freelance career, taking on complex WordPress and hosting projects."
+    },
+    {
+      "year": "2022",
+      "title": "Advanced WordPress Expert",
+      "description": "Became proficient in WooCommerce, custom plugin development, and site optimization."
+    },
+    {
+      "year": "2024",
+      "title": "Full Stack Web Specialist",
+      "description": "Offering complete web solutions from domain registration to fully managed WordPress sites."
+    }
+  ]
+}

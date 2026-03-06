@@ -1,0 +1,197 @@
+'use client';
+
+import { useState } from 'react';
+import FrontendWrapper from '@/components/frontend/FrontendWrapper';
+
+export default function ContactPage() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+  });
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('sending');
+
+    try {
+      const res = await fetch('/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        setStatus('success');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        setStatus('error');
+      }
+    } catch {
+      setStatus('error');
+    }
+  };
+
+  return (
+    <FrontendWrapper>
+      <div className="min-h-screen bg-slate-900 pt-16">
+        {/* Hero */}
+        <section className="relative py-20 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-900 to-green-950" />
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p className="text-green-400 text-sm font-medium tracking-widest uppercase mb-3">
+              Contact Me
+            </p>
+            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+              Get In Touch
+            </h1>
+            <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+              Have a project in mind? Let&apos;s talk! Fill out the form and I&apos;ll get back to you within 24 hours.
+            </p>
+          </div>
+        </section>
+
+        {/* Contact Content */}
+        <section className="py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-2 gap-16">
+              {/* Contact Info */}
+              <div>
+                <h2 className="text-2xl font-bold text-white mb-8">Let&apos;s Connect</h2>
+
+                <div className="space-y-6 mb-12">
+                  {[
+                    { icon: '📧', label: 'Email', value: 'yousri@example.com', href: 'mailto:yousri@example.com' },
+                    { icon: '💬', label: 'WhatsApp', value: '+1 234 567 8900', href: '#' },
+                    { icon: '💼', label: 'LinkedIn', value: 'linkedin.com/in/yousri', href: '#' },
+                    { icon: '🐙', label: 'GitHub', value: 'github.com/yousri', href: '#' },
+                  ].map((info, i) => (
+                    <a
+                      key={i}
+                      href={info.href}
+                      className="flex items-center gap-4 glass rounded-xl p-4 hover:border-blue-500/50 transition-all duration-200 group"
+                    >
+                      <div className="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center text-xl flex-shrink-0 group-hover:bg-blue-600/30 transition-colors">
+                        {info.icon}
+                      </div>
+                      <div>
+                        <p className="text-slate-400 text-xs uppercase tracking-wider">{info.label}</p>
+                        <p className="text-white font-medium text-sm">{info.value}</p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+
+                <div className="glass rounded-2xl p-6">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                    <p className="text-green-400 font-medium text-sm">Available for new projects</p>
+                  </div>
+                  <p className="text-slate-400 text-sm">
+                    Usually responds within 24 hours
+                  </p>
+                </div>
+              </div>
+
+              {/* Contact Form */}
+              <div>
+                <h2 className="text-2xl font-bold text-white mb-8">Send a Message</h2>
+
+                {status === 'success' ? (
+                  <div className="glass rounded-2xl p-8 text-center">
+                    <div className="text-5xl mb-4">✅</div>
+                    <h3 className="text-white font-bold text-xl mb-2">Message Sent!</h3>
+                    <p className="text-slate-400 mb-6">
+                      Thank you for reaching out. I&apos;ll get back to you within 24 hours.
+                    </p>
+                    <button
+                      onClick={() => setStatus('idle')}
+                      className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors"
+                    >
+                      Send Another Message
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid sm:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-slate-300 text-sm font-medium mb-2">
+                          Your Name *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.name}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          placeholder="John Doe"
+                          className="w-full bg-slate-800 border border-slate-700 text-white placeholder-slate-500 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-300 text-sm font-medium mb-2">
+                          Email Address *
+                        </label>
+                        <input
+                          type="email"
+                          required
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          placeholder="john@example.com"
+                          className="w-full bg-slate-800 border border-slate-700 text-white placeholder-slate-500 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-300 text-sm font-medium mb-2">
+                        Subject *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.subject}
+                        onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                        placeholder="WordPress Development Project"
+                        className="w-full bg-slate-800 border border-slate-700 text-white placeholder-slate-500 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-sm"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-300 text-sm font-medium mb-2">
+                        Message *
+                      </label>
+                      <textarea
+                        required
+                        rows={6}
+                        value={formData.message}
+                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                        placeholder="Tell me about your project..."
+                        className="w-full bg-slate-800 border border-slate-700 text-white placeholder-slate-500 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-sm resize-none"
+                      />
+                    </div>
+
+                    {status === 'error' && (
+                      <p className="text-red-400 text-sm">
+                        Failed to send message. Please try again.
+                      </p>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={status === 'sending'}
+                      className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all duration-200 hover:scale-[1.02]"
+                    >
+                      {status === 'sending' ? 'Sending...' : 'Send Message →'}
+                    </button>
+                  </form>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </FrontendWrapper>
+  );
+}

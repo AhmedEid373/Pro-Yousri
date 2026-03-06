@@ -1,0 +1,246 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+
+interface AboutData {
+  title: string;
+  subtitle: string;
+  bio: string;
+  bio2: string;
+  details: Array<{ label: string; value: string }>;
+  expertise: Array<{ icon: string; title: string; description: string }>;
+  timeline: Array<{ year: string; title: string; description: string }>;
+}
+
+export default function DashboardAboutPage() {
+  const [data, setData] = useState<AboutData | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [activeTab, setActiveTab] = useState('general');
+
+  useEffect(() => {
+    fetch('/api/content/about').then((r) => r.json()).then(setData);
+  }, []);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await fetch('/api/content/about', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (!data) return <div className="p-8 text-slate-400">Loading...</div>;
+
+  const tabs = ['general', 'details', 'expertise', 'timeline'];
+
+  return (
+    <div className="p-8">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-white mb-1">👤 About Page</h1>
+          <p className="text-slate-400 text-sm">Edit your about page content</p>
+        </div>
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className={`px-6 py-2.5 rounded-xl font-medium text-sm transition-all ${
+            saved ? 'bg-green-600 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50'
+          }`}
+        >
+          {saving ? 'Saving...' : saved ? '✓ Saved!' : 'Save Changes'}
+        </button>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-2 mb-8 border-b border-slate-700/50">
+        {tabs.map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-4 py-2 text-sm font-medium capitalize transition-colors ${
+              activeTab === tab ? 'text-blue-400 border-b-2 border-blue-400' : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      {/* General */}
+      {activeTab === 'general' && (
+        <div className="space-y-6 max-w-2xl">
+          {(['title', 'subtitle'] as const).map((key) => (
+            <div key={key}>
+              <label className="block text-slate-300 text-sm font-medium mb-2 capitalize">{key}</label>
+              <input
+                type="text"
+                value={data[key]}
+                onChange={(e) => setData({ ...data, [key]: e.target.value })}
+                className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 text-sm"
+              />
+            </div>
+          ))}
+          {(['bio', 'bio2'] as const).map((key) => (
+            <div key={key}>
+              <label className="block text-slate-300 text-sm font-medium mb-2 capitalize">
+                {key === 'bio' ? 'Bio (paragraph 1)' : 'Bio (paragraph 2)'}
+              </label>
+              <textarea
+                rows={4}
+                value={data[key]}
+                onChange={(e) => setData({ ...data, [key]: e.target.value })}
+                className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 text-sm resize-none"
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Details */}
+      {activeTab === 'details' && (
+        <div className="space-y-4 max-w-2xl">
+          {data.details.map((detail, i) => (
+            <div key={i} className="glass rounded-xl p-4 flex gap-4">
+              <div className="flex-1">
+                <label className="block text-slate-400 text-xs mb-1">Label</label>
+                <input
+                  type="text"
+                  value={detail.label}
+                  onChange={(e) => {
+                    const details = [...data.details];
+                    details[i] = { ...detail, label: e.target.value };
+                    setData({ ...data, details });
+                  }}
+                  className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-slate-400 text-xs mb-1">Value</label>
+                <input
+                  type="text"
+                  value={detail.value}
+                  onChange={(e) => {
+                    const details = [...data.details];
+                    details[i] = { ...detail, value: e.target.value };
+                    setData({ ...data, details });
+                  }}
+                  className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Expertise */}
+      {activeTab === 'expertise' && (
+        <div className="space-y-6 max-w-2xl">
+          {data.expertise.map((item, i) => (
+            <div key={i} className="glass rounded-xl p-6">
+              <div className="space-y-3">
+                <input
+                  type="text"
+                  placeholder="Title"
+                  value={item.title}
+                  onChange={(e) => {
+                    const expertise = [...data.expertise];
+                    expertise[i] = { ...item, title: e.target.value };
+                    setData({ ...data, expertise });
+                  }}
+                  className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                />
+                <textarea
+                  rows={3}
+                  placeholder="Description"
+                  value={item.description}
+                  onChange={(e) => {
+                    const expertise = [...data.expertise];
+                    expertise[i] = { ...item, description: e.target.value };
+                    setData({ ...data, expertise });
+                  }}
+                  className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm resize-none"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Timeline */}
+      {activeTab === 'timeline' && (
+        <div className="space-y-6 max-w-2xl">
+          {data.timeline.map((item, i) => (
+            <div key={i} className="glass rounded-xl p-6">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-slate-400 text-sm">Timeline Item #{i + 1}</span>
+                <button
+                  onClick={() => {
+                    const timeline = data.timeline.filter((_, idx) => idx !== i);
+                    setData({ ...data, timeline });
+                  }}
+                  className="text-red-400 hover:text-red-300 text-sm"
+                >
+                  Remove
+                </button>
+              </div>
+              <div className="space-y-3">
+                <input
+                  type="text"
+                  placeholder="Year (e.g. 2024)"
+                  value={item.year}
+                  onChange={(e) => {
+                    const timeline = [...data.timeline];
+                    timeline[i] = { ...item, year: e.target.value };
+                    setData({ ...data, timeline });
+                  }}
+                  className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                />
+                <input
+                  type="text"
+                  placeholder="Title"
+                  value={item.title}
+                  onChange={(e) => {
+                    const timeline = [...data.timeline];
+                    timeline[i] = { ...item, title: e.target.value };
+                    setData({ ...data, timeline });
+                  }}
+                  className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                />
+                <textarea
+                  rows={2}
+                  placeholder="Description"
+                  value={item.description}
+                  onChange={(e) => {
+                    const timeline = [...data.timeline];
+                    timeline[i] = { ...item, description: e.target.value };
+                    setData({ ...data, timeline });
+                  }}
+                  className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm resize-none"
+                />
+              </div>
+            </div>
+          ))}
+          <button
+            onClick={() =>
+              setData({
+                ...data,
+                timeline: [...data.timeline, { year: '2025', title: 'New Milestone', description: 'Description here' }],
+              })
+            }
+            className="px-4 py-2 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-xl text-sm transition-colors"
+          >
+            + Add Timeline Item
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -1,0 +1,54 @@
+{
+  "hero": {
+    "greeting": "Hello, I'm",
+    "name": "Yousri",
+    "title": "WordPress Developer & Web Specialist",
+    "subtitle": "Expert in WordPress, Domains, VPS & Hosting Solutions",
+    "description": "I build powerful, fast, and scalable WordPress websites with deep expertise in server management, domain configuration, and hosting optimization.",
+    "ctaPrimary": "View My Work",
+    "ctaPrimaryLink": "/services",
+    "ctaSecondary": "Contact Me",
+    "ctaSecondaryLink": "/contact",
+    "profileImage": "/profile.jpg"
+  },
+  "stats": [
+    { "number": "50+", "label": "Projects Completed" },
+    { "number": "5+", "label": "Years Experience" },
+    { "number": "30+", "label": "Happy Clients" },
+    { "number": "100%", "label": "Client Satisfaction" }
+  ],
+  "skills": [
+    { "name": "WordPress", "level": 95 },
+    { "name": "PHP", "level": 80 },
+    { "name": "JavaScript", "level": 75 },
+    { "name": "VPS & Linux", "level": 85 },
+    { "name": "Domain & DNS", "level": 90 },
+    { "name": "cPanel / WHM", "level": 88 }
+  ],
+  "featuredProjects": [
+    {
+      "id": 1,
+      "title": "E-Commerce WordPress Store",
+      "description": "Full WooCommerce setup with custom theme and payment gateway integration",
+      "image": "/projects/project1.jpg",
+      "tags": ["WordPress", "WooCommerce", "PHP"],
+      "link": "#"
+    },
+    {
+      "id": 2,
+      "title": "Corporate Website",
+      "description": "Professional corporate site with custom Elementor designs and SEO optimization",
+      "image": "/projects/project2.jpg",
+      "tags": ["WordPress", "Elementor", "SEO"],
+      "link": "#"
+    },
+    {
+      "id": 3,
+      "title": "VPS Server Setup",
+      "description": "Complete LEMP stack setup with SSL, caching, and security hardening",
+      "image": "/projects/project3.jpg",
+      "tags": ["VPS", "Linux", "Nginx"],
+      "link": "#"
+    }
+  ]
+}
