@@ -2,6 +2,10 @@
   "name": "yousri-portfolio",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "18.20.5",
+    "npm": ">=10.8.2"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,7 +16,7 @@
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.0",
-    "next": "16.1.6",
+    "next": "^15.5.12",
     "next-auth": "^5.0.0-beta.30",
     "react": "19.2.3",
     "react-dom": "19.2.3"
@@ -23,7 +27,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "^15.5.12",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

@@ -64,9 +64,9 @@ export default function ContactPage() {
                 <div className="space-y-6 mb-12">
                   {[
                     { icon: '📧', label: 'Email', value: 'yousri@example.com', href: 'mailto:yousri@example.com' },
-                    { icon: '💬', label: 'WhatsApp', value: '+1 234 567 8900', href: '#' },
-                    { icon: '💼', label: 'LinkedIn', value: 'linkedin.com/in/yousri', href: '#' },
-                    { icon: '🐙', label: 'GitHub', value: 'github.com/yousri', href: '#' },
+                    { icon: '💬', label: 'WhatsApp', value: '+1 234 567 8900', href: 'https://wa.me/12345678900' },
+                    { icon: '💼', label: 'LinkedIn', value: 'linkedin.com/in/yousri', href: 'https://linkedin.com/in/yousri' },
+                    { icon: '🐙', label: 'GitHub', value: 'github.com/yousri', href: 'https://github.com/yousri' },
                   ].map((info, i) => (
                     <a
                       key={i}
