@@ -11,7 +11,7 @@ interface Message {
   createdAt: string;
   read: boolean;
   readAt?: string;
-  status: 'unread' | 'processing' | 'completed' | 'archived';
+  status: 'unread' | 'processing' | 'completed' | 'archived' | 'trashed';
 }
 
 export async function GET() {
@@ -77,7 +77,9 @@ export async function PATCH(request: NextRequest) {
     if (action === 'read') {
       msg.read = true;
       if (!msg.readAt) msg.readAt = new Date().toISOString();
-    } else if (['processing', 'completed', 'archived'].includes(action)) {
+    } else if (action === 'restored') {
+      msg.status = 'unread';
+    } else if (['processing', 'completed', 'archived', 'trashed'].includes(action)) {
       msg.status = action as Message['status'];
     }
 
