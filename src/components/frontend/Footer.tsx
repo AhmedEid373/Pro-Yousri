@@ -1,8 +1,18 @@
-import Link from 'next/link';
-import { readData } from '@/lib/db';
+'use client';
 
-export default async function Footer() {
-  const footerData = readData<{ techStack: string }>('footer.json');
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+
+export default function Footer() {
+  const [techStack, setTechStack] = useState('Built with Next.js & Tailwind CSS');
+
+  useEffect(() => {
+    fetch('/api/content/footer')
+      .then((r) => r.json())
+      .then((data) => { if (data.techStack) setTechStack(data.techStack); })
+      .catch(() => {});
+  }, []);
+
   return (
     <footer className="bg-[var(--surface-alt)] border-t border-[var(--border)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -71,7 +81,7 @@ export default async function Footer() {
             © {new Date().getFullYear()} Yousri. All rights reserved.
           </p>
           <p className="text-[var(--text-muted)] text-sm">
-            {footerData.techStack}
+            {techStack}
           </p>
         </div>
       </div>
