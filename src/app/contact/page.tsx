@@ -1,9 +1,40 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import FrontendWrapper from '@/components/frontend/FrontendWrapper';
 
+interface ContactInfo {
+  icon: string;
+  label: string;
+  value: string;
+  link: string;
+}
+
+interface ContactData {
+  title: string;
+  subtitle: string;
+  description: string;
+  contactInfo: ContactInfo[];
+  availability: string;
+  responseTime: string;
+}
+
+const defaultContactData: ContactData = {
+  title: 'Get In Touch',
+  subtitle: 'Contact Me',
+  description: "Have a project in mind? Let's talk! Fill out the form and I'll get back to you within 24 hours.",
+  contactInfo: [
+    { icon: '📧', label: 'Email', value: 'yousri@example.com', link: 'mailto:yousri@example.com' },
+    { icon: '💬', label: 'WhatsApp', value: '+1 234 567 8900', link: 'https://wa.me/12345678900' },
+    { icon: '💼', label: 'LinkedIn', value: 'linkedin.com/in/yousri', link: 'https://linkedin.com/in/yousri' },
+    { icon: '🐙', label: 'GitHub', value: 'github.com/yousri', link: 'https://github.com/yousri' },
+  ],
+  availability: 'Available for new projects',
+  responseTime: 'Usually responds within 24 hours',
+};
+
 export default function ContactPage() {
+  const [contactData, setContactData] = useState<ContactData>(defaultContactData);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -11,6 +42,13 @@ export default function ContactPage() {
     message: '',
   });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+
+  useEffect(() => {
+    fetch('/api/content/contact')
+      .then((r) => r.json())
+      .then((data) => { if (data.title) setContactData(data); })
+      .catch(() => {});
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,13 +80,13 @@ export default function ContactPage() {
           <div className="absolute inset-0 bg-gradient-to-br from-[var(--surface-alt)] via-[var(--surface-alt)] to-green-950" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p className="text-green-400 text-sm font-medium tracking-widest uppercase mb-3">
-              Contact Me
+              {contactData.subtitle}
             </p>
             <h1 className="text-4xl sm:text-5xl font-bold text-[var(--text-primary)] mb-6">
-              Get In Touch
+              {contactData.title}
             </h1>
             <p className="text-[var(--text-muted)] text-lg max-w-2xl mx-auto">
-              Have a project in mind? Let&apos;s talk! Fill out the form and I&apos;ll get back to you within 24 hours.
+              {contactData.description}
             </p>
           </div>
         </section>
@@ -62,15 +100,10 @@ export default function ContactPage() {
                 <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-8">Let&apos;s Connect</h2>
 
                 <div className="space-y-6 mb-12">
-                  {[
-                    { icon: '📧', label: 'Email', value: 'yousri@example.com', href: 'mailto:yousri@example.com' },
-                    { icon: '💬', label: 'WhatsApp', value: '+1 234 567 8900', href: 'https://wa.me/12345678900' },
-                    { icon: '💼', label: 'LinkedIn', value: 'linkedin.com/in/yousri', href: 'https://linkedin.com/in/yousri' },
-                    { icon: '🐙', label: 'GitHub', value: 'github.com/yousri', href: 'https://github.com/yousri' },
-                  ].map((info, i) => (
+                  {contactData.contactInfo.map((info, i) => (
                     <a
                       key={i}
-                      href={info.href}
+                      href={info.link}
                       className="flex items-center gap-4 glass rounded-xl p-4 hover:border-blue-500/50 transition-all duration-200 group"
                     >
                       <div className="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center text-xl flex-shrink-0 group-hover:bg-blue-600/30 transition-colors">
@@ -87,10 +120,10 @@ export default function ContactPage() {
                 <div className="glass rounded-2xl p-6">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                    <p className="text-green-400 font-medium text-sm">Available for new projects</p>
+                    <p className="text-green-400 font-medium text-sm">{contactData.availability}</p>
                   </div>
                   <p className="text-[var(--text-muted)] text-sm">
-                    Usually responds within 24 hours
+                    {contactData.responseTime}
                   </p>
                 </div>
               </div>

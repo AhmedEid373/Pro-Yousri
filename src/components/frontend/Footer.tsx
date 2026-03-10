@@ -5,11 +5,15 @@ import { useState, useEffect } from 'react';
 
 export default function Footer() {
   const [techStack, setTechStack] = useState('Built with Next.js & Tailwind CSS');
+  const [copyright, setCopyright] = useState('Yousri. All rights reserved.');
 
   useEffect(() => {
     fetch('/api/content/footer')
       .then((r) => r.json())
-      .then((data) => { if (data.techStack) setTechStack(data.techStack); })
+      .then((data) => {
+        if (data.techStack) setTechStack(data.techStack);
+        if (data.copyright) setCopyright(data.copyright);
+      })
       .catch(() => {});
   }, []);
 
@@ -78,7 +82,7 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-[var(--text-muted)] text-sm">
-            © {new Date().getFullYear()} Yousri. All rights reserved.
+            © {new Date().getFullYear()} {copyright}
           </p>
           <p className="text-[var(--text-muted)] text-sm">
             {techStack}

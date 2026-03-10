@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 
 interface FooterData {
   techStack: string;
+  copyright: string;
 }
 
 export default function DashboardFooterPage() {
@@ -37,7 +38,7 @@ export default function DashboardFooterPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-white">Footer</h1>
-          <p className="text-slate-400 mt-1">Manage the footer bottom text shown on your site</p>
+          <p className="text-slate-400 mt-1">Manage the footer bottom bar text shown on your site</p>
         </div>
         <button
           onClick={handleSave}
@@ -52,25 +53,46 @@ export default function DashboardFooterPage() {
         </button>
       </div>
 
-      <div className="bg-slate-800 rounded-xl p-6 max-w-2xl">
-        <label className="block text-sm font-medium text-slate-300 mb-2">
-          Footer Credit Text
-        </label>
-        <p className="text-slate-500 text-xs mb-3">
-          This text appears at the bottom right of the footer on every page.
-        </p>
-        <textarea
-          value={data.techStack}
-          onChange={(e) => setData({ ...data, techStack: e.target.value })}
-          rows={3}
-          className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500 resize-none"
-          placeholder="e.g. Built with Next.js & Tailwind CSS"
-        />
+      <div className="bg-slate-800 rounded-xl p-6 max-w-2xl space-y-6">
+        {/* Copyright text */}
+        <div>
+          <label className="block text-sm font-medium text-slate-300 mb-1">
+            Copyright Text
+          </label>
+          <p className="text-slate-500 text-xs mb-2">
+            Appears after the year on the bottom left. The year updates automatically.
+          </p>
+          <input
+            type="text"
+            value={data.copyright}
+            onChange={(e) => setData({ ...data, copyright: e.target.value })}
+            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500"
+            placeholder="e.g. Yousri. All rights reserved."
+          />
+        </div>
 
-        <div className="mt-6 p-4 bg-slate-900 rounded-lg border border-slate-700">
+        {/* Tech stack text */}
+        <div>
+          <label className="block text-sm font-medium text-slate-300 mb-1">
+            Footer Credit Text
+          </label>
+          <p className="text-slate-500 text-xs mb-2">
+            Appears on the bottom right of the footer on every page.
+          </p>
+          <textarea
+            value={data.techStack}
+            onChange={(e) => setData({ ...data, techStack: e.target.value })}
+            rows={2}
+            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500 resize-none"
+            placeholder="e.g. Built with Next.js & Tailwind CSS"
+          />
+        </div>
+
+        {/* Preview */}
+        <div className="p-4 bg-slate-900 rounded-lg border border-slate-700">
           <p className="text-xs text-slate-500 mb-2 font-medium uppercase tracking-wide">Preview</p>
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-slate-400">
-            <span>© {new Date().getFullYear()} Yousri. All rights reserved.</span>
+            <span>© {new Date().getFullYear()} {data.copyright || '...'}</span>
             <span>{data.techStack || '...'}</span>
           </div>
         </div>
