@@ -5,6 +5,7 @@ import { readData } from '@/lib/db';
 interface Service {
   id: number;
   icon: string;
+  iconUrl?: string;
   title: string;
   description: string;
   features: string[];
@@ -63,7 +64,13 @@ export default function ServicesPage() {
                     </div>
                   )}
 
-                  <div className="text-4xl mb-4">{service.icon}</div>
+                  <div className="mb-4">
+                    {service.iconUrl ? (
+                      <img src={service.iconUrl} alt={service.title} className="w-12 h-12 object-cover rounded-lg" />
+                    ) : (
+                      <span className="text-4xl">{service.icon}</span>
+                    )}
+                  </div>
                   <h3 className="text-[var(--text-primary)] font-bold text-xl mb-3">{service.title}</h3>
                   <p className="text-[var(--text-muted)] text-sm leading-relaxed mb-6 flex-1">
                     {service.description}

@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface ContactInfo {
   icon: string;
+  iconUrl?: string;
   label: string;
   value: string;
   link: string;
@@ -14,8 +15,87 @@ interface ContactData {
   subtitle: string;
   description: string;
   contactInfo: ContactInfo[];
-  availability: string;
+  availabilityStatus: 'green' | 'orange' | 'red';
+  availabilityOptions: { green: string; orange: string; red: string };
   responseTime: string;
+}
+
+const statusStyles = {
+  green:  { ring: 'ring-green-500',  dot: 'bg-green-400',  label: 'Green — Available' },
+  orange: { ring: 'ring-orange-500', dot: 'bg-orange-400', label: 'Orange — Selective' },
+  red:    { ring: 'ring-red-500',    dot: 'bg-red-400',    label: 'Red — Emergency only' },
+};
+
+function IconUploader({ info, index, onChange }: {
+  info: ContactInfo;
+  index: number;
+  onChange: (index: number, field: keyof ContactInfo, value: string) => void;
+}) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const form = new FormData();
+    form.append('file', file);
+    try {
+      const res = await fetch('/api/upload', { method: 'POST', body: form });
+      const data = await res.json();
+      if (data.url) onChange(index, 'iconUrl', data.url);
+    } catch { /* ignore */ }
+    finally { setUploading(false); }
+  };
+
+  return (
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 bg-slate-700 rounded-lg flex items-center justify-center text-xl overflow-hidden flex-shrink-0">
+        {info.iconUrl ? (
+          <img src={info.iconUrl} alt={info.label} className="w-full h-full object-cover" />
+        ) : (
+          info.icon || '❓'
+        )}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex gap-2 mb-1">
+          <div className="flex-1">
+            <label className="block text-slate-400 text-xs mb-1">Emoji icon</label>
+            <input
+              type="text"
+              value={info.icon}
+              onChange={(e) => onChange(index, 'icon', e.target.value)}
+              className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-1.5 focus:outline-none focus:border-blue-500 text-sm"
+              placeholder="📧"
+            />
+          </div>
+          <div className="flex-1">
+            <label className="block text-slate-400 text-xs mb-1">Or upload image</label>
+            <div className="flex gap-1">
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                disabled={uploading}
+                className="px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-xs rounded-lg transition-colors disabled:opacity-50"
+              >
+                {uploading ? '…' : '📁 Upload'}
+              </button>
+              {info.iconUrl && (
+                <button
+                  type="button"
+                  onClick={() => onChange(index, 'iconUrl', '')}
+                  className="px-2 py-1.5 bg-red-900/40 hover:bg-red-900/60 text-red-300 text-xs rounded-lg transition-colors"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+            <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function DashboardContactPage() {
@@ -37,9 +117,14 @@ export default function DashboardContactPage() {
       });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
-    } finally {
-      setSaving(false);
-    }
+    } finally { setSaving(false); }
+  };
+
+  const updateContactInfo = (index: number, field: keyof ContactInfo, value: string) => {
+    if (!data) return;
+    const contactInfo = [...data.contactInfo];
+    contactInfo[index] = { ...contactInfo[index], [field]: value };
+    setData({ ...data, contactInfo });
   };
 
   if (!data) return <div className="p-8 text-slate-400">Loading...</div>;
@@ -63,8 +148,8 @@ export default function DashboardContactPage() {
       </div>
 
       <div className="max-w-2xl space-y-8">
-        {/* Page Info */}
-        <div className="glass rounded-xl p-6 space-y-4">
+        {/* Page Header */}
+        <div className="bg-slate-800 rounded-xl p-6 space-y-4">
           <h2 className="text-white font-semibold text-sm">Page Header</h2>
           {(['title', 'subtitle'] as const).map((key) => (
             <div key={key}>
@@ -73,7 +158,7 @@ export default function DashboardContactPage() {
                 type="text"
                 value={data[key]}
                 onChange={(e) => setData({ ...data, [key]: e.target.value })}
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                className="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
               />
             </div>
           ))}
@@ -83,30 +168,51 @@ export default function DashboardContactPage() {
               rows={3}
               value={data.description}
               onChange={(e) => setData({ ...data, description: e.target.value })}
-              className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm resize-none"
+              className="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm resize-none"
             />
           </div>
         </div>
 
-        {/* Availability */}
-        <div className="glass rounded-xl p-6 space-y-4">
-          <h2 className="text-white font-semibold text-sm">Status</h2>
+        {/* Availability Status */}
+        <div className="bg-slate-800 rounded-xl p-6 space-y-4">
           <div>
-            <label className="block text-slate-400 text-xs mb-1">Availability Message</label>
-            <input
-              type="text"
-              value={data.availability}
-              onChange={(e) => setData({ ...data, availability: e.target.value })}
-              className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
-            />
+            <h2 className="text-white font-semibold text-sm">Availability Status</h2>
+            <p className="text-slate-500 text-xs mt-1">Click a card to set the active status. Edit the text inline.</p>
           </div>
+          {(['green', 'orange', 'red'] as const).map((color) => {
+            const s = statusStyles[color];
+            const isActive = data.availabilityStatus === color;
+            return (
+              <div
+                key={color}
+                onClick={() => setData({ ...data, availabilityStatus: color })}
+                className={`flex items-center gap-3 bg-slate-900 rounded-lg p-3 cursor-pointer border transition-all ${
+                  isActive ? `border-transparent ring-2 ${s.ring}` : 'border-slate-700 hover:border-slate-600'
+                }`}
+              >
+                <div className={`w-3 h-3 rounded-full flex-shrink-0 ${s.dot}`} />
+                <input
+                  type="text"
+                  value={data.availabilityOptions[color]}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={(e) => setData({
+                    ...data,
+                    availabilityOptions: { ...data.availabilityOptions, [color]: e.target.value },
+                  })}
+                  className="flex-1 bg-transparent text-white text-sm focus:outline-none"
+                  placeholder={s.label}
+                />
+                {isActive && <span className="text-xs text-slate-500 flex-shrink-0">● Active</span>}
+              </div>
+            );
+          })}
           <div>
-            <label className="block text-slate-400 text-xs mb-1">Response Time</label>
+            <label className="block text-slate-400 text-xs mb-1">Response Time (shown below status)</label>
             <input
               type="text"
               value={data.responseTime}
               onChange={(e) => setData({ ...data, responseTime: e.target.value })}
-              className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+              className="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
             />
           </div>
         </div>
@@ -115,60 +221,21 @@ export default function DashboardContactPage() {
         <div className="space-y-4">
           <h2 className="text-white font-semibold text-sm">Contact Information</h2>
           {data.contactInfo.map((info, i) => (
-            <div key={i} className="glass rounded-xl p-4 space-y-3">
+            <div key={i} className="bg-slate-800 rounded-xl p-4 space-y-3">
+              <IconUploader info={info} index={i} onChange={updateContactInfo} />
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-400 text-xs mb-1">Icon (emoji)</label>
-                  <input
-                    type="text"
-                    value={info.icon}
-                    onChange={(e) => {
-                      const contactInfo = [...data.contactInfo];
-                      contactInfo[i] = { ...info, icon: e.target.value };
-                      setData({ ...data, contactInfo });
-                    }}
-                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
-                  />
+                  <label className="block text-slate-400 text-xs mb-1">Label</label>
+                  <input type="text" value={info.label} onChange={(e) => updateContactInfo(i, 'label', e.target.value)} className="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-slate-400 text-xs mb-1">Label</label>
-                  <input
-                    type="text"
-                    value={info.label}
-                    onChange={(e) => {
-                      const contactInfo = [...data.contactInfo];
-                      contactInfo[i] = { ...info, label: e.target.value };
-                      setData({ ...data, contactInfo });
-                    }}
-                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
-                  />
+                  <label className="block text-slate-400 text-xs mb-1">Displayed Value</label>
+                  <input type="text" value={info.value} onChange={(e) => updateContactInfo(i, 'value', e.target.value)} className="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm" />
                 </div>
               </div>
               <div>
-                <label className="block text-slate-400 text-xs mb-1">Value (displayed text)</label>
-                <input
-                  type="text"
-                  value={info.value}
-                  onChange={(e) => {
-                    const contactInfo = [...data.contactInfo];
-                    contactInfo[i] = { ...info, value: e.target.value };
-                    setData({ ...data, contactInfo });
-                  }}
-                  className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-slate-400 text-xs mb-1">Link (URL)</label>
-                <input
-                  type="text"
-                  value={info.link}
-                  onChange={(e) => {
-                    const contactInfo = [...data.contactInfo];
-                    contactInfo[i] = { ...info, link: e.target.value };
-                    setData({ ...data, contactInfo });
-                  }}
-                  className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
-                />
+                <label className="block text-slate-400 text-xs mb-1">Link URL</label>
+                <input type="text" value={info.link} onChange={(e) => updateContactInfo(i, 'link', e.target.value)} className="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm" />
               </div>
             </div>
           ))}

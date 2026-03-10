@@ -12,6 +12,8 @@ const navItems = [
   { href: '/dashboard/contact', label: 'Contact Page', icon: '📞' },
   { href: '/dashboard/footer', label: 'Footer', icon: '🔗' },
   { href: '/dashboard/messages', label: 'Messages', icon: '💬' },
+  { href: '/dashboard/pages', label: 'Pages', icon: '📄' },
+  { href: '/dashboard/settings', label: 'Settings', icon: '⚙️' },
 ];
 
 export default function Sidebar() {

@@ -5,6 +5,7 @@ import FrontendWrapper from '@/components/frontend/FrontendWrapper';
 
 interface ContactInfo {
   icon: string;
+  iconUrl?: string;
   label: string;
   value: string;
   link: string;
@@ -15,7 +16,8 @@ interface ContactData {
   subtitle: string;
   description: string;
   contactInfo: ContactInfo[];
-  availability: string;
+  availabilityStatus: 'green' | 'orange' | 'red';
+  availabilityOptions: { green: string; orange: string; red: string };
   responseTime: string;
 }
 
@@ -29,18 +31,24 @@ const defaultContactData: ContactData = {
     { icon: '💼', label: 'LinkedIn', value: 'linkedin.com/in/yousri', link: 'https://linkedin.com/in/yousri' },
     { icon: '🐙', label: 'GitHub', value: 'github.com/yousri', link: 'https://github.com/yousri' },
   ],
-  availability: 'Available for new projects',
+  availabilityStatus: 'green',
+  availabilityOptions: {
+    green: 'Available for new projects',
+    orange: 'Available but taking select projects',
+    red: 'Very busy — emergency projects only',
+  },
   responseTime: 'Usually responds within 24 hours',
+};
+
+const statusColors = {
+  green:  { dot: 'bg-green-400',  text: 'text-green-400'  },
+  orange: { dot: 'bg-orange-400', text: 'text-orange-400' },
+  red:    { dot: 'bg-red-400',    text: 'text-red-400'    },
 };
 
 export default function ContactPage() {
   const [contactData, setContactData] = useState<ContactData>(defaultContactData);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
-  });
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
   useEffect(() => {
@@ -53,24 +61,19 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('sending');
-
     try {
       const res = await fetch('/api/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
-      if (res.ok) {
-        setStatus('success');
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      } else {
-        setStatus('error');
-      }
-    } catch {
-      setStatus('error');
-    }
+      if (res.ok) { setStatus('success'); setFormData({ name: '', email: '', subject: '', message: '' }); }
+      else setStatus('error');
+    } catch { setStatus('error'); }
   };
+
+  const activeStatus = contactData.availabilityStatus ?? 'green';
+  const color = statusColors[activeStatus];
 
   return (
     <FrontendWrapper>
@@ -104,10 +107,16 @@ export default function ContactPage() {
                     <a
                       key={i}
                       href={info.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex items-center gap-4 glass rounded-xl p-4 hover:border-blue-500/50 transition-all duration-200 group"
                     >
-                      <div className="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center text-xl flex-shrink-0 group-hover:bg-blue-600/30 transition-colors">
-                        {info.icon}
+                      <div className="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center text-xl flex-shrink-0 group-hover:bg-blue-600/30 transition-colors overflow-hidden">
+                        {info.iconUrl ? (
+                          <img src={info.iconUrl} alt={info.label} className="w-full h-full object-cover" />
+                        ) : (
+                          info.icon
+                        )}
                       </div>
                       <div>
                         <p className="text-[var(--text-muted)] text-xs uppercase tracking-wider">{info.label}</p>
@@ -119,12 +128,12 @@ export default function ContactPage() {
 
                 <div className="glass rounded-2xl p-6">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                    <p className="text-green-400 font-medium text-sm">{contactData.availability}</p>
+                    <div className={`w-2 h-2 ${color.dot} rounded-full animate-pulse`} />
+                    <p className={`${color.text} font-medium text-sm`}>
+                      {contactData.availabilityOptions[activeStatus]}
+                    </p>
                   </div>
-                  <p className="text-[var(--text-muted)] text-sm">
-                    {contactData.responseTime}
-                  </p>
+                  <p className="text-[var(--text-muted)] text-sm">{contactData.responseTime}</p>
                 </div>
               </div>
 
@@ -136,13 +145,8 @@ export default function ContactPage() {
                   <div className="glass rounded-2xl p-8 text-center">
                     <div className="text-5xl mb-4">✅</div>
                     <h3 className="text-[var(--text-primary)] font-bold text-xl mb-2">Message Sent!</h3>
-                    <p className="text-[var(--text-muted)] mb-6">
-                      Thank you for reaching out. I&apos;ll get back to you within 24 hours.
-                    </p>
-                    <button
-                      onClick={() => setStatus('idle')}
-                      className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors"
-                    >
+                    <p className="text-[var(--text-muted)] mb-6">Thank you for reaching out. I&apos;ll get back to you within 24 hours.</p>
+                    <button onClick={() => setStatus('idle')} className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors">
                       Send Another Message
                     </button>
                   </div>
@@ -150,72 +154,24 @@ export default function ContactPage() {
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid sm:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-[var(--text-secondary)] text-sm font-medium mb-2">
-                          Your Name *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          placeholder="John Doe"
-                          className="w-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-sm"
-                        />
+                        <label className="block text-[var(--text-secondary)] text-sm font-medium mb-2">Your Name *</label>
+                        <input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="John Doe" className="w-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-sm" />
                       </div>
                       <div>
-                        <label className="block text-[var(--text-secondary)] text-sm font-medium mb-2">
-                          Email Address *
-                        </label>
-                        <input
-                          type="email"
-                          required
-                          value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          placeholder="john@example.com"
-                          className="w-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-sm"
-                        />
+                        <label className="block text-[var(--text-secondary)] text-sm font-medium mb-2">Email Address *</label>
+                        <input type="email" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} placeholder="john@example.com" className="w-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-sm" />
                       </div>
                     </div>
-
                     <div>
-                      <label className="block text-[var(--text-secondary)] text-sm font-medium mb-2">
-                        Subject *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.subject}
-                        onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                        placeholder="WordPress Development Project"
-                        className="w-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-sm"
-                      />
+                      <label className="block text-[var(--text-secondary)] text-sm font-medium mb-2">Subject *</label>
+                      <input type="text" required value={formData.subject} onChange={(e) => setFormData({ ...formData, subject: e.target.value })} placeholder="WordPress Development Project" className="w-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-sm" />
                     </div>
-
                     <div>
-                      <label className="block text-[var(--text-secondary)] text-sm font-medium mb-2">
-                        Message *
-                      </label>
-                      <textarea
-                        required
-                        rows={6}
-                        value={formData.message}
-                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        placeholder="Tell me about your project..."
-                        className="w-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-sm resize-none"
-                      />
+                      <label className="block text-[var(--text-secondary)] text-sm font-medium mb-2">Message *</label>
+                      <textarea required rows={6} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} placeholder="Tell me about your project..." className="w-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-sm resize-none" />
                     </div>
-
-                    {status === 'error' && (
-                      <p className="text-red-400 text-sm">
-                        Failed to send message. Please try again.
-                      </p>
-                    )}
-
-                    <button
-                      type="submit"
-                      disabled={status === 'sending'}
-                      className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all duration-200 hover:scale-[1.02]"
-                    >
+                    {status === 'error' && <p className="text-red-400 text-sm">Failed to send message. Please try again.</p>}
+                    <button type="submit" disabled={status === 'sending'} className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all duration-200 hover:scale-[1.02]">
                       {status === 'sending' ? 'Sending...' : 'Send Message →'}
                     </button>
                   </form>

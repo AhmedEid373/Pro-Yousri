@@ -5,29 +5,38 @@
   "contactInfo": [
     {
       "icon": "📧",
+      "iconUrl": "",
       "label": "Email",
       "value": "yousri@example.com",
       "link": "mailto:yousri@example.com"
     },
     {
       "icon": "💬",
+      "iconUrl": "",
       "label": "WhatsApp",
       "value": "+1 234 567 8900",
       "link": "https://wa.me/12345678900"
     },
     {
       "icon": "💼",
+      "iconUrl": "",
       "label": "LinkedIn",
       "value": "linkedin.com/in/yousri",
       "link": "https://linkedin.com/in/yousri"
     },
     {
       "icon": "🐙",
+      "iconUrl": "",
       "label": "GitHub",
       "value": "github.com/yousri",
       "link": "https://github.com/yousri"
     }
   ],
-  "availability": "Available for new projects",
+  "availabilityStatus": "green",
+  "availabilityOptions": {
+    "green": "Available for new projects",
+    "orange": "Available but taking select projects",
+    "red": "Very busy — emergency projects only"
+  },
   "responseTime": "Usually responds within 24 hours"
 }

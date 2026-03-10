@@ -6,6 +6,7 @@
     {
       "id": 1,
       "icon": "🌐",
+      "iconUrl": "",
       "title": "WordPress Development",
       "description": "Custom WordPress websites built from scratch or using premium themes. I create fully responsive, SEO-optimized websites that drive results.",
       "features": [
@@ -22,6 +23,7 @@
     {
       "id": 2,
       "icon": "🖥️",
+      "iconUrl": "",
       "title": "VPS Server Setup & Management",
       "description": "Complete VPS configuration from scratch. I set up secure, high-performance Linux servers optimized for WordPress and web applications.",
       "features": [
@@ -38,6 +40,7 @@
     {
       "id": 3,
       "icon": "🔒",
+      "iconUrl": "",
       "title": "Domain & DNS Management",
       "description": "Expert domain management including DNS configuration, email setup, CDN integration, and SSL certificate management.",
       "features": [
@@ -54,6 +57,7 @@
     {
       "id": 4,
       "icon": "🚀",
+      "iconUrl": "",
       "title": "WordPress Speed Optimization",
       "description": "Make your WordPress site lightning fast. I optimize your site for Core Web Vitals, reducing load times and improving user experience.",
       "features": [
@@ -70,6 +74,7 @@
     {
       "id": 5,
       "icon": "🔄",
+      "iconUrl": "",
       "title": "Website Migration",
       "description": "Seamless migration of your WordPress site from any hosting to a new server or hosting provider with zero downtime.",
       "features": [
@@ -86,6 +91,7 @@
     {
       "id": 6,
       "icon": "🛡️",
+      "iconUrl": "",
       "title": "WordPress Security & Maintenance",
       "description": "Protect your WordPress site from hackers and malware. Regular maintenance, updates, backups, and security monitoring.",
       "features": [

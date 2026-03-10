@@ -37,11 +37,27 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const [logoType, setLogoType] = useState('text');
+  const [logoText, setLogoText] = useState('Y');
+  const [logoImage, setLogoImage] = useState('');
+  const [brandName, setBrandName] = useState('Yousri');
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/content/site')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.logoType) setLogoType(data.logoType);
+        if (data.logoText) setLogoText(data.logoText);
+        if (data.logoImage !== undefined) setLogoImage(data.logoImage);
+        if (data.brandName) setBrandName(data.brandName);
+      })
+      .catch(() => {});
   }, []);
 
   return (
@@ -54,10 +70,16 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">Y</span>
+            <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
+              {logoType === 'image' && logoImage ? (
+                <img src={logoImage} alt={brandName} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">{logoText || 'Y'}</span>
+                </div>
+              )}
             </div>
-            <span className="text-[var(--text-primary)] font-bold text-lg">Yousri</span>
+            <span className="text-[var(--text-primary)] font-bold text-lg">{brandName}</span>
           </Link>
 
           {/* Desktop Nav */}

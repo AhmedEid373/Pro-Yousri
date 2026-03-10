@@ -1,15 +1,88 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface Service {
   id: number;
   icon: string;
+  iconUrl?: string;
   title: string;
   description: string;
   features: string[];
   price: string;
   popular: boolean;
+}
+
+function ServiceIconUploader({ service, index, onChange }: {
+  service: Service;
+  index: number;
+  onChange: (index: number, patch: Partial<Service>) => void;
+}) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const form = new FormData();
+    form.append('file', file);
+    try {
+      const res = await fetch('/api/upload', { method: 'POST', body: form });
+      const data = await res.json();
+      if (data.url) onChange(index, { iconUrl: data.url });
+    } catch { /* ignore */ }
+    finally { setUploading(false); }
+  };
+
+  return (
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 bg-slate-700 rounded-lg flex items-center justify-center text-xl overflow-hidden flex-shrink-0">
+        {service.iconUrl ? (
+          <img src={service.iconUrl} alt={service.title} className="w-full h-full object-cover" />
+        ) : (
+          service.icon || '❓'
+        )}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex gap-2">
+          <div className="flex-1">
+            <label className="block text-slate-400 text-xs mb-1">Emoji icon</label>
+            <input
+              type="text"
+              value={service.icon}
+              onChange={(e) => onChange(index, { icon: e.target.value })}
+              className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-1.5 focus:outline-none focus:border-blue-500 text-sm"
+              placeholder="🌐"
+            />
+          </div>
+          <div className="flex-1">
+            <label className="block text-slate-400 text-xs mb-1">Or upload image</label>
+            <div className="flex gap-1">
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                disabled={uploading}
+                className="px-2 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-xs rounded-lg transition-colors disabled:opacity-50"
+              >
+                {uploading ? '…' : '📁 Upload'}
+              </button>
+              {service.iconUrl && (
+                <button
+                  type="button"
+                  onClick={() => onChange(index, { iconUrl: '' })}
+                  className="px-2 py-1.5 bg-red-900/40 hover:bg-red-900/60 text-red-300 text-xs rounded-lg transition-colors"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+            <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 interface ServicesData {
@@ -44,6 +117,13 @@ export default function DashboardServicesPage() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const updateService = (index: number, patch: Partial<Service>) => {
+    if (!data) return;
+    const services = [...data.services];
+    services[index] = { ...services[index], ...patch };
+    setData({ ...data, services });
   };
 
   if (!data) return <div className="p-8 text-slate-400">Loading...</div>;
@@ -119,7 +199,13 @@ export default function DashboardServicesPage() {
                 className="w-full flex items-center justify-between p-4 text-left hover:bg-white/5 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-xl">{service.icon}</span>
+                  <div className="w-7 h-7 rounded flex items-center justify-center text-xl overflow-hidden flex-shrink-0">
+                    {service.iconUrl ? (
+                      <img src={service.iconUrl} alt={service.title} className="w-full h-full object-cover rounded" />
+                    ) : (
+                      service.icon
+                    )}
+                  </div>
                   <span className="text-white font-medium text-sm">{service.title}</span>
                   {service.popular && (
                     <span className="px-2 py-0.5 bg-blue-600/30 text-blue-400 text-xs rounded-full">Popular</span>
@@ -130,54 +216,32 @@ export default function DashboardServicesPage() {
 
               {expandedService === i && (
                 <div className="px-4 pb-4 space-y-4 border-t border-slate-700/50 pt-4">
+                  <ServiceIconUploader service={service} index={i} onChange={updateService} />
                   <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-slate-400 text-xs mb-1">Icon (emoji)</label>
-                      <input
-                        type="text"
-                        value={service.icon}
-                        onChange={(e) => {
-                          const services = [...data.services];
-                          services[i] = { ...service, icon: e.target.value };
-                          setData({ ...data, services });
-                        }}
-                        className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
-                      />
-                    </div>
                     <div>
                       <label className="block text-slate-400 text-xs mb-1">Price</label>
                       <input
                         type="text"
                         value={service.price}
-                        onChange={(e) => {
-                          const services = [...data.services];
-                          services[i] = { ...service, price: e.target.value };
-                          setData({ ...data, services });
-                        }}
+                        onChange={(e) => updateService(i, { price: e.target.value })}
+                        className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 text-xs mb-1">Title</label>
+                      <input
+                        type="text"
+                        value={service.title}
+                        onChange={(e) => updateService(i, { title: e.target.value })}
                         className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
                       />
                     </div>
                   </div>
-                  <input
-                    type="text"
-                    placeholder="Title"
-                    value={service.title}
-                    onChange={(e) => {
-                      const services = [...data.services];
-                      services[i] = { ...service, title: e.target.value };
-                      setData({ ...data, services });
-                    }}
-                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
-                  />
                   <textarea
                     rows={3}
                     placeholder="Description"
                     value={service.description}
-                    onChange={(e) => {
-                      const services = [...data.services];
-                      services[i] = { ...service, description: e.target.value };
-                      setData({ ...data, services });
-                    }}
+                    onChange={(e) => updateService(i, { description: e.target.value })}
                     className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm resize-none"
                   />
                   <div>
@@ -185,11 +249,7 @@ export default function DashboardServicesPage() {
                     <textarea
                       rows={4}
                       value={service.features.join('\n')}
-                      onChange={(e) => {
-                        const services = [...data.services];
-                        services[i] = { ...service, features: e.target.value.split('\n').filter(Boolean) };
-                        setData({ ...data, services });
-                      }}
+                      onChange={(e) => updateService(i, { features: e.target.value.split('\n').filter(Boolean) })}
                       className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm resize-none"
                     />
                   </div>
@@ -197,11 +257,7 @@ export default function DashboardServicesPage() {
                     <input
                       type="checkbox"
                       checked={service.popular}
-                      onChange={(e) => {
-                        const services = [...data.services];
-                        services[i] = { ...service, popular: e.target.checked };
-                        setData({ ...data, services });
-                      }}
+                      onChange={(e) => updateService(i, { popular: e.target.checked })}
                       className="w-4 h-4"
                     />
                     <span className="text-slate-300 text-sm">Mark as Popular</span>
@@ -215,6 +271,7 @@ export default function DashboardServicesPage() {
               const newService: Service = {
                 id: Date.now(),
                 icon: '⚡',
+                iconUrl: '',
                 title: 'New Service',
                 description: 'Service description',
                 features: ['Feature 1', 'Feature 2'],
