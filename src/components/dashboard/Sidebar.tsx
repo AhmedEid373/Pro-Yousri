@@ -10,6 +10,7 @@ const navItems = [
   { href: '/dashboard/about', label: 'About Page', icon: '👤' },
   { href: '/dashboard/services', label: 'Services Page', icon: '⚙️' },
   { href: '/dashboard/contact', label: 'Contact Page', icon: '📞' },
+  { href: '/dashboard/footer', label: 'Footer', icon: '🔗' },
   { href: '/dashboard/messages', label: 'Messages', icon: '💬' },
 ];
 

@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import { readData } from '@/lib/db';
 
-export default function Footer() {
+export default async function Footer() {
+  const footerData = readData<{ techStack: string }>('footer.json');
   return (
     <footer className="bg-[var(--surface-alt)] border-t border-[var(--border)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -69,7 +71,7 @@ export default function Footer() {
             © {new Date().getFullYear()} Yousri. All rights reserved.
           </p>
           <p className="text-[var(--text-muted)] text-sm">
-            Built with Next.js & Tailwind CSS
+            {footerData.techStack}
           </p>
         </div>
       </div>
