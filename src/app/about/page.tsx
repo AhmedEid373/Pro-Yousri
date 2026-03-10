@@ -25,17 +25,17 @@ export default function AboutPage() {
 
   return (
     <FrontendWrapper>
-      <div className="min-h-screen bg-slate-900 pt-16">
+      <div className="min-h-screen bg-[var(--background)] pt-16">
         {/* Hero */}
         <section className="relative py-20 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--surface-alt)] via-[var(--surface-alt)] to-blue-950" />
           <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/5 rounded-full blur-3xl" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <p className="text-blue-400 text-sm font-medium tracking-widest uppercase mb-3">
                 {data.subtitle}
               </p>
-              <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+              <h1 className="text-4xl sm:text-5xl font-bold text-[var(--text-primary)] mb-6">
                 {data.title}
               </h1>
             </div>
@@ -46,17 +46,17 @@ export default function AboutPage() {
                 <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center text-4xl mb-8">
                   👨‍💻
                 </div>
-                <p className="text-slate-300 text-lg leading-relaxed mb-6">{data.bio}</p>
-                <p className="text-slate-400 leading-relaxed mb-8">{data.bio2}</p>
+                <p className="text-[var(--text-secondary)] text-lg leading-relaxed mb-6">{data.bio}</p>
+                <p className="text-[var(--text-muted)] leading-relaxed mb-8">{data.bio2}</p>
 
                 {/* Details */}
                 <div className="grid grid-cols-2 gap-4">
                   {data.details.map((detail, i) => (
                     <div key={i} className="glass rounded-xl p-4">
-                      <p className="text-slate-500 text-xs uppercase tracking-wider mb-1">
+                      <p className="text-[var(--text-muted)] text-xs uppercase tracking-wider mb-1">
                         {detail.label}
                       </p>
-                      <p className="text-white font-medium text-sm">{detail.value}</p>
+                      <p className="text-[var(--text-primary)] font-medium text-sm">{detail.value}</p>
                     </div>
                   ))}
                 </div>
@@ -64,7 +64,7 @@ export default function AboutPage() {
 
               {/* Timeline */}
               <div>
-                <h3 className="text-xl font-bold text-white mb-8">My Journey</h3>
+                <h3 className="text-xl font-bold text-[var(--text-primary)] mb-8">My Journey</h3>
                 <div className="space-y-6">
                   {data.timeline.map((item, i) => (
                     <div key={i} className="flex gap-4">
@@ -75,13 +75,13 @@ export default function AboutPage() {
                           </span>
                         </div>
                         {i < data.timeline.length - 1 && (
-                          <div className="w-px flex-1 bg-slate-700 mt-2" />
+                          <div className="w-px flex-1 bg-[var(--border)] mt-2" />
                         )}
                       </div>
                       <div className="pb-6">
                         <p className="text-blue-400 text-sm mb-1">{item.year}</p>
-                        <h4 className="text-white font-semibold mb-1">{item.title}</h4>
-                        <p className="text-slate-400 text-sm leading-relaxed">
+                        <h4 className="text-[var(--text-primary)] font-semibold mb-1">{item.title}</h4>
+                        <p className="text-[var(--text-muted)] text-sm leading-relaxed">
                           {item.description}
                         </p>
                       </div>
@@ -94,10 +94,10 @@ export default function AboutPage() {
         </section>
 
         {/* Expertise */}
-        <section className="py-20 bg-slate-800/30">
+        <section className="py-20 bg-[var(--surface)]/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+              <h2 className="text-3xl sm:text-4xl font-bold text-[var(--text-primary)] mb-4">
                 Areas of <span className="gradient-text">Expertise</span>
               </h2>
             </div>
@@ -111,8 +111,8 @@ export default function AboutPage() {
                   <div className="text-3xl mb-4">
                     {expertiseIcons[item.icon] || '⚡'}
                   </div>
-                  <h3 className="text-white font-bold mb-3">{item.title}</h3>
-                  <p className="text-slate-400 text-sm leading-relaxed">
+                  <h3 className="text-[var(--text-primary)] font-bold mb-3">{item.title}</h3>
+                  <p className="text-[var(--text-muted)] text-sm leading-relaxed">
                     {item.description}
                   </p>
                 </div>
