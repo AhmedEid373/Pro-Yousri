@@ -14,11 +14,11 @@ export default function Footer() {
     { href: '/contact', label: 'Contact' },
   ]);
   const [footerServices, setFooterServices] = useState([
-    'WordPress Development',
-    'VPS Server Setup',
-    'Domain Management',
-    'Speed Optimization',
-    'Website Migration',
+    { label: 'WordPress Development', link: '/services' },
+    { label: 'VPS Server Setup', link: '/services' },
+    { label: 'Domain Management', link: '/services' },
+    { label: 'Speed Optimization', link: '/services' },
+    { label: 'Website Migration', link: '/services' },
   ]);
 
   useEffect(() => {
@@ -72,13 +72,13 @@ export default function Footer() {
           <div>
             <h3 className="text-[var(--text-primary)] font-semibold mb-4">Services</h3>
             <ul className="space-y-2">
-              {footerServices.map((service) => (
-                <li key={service}>
+              {footerServices.map((service, i) => (
+                <li key={i}>
                   <Link
-                    href="/services"
+                    href={service.link || '/services'}
                     className="text-[var(--text-muted)] hover:text-blue-400 text-sm transition-colors duration-200"
                   >
-                    {service}
+                    {service.label}
                   </Link>
                 </li>
               ))}

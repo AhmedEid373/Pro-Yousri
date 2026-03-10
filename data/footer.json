@@ -9,10 +9,10 @@
     { "href": "/contact", "label": "Contact" }
   ],
   "footerServices": [
-    "WordPress Development",
-    "VPS Server Setup",
-    "Domain Management",
-    "Speed Optimization",
-    "Website Migration"
+    { "label": "WordPress Development", "link": "/services" },
+    { "label": "VPS Server Setup", "link": "/services" },
+    { "label": "Domain Management", "link": "/services" },
+    { "label": "Speed Optimization", "link": "/services" },
+    { "label": "Website Migration", "link": "/services" }
   ]
 }

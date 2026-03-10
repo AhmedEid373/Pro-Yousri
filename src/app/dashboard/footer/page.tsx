@@ -7,7 +7,7 @@ interface FooterData {
   copyright: string;
   bio: string;
   quickLinks: Array<{ href: string; label: string }>;
-  footerServices: string[];
+  footerServices: Array<{ label: string; link: string }>;
 }
 
 export default function DashboardFooterPage() {
@@ -168,20 +168,31 @@ export default function DashboardFooterPage() {
       <div className="bg-slate-800 rounded-xl p-6 max-w-2xl space-y-4 mt-6">
         <div>
           <h2 className="text-white font-semibold text-sm">Services List</h2>
-          <p className="text-slate-500 text-xs mt-1">Service names shown in the footer right column. Each links to /services.</p>
+          <p className="text-slate-500 text-xs mt-1">Service names shown in the footer right column. Each can have its own link.</p>
         </div>
         <div className="space-y-3">
           {(data.footerServices ?? []).map((service, i) => (
             <div key={i} className="flex gap-3 items-center">
               <input
                 type="text"
-                value={service}
+                value={service.label}
                 onChange={(e) => {
                   const footerServices = [...data.footerServices];
-                  footerServices[i] = e.target.value;
+                  footerServices[i] = { ...service, label: e.target.value };
                   setData({ ...data, footerServices });
                 }}
                 placeholder="Service name"
+                className="flex-1 bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+              />
+              <input
+                type="text"
+                value={service.link}
+                onChange={(e) => {
+                  const footerServices = [...data.footerServices];
+                  footerServices[i] = { ...service, link: e.target.value };
+                  setData({ ...data, footerServices });
+                }}
+                placeholder="Link (e.g. /services)"
                 className="flex-1 bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
               />
               <button
@@ -194,7 +205,7 @@ export default function DashboardFooterPage() {
           ))}
         </div>
         <button
-          onClick={() => setData({ ...data, footerServices: [...(data.footerServices ?? []), 'New Service'] })}
+          onClick={() => setData({ ...data, footerServices: [...(data.footerServices ?? []), { label: 'New Service', link: '/services' }] })}
           className="px-4 py-2 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-xl text-sm transition-colors w-full"
         >
           + Add Service
