@@ -35,7 +35,7 @@ export default function HomePage() {
   const data = readData<HomeData>('home.json');
   const { hero, stats, skills } = data;
 
-  const allPortfolio = readData<PortfolioItem[]>('portfolio.json');
+  const allPortfolio = readData<PortfolioItem[]>('portfolio.json', []);
   const featuredProjects = allPortfolio.filter((p) => p.featured).slice(0, 3);
   const displayProjects = featuredProjects.length > 0 ? featuredProjects : allPortfolio.slice(0, 3);
 

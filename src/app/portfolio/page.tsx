@@ -15,7 +15,7 @@ interface PortfolioItem {
 export const dynamic = 'force-dynamic';
 
 export default function PortfolioPage() {
-  const items = readData<PortfolioItem[]>('portfolio.json');
+  const items = readData<PortfolioItem[]>('portfolio.json', []);
 
   return (
     <FrontendWrapper>

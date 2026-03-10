@@ -2,13 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { readData, writeData } from '@/lib/db';
 import { isAuthenticated } from '@/lib/auth';
 
+const defaultSite = { logoType: 'text', logoText: 'Y', logoImage: '', brandName: 'Yousri' };
+
 export async function GET() {
-  try {
-    const data = readData('site.json');
-    return NextResponse.json(data);
-  } catch {
-    return NextResponse.json({ error: 'Failed to read data' }, { status: 500 });
-  }
+  const data = readData('site.json', defaultSite);
+  return NextResponse.json(data);
 }
 
 export async function PUT(request: NextRequest) {
