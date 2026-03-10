@@ -1,0 +1,29 @@
+[
+  {
+    "id": "1",
+    "title": "E-Commerce WordPress Store",
+    "description": "Full WooCommerce setup with custom theme and payment gateway integration",
+    "image": "",
+    "tags": ["WordPress", "WooCommerce", "PHP"],
+    "link": "#",
+    "featured": true
+  },
+  {
+    "id": "2",
+    "title": "Corporate Website",
+    "description": "Professional corporate site with custom Elementor designs and SEO optimization",
+    "image": "",
+    "tags": ["WordPress", "Elementor", "SEO"],
+    "link": "#",
+    "featured": true
+  },
+  {
+    "id": "3",
+    "title": "VPS Server Setup",
+    "description": "Complete LEMP stack setup with SSL, caching, and security hardening",
+    "image": "",
+    "tags": ["VPS", "Linux", "Nginx"],
+    "link": "#",
+    "featured": true
+  }
+]

@@ -17,20 +17,27 @@ interface HomeData {
   };
   stats: Array<{ number: string; label: string }>;
   skills: Array<{ name: string; level: number }>;
-  featuredProjects: Array<{
-    id: number;
-    title: string;
-    description: string;
-    tags: string[];
-    link: string;
-  }>;
+}
+
+interface PortfolioItem {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  tags: string[];
+  link: string;
+  featured: boolean;
 }
 
 export const dynamic = 'force-dynamic';
 
 export default function HomePage() {
   const data = readData<HomeData>('home.json');
-  const { hero, stats, skills, featuredProjects } = data;
+  const { hero, stats, skills } = data;
+
+  const allPortfolio = readData<PortfolioItem[]>('portfolio.json');
+  const featuredProjects = allPortfolio.filter((p) => p.featured).slice(0, 3);
+  const displayProjects = featuredProjects.length > 0 ? featuredProjects : allPortfolio.slice(0, 3);
 
   return (
     <>
@@ -134,38 +141,79 @@ export default function HomePage() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
-              {featuredProjects.map((project) => (
-                <div
-                  key={project.id}
-                  className="glass rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 group"
-                >
-                  <div className="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-600/30 transition-colors">
-                    <span className="text-2xl">🚀</span>
+              {displayProjects.map((project) => {
+                const hasLink = project.link && project.link !== '#';
+                const Card = (
+                  <div className="glass rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 group flex flex-col h-full">
+                    {/* Image */}
+                    <div className="relative h-44 bg-gradient-to-br from-blue-900/40 to-purple-900/40 overflow-hidden">
+                      {project.image ? (
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-5xl opacity-40">🚀</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-6 flex flex-col flex-1">
+                      <h3 className="text-[var(--text-primary)] font-bold text-lg mb-2 leading-tight">
+                        {project.title}
+                      </h3>
+                      <p className="text-[var(--text-muted)] text-sm mb-4 leading-relaxed flex-1">
+                        {project.description}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {project.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="px-2 py-1 bg-blue-500/10 text-blue-400 text-xs rounded-lg border border-blue-500/20"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      {hasLink && (
+                        <div className="mt-4 text-blue-400 text-xs font-medium group-hover:text-blue-300 transition-colors flex items-center gap-1">
+                          View Project
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3">
+                            <path fillRule="evenodd" d="M4.5 11.5A.5.5 0 0 1 5 11h5.793L5.146 5.354a.5.5 0 1 1 .708-.708l5.647 5.646V5a.5.5 0 0 1 1 0v6.5a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5Z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <h3 className="text-[var(--text-primary)] font-bold text-lg mb-2">{project.title}</h3>
-                  <p className="text-[var(--text-muted)] text-sm mb-4 leading-relaxed">
-                    {project.description}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-2 py-1 bg-blue-500/10 text-blue-400 text-xs rounded-lg border border-blue-500/20"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                );
+
+                return hasLink ? (
+                  <a
+                    key={project.id}
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col"
+                  >
+                    {Card}
+                  </a>
+                ) : (
+                  <div key={project.id} className="flex flex-col">
+                    {Card}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="text-center mt-12">
               <Link
-                href="/services"
+                href="/portfolio"
                 className="px-8 py-4 border border-[var(--border)] hover:border-blue-500 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold rounded-xl transition-all duration-200 inline-block"
               >
-                View All Services →
+                View All Projects →
               </Link>
             </div>
           </div>
