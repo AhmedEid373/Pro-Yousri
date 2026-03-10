@@ -127,6 +127,11 @@ export default function DashboardContactPage() {
     setData({ ...data, contactInfo });
   };
 
+  const removeContactInfo = (index: number) => {
+    if (!data) return;
+    setData({ ...data, contactInfo: data.contactInfo.filter((_, i) => i !== index) });
+  };
+
   if (!data) return <div className="p-8 text-slate-400">Loading...</div>;
 
   return (
@@ -222,6 +227,15 @@ export default function DashboardContactPage() {
           <h2 className="text-white font-semibold text-sm">Contact Information</h2>
           {data.contactInfo.map((info, i) => (
             <div key={i} className="bg-slate-800 rounded-xl p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-slate-400 text-xs">Contact #{i + 1}</span>
+                <button
+                  onClick={() => removeContactInfo(i)}
+                  className="text-red-400 hover:text-red-300 text-sm"
+                >
+                  Remove
+                </button>
+              </div>
               <IconUploader info={info} index={i} onChange={updateContactInfo} />
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -239,6 +253,14 @@ export default function DashboardContactPage() {
               </div>
             </div>
           ))}
+          <button
+            onClick={() =>
+              setData({ ...data, contactInfo: [...data.contactInfo, { icon: '📧', iconUrl: '', label: 'New Contact', value: '', link: '' }] })
+            }
+            className="px-4 py-2 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-xl text-sm transition-colors w-full"
+          >
+            + Add Contact Way
+          </button>
         </div>
       </div>
     </div>
