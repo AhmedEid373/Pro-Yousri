@@ -34,6 +34,8 @@ export default function Footer() {
       .catch(() => {});
   }, []);
 
+  const isExternal = (url: string) => /^https?:\/\//.test(url);
+
   return (
     <footer className="bg-[var(--surface-alt)] border-t border-[var(--border)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -55,14 +57,25 @@ export default function Footer() {
           <div>
             <h3 className="text-[var(--text-primary)] font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              {quickLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-[var(--text-muted)] hover:text-blue-400 text-sm transition-colors duration-200"
-                  >
-                    {link.label}
-                  </Link>
+              {quickLinks.map((link, i) => (
+                <li key={i}>
+                  {isExternal(link.href) ? (
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[var(--text-muted)] hover:text-blue-400 text-sm transition-colors duration-200"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      className="text-[var(--text-muted)] hover:text-blue-400 text-sm transition-colors duration-200"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -74,12 +87,23 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerServices.map((service, i) => (
                 <li key={i}>
-                  <Link
-                    href={service.link || '/services'}
-                    className="text-[var(--text-muted)] hover:text-blue-400 text-sm transition-colors duration-200"
-                  >
-                    {service.label}
-                  </Link>
+                  {isExternal(service.link) ? (
+                    <a
+                      href={service.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[var(--text-muted)] hover:text-blue-400 text-sm transition-colors duration-200"
+                    >
+                      {service.label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={service.link || '/services'}
+                      className="text-[var(--text-muted)] hover:text-blue-400 text-sm transition-colors duration-200"
+                    >
+                      {service.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
