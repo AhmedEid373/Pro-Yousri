@@ -10,6 +10,8 @@ interface Message {
   message: string;
   createdAt: string;
   read: boolean;
+  readAt?: string;
+  status: 'unread' | 'processing' | 'completed' | 'archived';
 }
 
 export async function GET() {
@@ -46,6 +48,7 @@ export async function POST(request: NextRequest) {
       message,
       createdAt: new Date().toISOString(),
       read: false,
+      status: 'unread',
     };
 
     messages.unshift(newMessage);
@@ -64,13 +67,21 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id, read } = await request.json();
+    const { id, action } = await request.json();
     const messages = readData<Message[]>('messages.json');
-    const updated = messages.map((m) =>
-      m.id === id ? { ...m, read } : m
-    );
-    writeData('messages.json', updated);
+    const msg = messages.find((m) => m.id === id);
+    if (!msg) {
+      return NextResponse.json({ error: 'Message not found' }, { status: 404 });
+    }
 
+    if (action === 'read') {
+      msg.read = true;
+      if (!msg.readAt) msg.readAt = new Date().toISOString();
+    } else if (['processing', 'completed', 'archived'].includes(action)) {
+      msg.status = action as Message['status'];
+    }
+
+    writeData('messages.json', messages);
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: 'Failed to update message' }, { status: 500 });

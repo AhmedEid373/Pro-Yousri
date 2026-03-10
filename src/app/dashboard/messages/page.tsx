@@ -10,7 +10,21 @@ interface Message {
   message: string;
   createdAt: string;
   read: boolean;
+  readAt?: string;
+  status: string;
 }
+
+const STATUS_STYLES: Record<string, string> = {
+  processing: 'bg-amber-500/20 text-amber-400 border-amber-500',
+  completed: 'bg-green-500/20 text-green-400 border-green-500',
+  archived: 'bg-slate-500/20 text-slate-400 border-slate-500',
+};
+
+const STATUS_OUTLINE: Record<string, string> = {
+  processing: 'border-amber-500/40 text-amber-400 hover:bg-amber-500/10',
+  completed: 'border-green-500/40 text-green-400 hover:bg-green-500/10',
+  archived: 'border-slate-500/40 text-slate-400 hover:bg-slate-500/10',
+};
 
 export default function DashboardMessagesPage() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -34,9 +48,25 @@ export default function DashboardMessagesPage() {
     await fetch('/api/messages', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, read: true }),
+      body: JSON.stringify({ id, action: 'read' }),
     });
-    setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, read: true } : m)));
+    const readAt = new Date().toISOString();
+    setMessages((prev) =>
+      prev.map((m) => (m.id === id ? { ...m, read: true, readAt: m.readAt ?? readAt } : m))
+    );
+    setSelected((prev) =>
+      prev?.id === id ? { ...prev, read: true, readAt: prev.readAt ?? readAt } : prev
+    );
+  };
+
+  const updateStatus = async (id: string, action: string) => {
+    await fetch('/api/messages', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, action }),
+    });
+    setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, status: action } : m)));
+    setSelected((prev) => (prev?.id === id ? { ...prev, status: action } : prev));
   };
 
   const deleteMessage = async (id: string) => {
@@ -96,7 +126,18 @@ export default function DashboardMessagesPage() {
                       </p>
                     </div>
                     <p className="text-slate-400 text-xs truncate mb-1">{msg.subject}</p>
-                    <p className="text-slate-500 text-xs truncate">{msg.message}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-slate-500 text-xs truncate">{msg.message}</p>
+                      {msg.status && msg.status !== 'unread' && (
+                        <span className={`flex-shrink-0 text-[10px] px-1.5 py-0.5 rounded font-medium ${
+                          msg.status === 'processing' ? 'bg-amber-500/20 text-amber-400' :
+                          msg.status === 'completed'  ? 'bg-green-500/20 text-green-400' :
+                                                        'bg-slate-500/20 text-slate-400'
+                        }`}>
+                          {msg.status.charAt(0).toUpperCase() + msg.status.slice(1)}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <p className="text-slate-500 text-xs flex-shrink-0">
                     {new Date(msg.createdAt).toLocaleDateString()}
@@ -110,36 +151,59 @@ export default function DashboardMessagesPage() {
           <div>
             {selected ? (
               <div className="glass rounded-2xl p-6">
-                <div className="flex items-start justify-between mb-6">
-                  <div>
-                    <h3 className="text-white font-bold text-lg mb-1">{selected.subject}</h3>
-                    <p className="text-slate-400 text-sm">
-                      From: {selected.name} &lt;{selected.email}&gt;
+                <div className="mb-6">
+                  <h3 className="text-white font-bold text-lg mb-1">{selected.subject}</h3>
+                  <p className="text-slate-400 text-sm">
+                    From: {selected.name} &lt;{selected.email}&gt;
+                  </p>
+                  <p className="text-slate-500 text-xs mt-0.5">
+                    {new Date(selected.createdAt).toLocaleString()}
+                  </p>
+                  {selected.readAt && (
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Opened: {new Date(selected.readAt).toLocaleString()}
                     </p>
-                    <p className="text-slate-500 text-xs mt-1">
-                      {new Date(selected.createdAt).toLocaleString()}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => deleteMessage(selected.id)}
-                    className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs rounded-lg transition-colors"
-                  >
-                    Delete
-                  </button>
+                  )}
                 </div>
-                <div className="bg-slate-800/50 rounded-xl p-4">
+
+                <div className="bg-slate-800/50 rounded-xl p-4 mb-4">
                   <p className="text-slate-200 text-sm leading-relaxed whitespace-pre-wrap">
                     {selected.message}
                   </p>
                 </div>
-                <div className="mt-4">
-                  <a
-                    href={`mailto:${selected.email}?subject=Re: ${selected.subject}`}
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition-colors inline-block"
+
+                {/* Action buttons */}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {(['processing', 'completed', 'archived'] as const).map((action) => {
+                    const isActive = selected.status === action;
+                    return (
+                      <button
+                        key={action}
+                        onClick={() => updateStatus(selected.id, action)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                          isActive
+                            ? STATUS_STYLES[action]
+                            : STATUS_OUTLINE[action]
+                        }`}
+                      >
+                        {action.charAt(0).toUpperCase() + action.slice(1)}
+                      </button>
+                    );
+                  })}
+                  <button
+                    onClick={() => deleteMessage(selected.id)}
+                    className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-medium rounded-lg border border-red-500/40 transition-colors ml-auto"
                   >
-                    Reply via Email
-                  </a>
+                    Delete
+                  </button>
                 </div>
+
+                <a
+                  href={`mailto:${selected.email}?subject=Re: ${selected.subject}`}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition-colors inline-block"
+                >
+                  Reply via Email
+                </a>
               </div>
             ) : (
               <div className="glass rounded-2xl p-12 text-center h-64 flex flex-col items-center justify-center">
