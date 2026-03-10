@@ -4,7 +4,7 @@ import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 
 export default function DashboardPage() {
-  const messages = readData<Array<{ id: string; read: boolean }>>('messages.json');
+  const messages = readData<Array<{ id: string; read: boolean }>>('messages.json', []);
   const unread = messages.filter((m) => !m.read).length;
 
   const cards = [

@@ -10,7 +10,11 @@ export function readData<T>(filename: string, fallback?: T): T {
     const content = fs.readFileSync(filePath, 'utf-8');
     return JSON.parse(content) as T;
   } catch {
-    if (fallback !== undefined) return fallback;
+    if (fallback !== undefined) {
+      // Auto-create the file so future dashboard saves work
+      try { writeData(filename, fallback); } catch { /* ignore */ }
+      return fallback;
+    }
     throw new Error(`Failed to read data file: ${filename}`);
   }
 }

@@ -13,8 +13,13 @@ interface AboutData {
 
 export const dynamic = 'force-dynamic';
 
+const defaultAbout: AboutData = {
+  title: 'About Me', subtitle: 'Who I Am', bio: '', bio2: '',
+  details: [], expertise: [], timeline: [],
+};
+
 export default function AboutPage() {
-  const data = readData<AboutData>('about.json');
+  const data = readData<AboutData>('about.json', defaultAbout);
 
   const expertiseIcons: Record<string, string> = {
     wordpress: '🌐',

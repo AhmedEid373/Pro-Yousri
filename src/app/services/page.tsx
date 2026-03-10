@@ -23,8 +23,13 @@ interface ServicesData {
 
 export const dynamic = 'force-dynamic';
 
+const defaultServices: ServicesData = {
+  title: 'My Services', subtitle: 'What I Offer', description: '',
+  services: [], process: [],
+};
+
 export default function ServicesPage() {
-  const data = readData<ServicesData>('services.json');
+  const data = readData<ServicesData>('services.json', defaultServices);
 
   return (
     <FrontendWrapper>

@@ -31,8 +31,14 @@ interface PortfolioItem {
 
 export const dynamic = 'force-dynamic';
 
+const defaultHome: HomeData = {
+  hero: { greeting: "Hello, I'm", name: 'Yousri', title: 'WordPress Developer & Web Specialist', subtitle: 'Expert in WordPress, Domains, VPS & Hosting Solutions', description: '', ctaPrimary: 'View My Work', ctaPrimaryLink: '/services', ctaSecondary: 'Contact Me', ctaSecondaryLink: '/contact' },
+  stats: [],
+  skills: [],
+};
+
 export default function HomePage() {
-  const data = readData<HomeData>('home.json');
+  const data = readData<HomeData>('home.json', defaultHome);
   const { hero, stats, skills } = data;
 
   const allPortfolio = readData<PortfolioItem[]>('portfolio.json', []);
