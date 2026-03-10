@@ -1,4 +1,18 @@
 {
   "techStack": "Built with Next.js & Tailwind CSS",
-  "copyright": "Yousri. All rights reserved."
+  "copyright": "Yousri. All rights reserved.",
+  "bio": "WordPress Developer & Web Specialist. Building powerful digital experiences with expertise in WordPress, VPS, and hosting solutions.",
+  "quickLinks": [
+    { "href": "/", "label": "Home" },
+    { "href": "/about", "label": "About" },
+    { "href": "/services", "label": "Services" },
+    { "href": "/contact", "label": "Contact" }
+  ],
+  "footerServices": [
+    "WordPress Development",
+    "VPS Server Setup",
+    "Domain Management",
+    "Speed Optimization",
+    "Website Migration"
+  ]
 }

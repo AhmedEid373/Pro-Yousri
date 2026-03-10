@@ -6,6 +6,20 @@ import { useState, useEffect } from 'react';
 export default function Footer() {
   const [techStack, setTechStack] = useState('Built with Next.js & Tailwind CSS');
   const [copyright, setCopyright] = useState('Yousri. All rights reserved.');
+  const [bio, setBio] = useState('WordPress Developer & Web Specialist. Building powerful digital experiences with expertise in WordPress, VPS, and hosting solutions.');
+  const [quickLinks, setQuickLinks] = useState([
+    { href: '/', label: 'Home' },
+    { href: '/about', label: 'About' },
+    { href: '/services', label: 'Services' },
+    { href: '/contact', label: 'Contact' },
+  ]);
+  const [footerServices, setFooterServices] = useState([
+    'WordPress Development',
+    'VPS Server Setup',
+    'Domain Management',
+    'Speed Optimization',
+    'Website Migration',
+  ]);
 
   useEffect(() => {
     fetch('/api/content/footer')
@@ -13,6 +27,9 @@ export default function Footer() {
       .then((data) => {
         if (data.techStack) setTechStack(data.techStack);
         if (data.copyright) setCopyright(data.copyright);
+        if (data.bio) setBio(data.bio);
+        if (data.quickLinks) setQuickLinks(data.quickLinks);
+        if (data.footerServices) setFooterServices(data.footerServices);
       })
       .catch(() => {});
   }, []);
@@ -30,7 +47,7 @@ export default function Footer() {
               <span className="text-[var(--text-primary)] font-bold text-lg">Yousri</span>
             </div>
             <p className="text-[var(--text-muted)] text-sm leading-relaxed">
-              WordPress Developer & Web Specialist. Building powerful digital experiences with expertise in WordPress, VPS, and hosting solutions.
+              {bio}
             </p>
           </div>
 
@@ -38,12 +55,7 @@ export default function Footer() {
           <div>
             <h3 className="text-[var(--text-primary)] font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              {[
-                { href: '/', label: 'Home' },
-                { href: '/about', label: 'About' },
-                { href: '/services', label: 'Services' },
-                { href: '/contact', label: 'Contact' },
-              ].map((link) => (
+              {quickLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -60,13 +72,7 @@ export default function Footer() {
           <div>
             <h3 className="text-[var(--text-primary)] font-semibold mb-4">Services</h3>
             <ul className="space-y-2">
-              {[
-                'WordPress Development',
-                'VPS Server Setup',
-                'Domain Management',
-                'Speed Optimization',
-                'Website Migration',
-              ].map((service) => (
+              {footerServices.map((service) => (
                 <li key={service}>
                   <Link
                     href="/services"

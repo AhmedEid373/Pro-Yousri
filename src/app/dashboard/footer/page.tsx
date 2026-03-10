@@ -5,6 +5,9 @@ import { useState, useEffect } from 'react';
 interface FooterData {
   techStack: string;
   copyright: string;
+  bio: string;
+  quickLinks: Array<{ href: string; label: string }>;
+  footerServices: string[];
 }
 
 export default function DashboardFooterPage() {
@@ -96,6 +99,106 @@ export default function DashboardFooterPage() {
             <span>{data.techStack || '...'}</span>
           </div>
         </div>
+      </div>
+
+      {/* Brand Bio */}
+      <div className="bg-slate-800 rounded-xl p-6 max-w-2xl space-y-4 mt-6">
+        <div>
+          <h2 className="text-white font-semibold text-sm">Brand Bio</h2>
+          <p className="text-slate-500 text-xs mt-1">Short description shown under the logo in the footer.</p>
+        </div>
+        <textarea
+          rows={3}
+          value={data.bio ?? ''}
+          onChange={(e) => setData({ ...data, bio: e.target.value })}
+          className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-blue-500 resize-none"
+          placeholder="Short description about you or your work..."
+        />
+      </div>
+
+      {/* Quick Links */}
+      <div className="bg-slate-800 rounded-xl p-6 max-w-2xl space-y-4 mt-6">
+        <div>
+          <h2 className="text-white font-semibold text-sm">Quick Links</h2>
+          <p className="text-slate-500 text-xs mt-1">Navigation links shown in the footer middle column.</p>
+        </div>
+        <div className="space-y-3">
+          {(data.quickLinks ?? []).map((link, i) => (
+            <div key={i} className="flex gap-3 items-center">
+              <input
+                type="text"
+                value={link.label}
+                onChange={(e) => {
+                  const quickLinks = [...data.quickLinks];
+                  quickLinks[i] = { ...link, label: e.target.value };
+                  setData({ ...data, quickLinks });
+                }}
+                placeholder="Label"
+                className="flex-1 bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+              />
+              <input
+                type="text"
+                value={link.href}
+                onChange={(e) => {
+                  const quickLinks = [...data.quickLinks];
+                  quickLinks[i] = { ...link, href: e.target.value };
+                  setData({ ...data, quickLinks });
+                }}
+                placeholder="URL (e.g. /about)"
+                className="flex-1 bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+              />
+              <button
+                onClick={() => setData({ ...data, quickLinks: data.quickLinks.filter((_, idx) => idx !== i) })}
+                className="text-red-400 hover:text-red-300 text-sm flex-shrink-0"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={() => setData({ ...data, quickLinks: [...(data.quickLinks ?? []), { href: '/', label: 'New Link' }] })}
+          className="px-4 py-2 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-xl text-sm transition-colors w-full"
+        >
+          + Add Link
+        </button>
+      </div>
+
+      {/* Footer Services */}
+      <div className="bg-slate-800 rounded-xl p-6 max-w-2xl space-y-4 mt-6">
+        <div>
+          <h2 className="text-white font-semibold text-sm">Services List</h2>
+          <p className="text-slate-500 text-xs mt-1">Service names shown in the footer right column. Each links to /services.</p>
+        </div>
+        <div className="space-y-3">
+          {(data.footerServices ?? []).map((service, i) => (
+            <div key={i} className="flex gap-3 items-center">
+              <input
+                type="text"
+                value={service}
+                onChange={(e) => {
+                  const footerServices = [...data.footerServices];
+                  footerServices[i] = e.target.value;
+                  setData({ ...data, footerServices });
+                }}
+                placeholder="Service name"
+                className="flex-1 bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+              />
+              <button
+                onClick={() => setData({ ...data, footerServices: data.footerServices.filter((_, idx) => idx !== i) })}
+                className="text-red-400 hover:text-red-300 text-sm flex-shrink-0"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={() => setData({ ...data, footerServices: [...(data.footerServices ?? []), 'New Service'] })}
+          className="px-4 py-2 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-xl text-sm transition-colors w-full"
+        >
+          + Add Service
+        </button>
       </div>
     </div>
   );
