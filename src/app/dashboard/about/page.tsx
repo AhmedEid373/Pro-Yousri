@@ -5,8 +5,7 @@ import { useState, useEffect } from 'react';
 interface AboutData {
   title: string;
   subtitle: string;
-  bio: string;
-  bio2: string;
+  bios: string[];
   details: Array<{ label: string; value: string }>;
   expertise: Array<{ icon: string; title: string; description: string }>;
   timeline: Array<{ year: string; title: string; description: string }>;
@@ -88,19 +87,43 @@ export default function DashboardAboutPage() {
               />
             </div>
           ))}
-          {(['bio', 'bio2'] as const).map((key) => (
-            <div key={key}>
-              <label className="block text-slate-300 text-sm font-medium mb-2 capitalize">
-                {key === 'bio' ? 'Bio (paragraph 1)' : 'Bio (paragraph 2)'}
-              </label>
-              <textarea
-                rows={4}
-                value={data[key]}
-                onChange={(e) => setData({ ...data, [key]: e.target.value })}
-                className="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 text-sm resize-none"
-              />
+          <div>
+            <label className="block text-slate-300 text-sm font-medium mb-3">Bio Paragraphs</label>
+            <div className="space-y-4">
+              {(data.bios ?? []).map((bio, i) => (
+                <div key={i} className="glass rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-slate-400 text-xs">Paragraph #{i + 1}</span>
+                    <button
+                      onClick={() => {
+                        const bios = data.bios.filter((_, idx) => idx !== i);
+                        setData({ ...data, bios });
+                      }}
+                      className="text-red-400 hover:text-red-300 text-sm"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                  <textarea
+                    rows={4}
+                    value={bio}
+                    onChange={(e) => {
+                      const bios = [...data.bios];
+                      bios[i] = e.target.value;
+                      setData({ ...data, bios });
+                    }}
+                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm resize-none"
+                  />
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+          <button
+            onClick={() => setData({ ...data, bios: [...(data.bios ?? []), ''] })}
+            className="px-4 py-2 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-xl text-sm transition-colors"
+          >
+            + Add Bio Paragraph
+          </button>
         </div>
       )}
 
@@ -108,35 +131,57 @@ export default function DashboardAboutPage() {
       {activeTab === 'details' && (
         <div className="space-y-4 max-w-2xl">
           {data.details.map((detail, i) => (
-            <div key={i} className="glass rounded-xl p-4 flex gap-4">
-              <div className="flex-1">
-                <label className="block text-slate-400 text-xs mb-1">Label</label>
-                <input
-                  type="text"
-                  value={detail.label}
-                  onChange={(e) => {
-                    const details = [...data.details];
-                    details[i] = { ...detail, label: e.target.value };
+            <div key={i} className="glass rounded-xl p-4">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-slate-400 text-xs">Detail #{i + 1}</span>
+                <button
+                  onClick={() => {
+                    const details = data.details.filter((_, idx) => idx !== i);
                     setData({ ...data, details });
                   }}
-                  className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
-                />
+                  className="text-red-400 hover:text-red-300 text-sm"
+                >
+                  Remove
+                </button>
               </div>
-              <div className="flex-1">
-                <label className="block text-slate-400 text-xs mb-1">Value</label>
-                <input
-                  type="text"
-                  value={detail.value}
-                  onChange={(e) => {
-                    const details = [...data.details];
-                    details[i] = { ...detail, value: e.target.value };
-                    setData({ ...data, details });
-                  }}
-                  className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
-                />
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label className="block text-slate-400 text-xs mb-1">Label</label>
+                  <input
+                    type="text"
+                    value={detail.label}
+                    onChange={(e) => {
+                      const details = [...data.details];
+                      details[i] = { ...detail, label: e.target.value };
+                      setData({ ...data, details });
+                    }}
+                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-slate-400 text-xs mb-1">Value</label>
+                  <input
+                    type="text"
+                    value={detail.value}
+                    onChange={(e) => {
+                      const details = [...data.details];
+                      details[i] = { ...detail, value: e.target.value };
+                      setData({ ...data, details });
+                    }}
+                    className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                  />
+                </div>
               </div>
             </div>
           ))}
+          <button
+            onClick={() =>
+              setData({ ...data, details: [...data.details, { label: 'Label', value: 'Value' }] })
+            }
+            className="px-4 py-2 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-xl text-sm transition-colors"
+          >
+            + Add Detail
+          </button>
         </div>
       )}
 
@@ -145,6 +190,18 @@ export default function DashboardAboutPage() {
         <div className="space-y-6 max-w-2xl">
           {data.expertise.map((item, i) => (
             <div key={i} className="glass rounded-xl p-6">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-slate-400 text-sm">Expertise #{i + 1}</span>
+                <button
+                  onClick={() => {
+                    const expertise = data.expertise.filter((_, idx) => idx !== i);
+                    setData({ ...data, expertise });
+                  }}
+                  className="text-red-400 hover:text-red-300 text-sm"
+                >
+                  Remove
+                </button>
+              </div>
               <div className="space-y-3">
                 <input
                   type="text"
@@ -171,6 +228,17 @@ export default function DashboardAboutPage() {
               </div>
             </div>
           ))}
+          <button
+            onClick={() =>
+              setData({
+                ...data,
+                expertise: [...data.expertise, { icon: 'star', title: 'New Expertise', description: '' }],
+              })
+            }
+            className="px-4 py-2 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-xl text-sm transition-colors"
+          >
+            + Add Expertise
+          </button>
         </div>
       )}
 

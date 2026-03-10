@@ -4,8 +4,7 @@ import { readData } from '@/lib/db';
 interface AboutData {
   title: string;
   subtitle: string;
-  bio: string;
-  bio2: string;
+  bios: string[];
   details: Array<{ label: string; value: string }>;
   expertise: Array<{ icon: string; title: string; description: string }>;
   timeline: Array<{ year: string; title: string; description: string }>;
@@ -14,7 +13,7 @@ interface AboutData {
 export const dynamic = 'force-dynamic';
 
 const defaultAbout: AboutData = {
-  title: 'About Me', subtitle: 'Who I Am', bio: '', bio2: '',
+  title: 'About Me', subtitle: 'Who I Am', bios: [],
   details: [], expertise: [], timeline: [],
 };
 
@@ -51,8 +50,11 @@ export default function AboutPage() {
                 <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center text-4xl mb-8">
                   👨‍💻
                 </div>
-                <p className="text-[var(--text-secondary)] text-lg leading-relaxed mb-6">{data.bio}</p>
-                <p className="text-[var(--text-muted)] leading-relaxed mb-8">{data.bio2}</p>
+                {(data.bios ?? []).map((bio, i) => (
+                  <p key={i} className={`leading-relaxed mb-6 ${i === 0 ? 'text-[var(--text-secondary)] text-lg' : 'text-[var(--text-muted)]'}`}>
+                    {bio}
+                  </p>
+                ))}
 
                 {/* Details */}
                 <div className="grid grid-cols-2 gap-4">
