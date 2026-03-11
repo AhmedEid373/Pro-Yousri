@@ -170,10 +170,10 @@ export default function HomePage() {
                     {/* Content */}
                     <div className="p-6 flex flex-col flex-1">
                       <h3 className="text-[var(--text-primary)] font-bold text-lg mb-2 leading-tight">
-                        {project.title}
+                        <T k={`portfolio.${allPortfolio.indexOf(project)}.title`}>{project.title}</T>
                       </h3>
                       <p className="text-[var(--text-muted)] text-sm mb-4 leading-relaxed flex-1">
-                        {project.description}
+                        <T k={`portfolio.${allPortfolio.indexOf(project)}.desc`}>{project.description}</T>
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {project.tags.map((tag) => (
@@ -187,7 +187,7 @@ export default function HomePage() {
                       </div>
                       {hasLink && (
                         <div className="mt-4 text-blue-400 text-xs font-medium group-hover:text-blue-300 dark:group-hover:text-blue-300 transition-colors flex items-center gap-1">
-                          View Project
+                          <T k="ui.viewProject">View Project</T>
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3">
                             <path fillRule="evenodd" d="M4.5 11.5A.5.5 0 0 1 5 11h5.793L5.146 5.354a.5.5 0 1 1 .708-.708l5.647 5.646V5a.5.5 0 0 1 1 0v6.5a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5Z" clipRule="evenodd" />
                           </svg>

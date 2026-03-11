@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import FrontendWrapper from '@/components/frontend/FrontendWrapper';
+import { useLanguage } from '@/context/LanguageContext';
 import Script from 'next/script';
 
 interface ContactInfo {
@@ -48,6 +49,7 @@ const statusColors = {
 };
 
 export default function ContactPage() {
+  const { t } = useLanguage();
   const [contactData, setContactData] = useState<ContactData>(defaultContactData);
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
@@ -129,13 +131,13 @@ export default function ContactPage() {
           <div className="absolute inset-0 bg-gradient-to-br from-[var(--surface-alt)] via-[var(--surface-alt)] to-green-100 dark:to-green-950" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p className="text-green-400 text-sm font-medium tracking-widest uppercase mb-3">
-              {contactData.subtitle}
+              {t('contact.subtitle', contactData.subtitle)}
             </p>
             <h1 className="text-4xl sm:text-5xl font-bold text-[var(--text-primary)] mb-6">
-              {contactData.title}
+              {t('contact.title', contactData.title)}
             </h1>
             <p className="text-[var(--text-muted)] text-lg max-w-2xl mx-auto">
-              {contactData.description}
+              {t('contact.description', contactData.description)}
             </p>
           </div>
         </section>
@@ -146,7 +148,7 @@ export default function ContactPage() {
             <div className="grid lg:grid-cols-2 gap-16">
               {/* Contact Info */}
               <div>
-                <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-8">Let&apos;s Connect</h2>
+                <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-8">{t('ui.letsConnect', "Let's Connect")}</h2>
 
                 <div className="space-y-6 mb-12">
                   {contactData.contactInfo.map((info, i) => (
@@ -165,7 +167,7 @@ export default function ContactPage() {
                         )}
                       </div>
                       <div>
-                        <p className="text-[var(--text-muted)] text-xs uppercase tracking-wider">{info.label}</p>
+                        <p className="text-[var(--text-muted)] text-xs uppercase tracking-wider">{t(`contact.info.${i}.label`, info.label)}</p>
                         <p className="text-[var(--text-primary)] font-medium text-sm">{info.value}</p>
                       </div>
                     </a>
@@ -176,44 +178,44 @@ export default function ContactPage() {
                   <div className="flex items-center gap-3 mb-2">
                     <div className={`w-2 h-2 ${color.dot} rounded-full animate-pulse`} />
                     <p className={`${color.text} font-medium text-sm`}>
-                      {contactData.availabilityOptions[activeStatus]}
+                      {t(`contact.availability.${activeStatus}`, contactData.availabilityOptions[activeStatus])}
                     </p>
                   </div>
-                  <p className="text-[var(--text-muted)] text-sm">{contactData.responseTime}</p>
+                  <p className="text-[var(--text-muted)] text-sm">{t('contact.responseTime', contactData.responseTime)}</p>
                 </div>
               </div>
 
               {/* Contact Form */}
               <div>
-                <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-8">Send a Message</h2>
+                <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-8">{t('ui.sendAMessage', 'Send a Message')}</h2>
 
                 {status === 'success' ? (
                   <div className="glass rounded-2xl p-8 text-center">
                     <div className="text-5xl mb-4">✅</div>
-                    <h3 className="text-[var(--text-primary)] font-bold text-xl mb-2">Message Sent!</h3>
-                    <p className="text-[var(--text-muted)] mb-6">Thank you for reaching out. I&apos;ll get back to you within 24 hours.</p>
+                    <h3 className="text-[var(--text-primary)] font-bold text-xl mb-2">{t('ui.messageSent', 'Message Sent!')}</h3>
+                    <p className="text-[var(--text-muted)] mb-6">{t('ui.messageSentDesc', "Thank you for reaching out. I'll get back to you within 24 hours.")}</p>
                     <button onClick={() => setStatus('idle')} className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors">
-                      Send Another Message
+                      {t('ui.sendAnother', 'Send Another Message')}
                     </button>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid sm:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-[var(--text-secondary)] text-sm font-medium mb-2">Your Name *</label>
+                        <label className="block text-[var(--text-secondary)] text-sm font-medium mb-2">{t('ui.yourName', 'Your Name')} *</label>
                         <input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="John Doe" className="w-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-sm" />
                       </div>
                       <div>
-                        <label className="block text-[var(--text-secondary)] text-sm font-medium mb-2">Email Address *</label>
+                        <label className="block text-[var(--text-secondary)] text-sm font-medium mb-2">{t('ui.yourEmail', 'Email Address')} *</label>
                         <input type="email" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} placeholder="john@example.com" className="w-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-sm" />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-[var(--text-secondary)] text-sm font-medium mb-2">Subject *</label>
+                      <label className="block text-[var(--text-secondary)] text-sm font-medium mb-2">{t('ui.subject', 'Subject')} *</label>
                       <input type="text" required value={formData.subject} onChange={(e) => setFormData({ ...formData, subject: e.target.value })} placeholder="WordPress Development Project" className="w-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-sm" />
                     </div>
                     <div>
-                      <label className="block text-[var(--text-secondary)] text-sm font-medium mb-2">Message *</label>
+                      <label className="block text-[var(--text-secondary)] text-sm font-medium mb-2">{t('ui.yourMessage', 'Message')} *</label>
                       <textarea required rows={6} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} placeholder="Tell me about your project..." className="w-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-sm resize-none" />
                     </div>
                     {/* Cloudflare Turnstile widget */}
@@ -225,13 +227,13 @@ export default function ContactPage() {
                         )}
                       </div>
                     )}
-                    {status === 'error' && <p className="text-red-400 text-sm">Failed to send message. Please try again.</p>}
+                    {status === 'error' && <p className="text-red-400 text-sm">{t('ui.sendFailed', 'Failed to send message. Please try again.')}</p>}
                     <button
                       type="submit"
                       disabled={status === 'sending' || (turnstileConfig.enabled && !turnstileToken)}
                       className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all duration-200 hover:scale-[1.02]"
                     >
-                      {status === 'sending' ? 'Sending...' : 'Send Message →'}
+                      {status === 'sending' ? t('ui.sending', 'Sending...') : `${t('ui.sendMessage', 'Send Message')} →`}
                     </button>
                   </form>
                 )}

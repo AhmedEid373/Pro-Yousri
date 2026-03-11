@@ -65,7 +65,7 @@ export default function ServicesPage() {
                   {service.popular && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                       <span className="px-4 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full">
-                        Most Popular
+                        <T k="ui.mostPopular">Most Popular</T>
                       </span>
                     </div>
                   )}
@@ -97,7 +97,7 @@ export default function ServicesPage() {
                       href="/contact"
                       className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors"
                     >
-                      Get Started
+                      <T k="ui.getStarted">Get Started</T>
                     </Link>
                   </div>
                 </div>
@@ -111,10 +111,10 @@ export default function ServicesPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold text-[var(--text-primary)] mb-4">
-                How I <span className="gradient-text">Work</span>
+                <T k="ui.howIWork">How I Work</T>
               </h2>
               <p className="text-[var(--text-muted)] max-w-2xl mx-auto">
-                A simple, transparent process from start to finish.
+                <T k="ui.processSubtitle">A simple, transparent process from start to finish.</T>
               </p>
             </div>
 
@@ -137,16 +137,16 @@ export default function ServicesPage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="glass rounded-3xl p-12">
               <h2 className="text-3xl font-bold text-[var(--text-primary)] mb-4">
-                Need a Custom Solution?
+                <T k="ui.needCustomSolution">Need a Custom Solution?</T>
               </h2>
               <p className="text-[var(--text-muted)] mb-8">
-                Don&apos;t see exactly what you need? Let&apos;s discuss your project and I&apos;ll create a custom package for you.
+                <T k="ui.customSolutionDesc">{"Don't see exactly what you need? Let's discuss your project and I'll create a custom package for you."}</T>
               </p>
               <Link
                 href="/contact"
                 className="px-10 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-blue-500/25 inline-block"
               >
-                Contact Me
+                <T k="ui.contactMe">Contact Me</T>
               </Link>
             </div>
           </div>
