@@ -4,6 +4,7 @@ import { readData } from '@/lib/db';
 interface AboutData {
   title: string;
   subtitle: string;
+  profileIcon?: string;
   bios: string[];
   details: Array<{ label: string; value: string }>;
   expertise: Array<{ icon: string; title: string; description: string }>;
@@ -48,7 +49,7 @@ export default function AboutPage() {
               {/* Bio */}
               <div>
                 <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center text-4xl mb-8">
-                  👨‍💻
+                  {data.profileIcon || '👨‍💻'}
                 </div>
                 {(data.bios ?? []).map((bio, i) => (
                   <p key={i} className={`leading-relaxed mb-6 ${i === 0 ? 'text-[var(--text-secondary)] text-lg' : 'text-[var(--text-muted)]'}`}>

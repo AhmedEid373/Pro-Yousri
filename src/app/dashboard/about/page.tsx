@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 interface AboutData {
   title: string;
   subtitle: string;
+  profileIcon: string;
   bios: string[];
   details: Array<{ label: string; value: string }>;
   expertise: Array<{ icon: string; title: string; description: string }>;
@@ -87,6 +88,25 @@ export default function DashboardAboutPage() {
               />
             </div>
           ))}
+
+          {/* Profile Icon */}
+          <div>
+            <label className="block text-slate-300 text-sm font-medium mb-2">Profile Icon</label>
+            <p className="text-slate-500 text-xs mb-2">The icon/emoji shown in the gradient box on the about page</p>
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0">
+                {data.profileIcon || '👨‍💻'}
+              </div>
+              <input
+                type="text"
+                value={data.profileIcon ?? ''}
+                onChange={(e) => setData({ ...data, profileIcon: e.target.value })}
+                placeholder="👨‍💻"
+                className="w-32 bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 text-sm text-center text-2xl"
+              />
+            </div>
+          </div>
+
           <div>
             <label className="block text-slate-300 text-sm font-medium mb-3">Bio Paragraphs</label>
             <div className="space-y-4">
