@@ -29,6 +29,16 @@ interface TurnstileData {
   secretKey: string;
 }
 
+interface ColorsData {
+  buttonBg: string;
+  buttonText: string;
+  heading: string;
+  subtext: string;
+  hyperlink: string;
+  background: string;
+  accent: string;
+}
+
 interface SiteData {
   logoType: 'text' | 'image';
   logoText: string;
@@ -40,6 +50,7 @@ interface SiteData {
   seo: SeoData;
   maintenance: MaintenanceData;
   turnstile: TurnstileData;
+  colors: ColorsData;
 }
 
 interface Page {
@@ -81,6 +92,15 @@ const defaultData: SiteData = {
     siteKey: '',
     secretKey: '',
   },
+  colors: {
+    buttonBg: '#3b82f6',
+    buttonText: '#ffffff',
+    heading: '#f1f5f9',
+    subtext: '#94a3b8',
+    hyperlink: '#60a5fa',
+    background: '#0f172a',
+    accent: '#3b82f6',
+  },
 };
 
 const builtInPages: NavLink[] = [
@@ -91,7 +111,7 @@ const builtInPages: NavLink[] = [
   { href: '/contact', label: 'Contact' },
 ];
 
-type Tab = 'brand' | 'navigation' | 'seo' | 'security' | 'maintenance';
+type Tab = 'brand' | 'colors' | 'navigation' | 'seo' | 'security' | 'maintenance';
 
 export default function DashboardSettingsPage() {
   const [data, setData] = useState<SiteData>(defaultData);
@@ -117,6 +137,7 @@ export default function DashboardSettingsPage() {
             seo: { ...defaultData.seo, ...(d.seo ?? {}) },
             maintenance: { ...defaultData.maintenance, ...(d.maintenance ?? {}) },
             turnstile: { ...defaultData.turnstile, ...(d.turnstile ?? {}) },
+            colors: { ...defaultData.colors, ...(d.colors ?? {}) },
           });
         }
       })
@@ -222,6 +243,7 @@ export default function DashboardSettingsPage() {
 
   const tabs: { key: Tab; label: string }[] = [
     { key: 'brand', label: 'Logo & Brand' },
+    { key: 'colors', label: 'Colors' },
     { key: 'navigation', label: 'Navigation' },
     { key: 'seo', label: 'SEO' },
     { key: 'security', label: 'Security' },
@@ -398,6 +420,105 @@ export default function DashboardSettingsPage() {
                     )}
                   </div>
                   <span className="text-white font-bold text-lg">{data.brandName || 'Yousri'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Colors */}
+        {tab === 'colors' && (
+          <div className="space-y-6">
+            <div className="bg-slate-800 rounded-xl p-6 space-y-5">
+              <h2 className="text-white font-semibold text-sm">Site Colors</h2>
+              <p className="text-slate-400 text-xs">Customize the colors used across your site. Changes apply after saving.</p>
+
+              <div className="grid grid-cols-2 gap-5">
+                {([
+                  { key: 'buttonBg' as const, label: 'Button Background', desc: 'Primary button color' },
+                  { key: 'buttonText' as const, label: 'Button Text', desc: 'Text color on buttons' },
+                  { key: 'heading' as const, label: 'Heading Text', desc: 'Title and heading color' },
+                  { key: 'subtext' as const, label: 'Sub Text', desc: 'Secondary / body text color' },
+                  { key: 'hyperlink' as const, label: 'Hyperlink', desc: 'Link and anchor color' },
+                  { key: 'background' as const, label: 'Background', desc: 'Main page background' },
+                  { key: 'accent' as const, label: 'Accent', desc: 'Accent highlights and borders' },
+                ]).map((item) => (
+                  <div key={item.key}>
+                    <label className="block text-slate-300 text-xs font-medium mb-1">{item.label}</label>
+                    <p className="text-slate-500 text-[10px] mb-2">{item.desc}</p>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        value={data.colors[item.key]}
+                        onChange={(e) => setData((d) => ({ ...d, colors: { ...d.colors, [item.key]: e.target.value } }))}
+                        className="w-10 h-10 rounded-lg border border-slate-700 bg-slate-900 cursor-pointer p-1"
+                      />
+                      <input
+                        type="text"
+                        value={data.colors[item.key]}
+                        onChange={(e) => setData((d) => ({ ...d, colors: { ...d.colors, [item.key]: e.target.value } }))}
+                        className="flex-1 bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Reset to defaults */}
+              <button
+                onClick={() => setData((d) => ({ ...d, colors: defaultData.colors }))}
+                className="px-3 py-1.5 text-slate-400 hover:text-white text-xs border border-slate-700 hover:border-slate-500 rounded-lg transition-colors"
+              >
+                Reset to Defaults
+              </button>
+            </div>
+
+            {/* Live preview */}
+            <div className="bg-slate-800 rounded-xl p-6">
+              <h3 className="text-white font-semibold text-sm mb-4">Preview</h3>
+              <div
+                className="rounded-xl p-8 space-y-4"
+                style={{ backgroundColor: data.colors.background }}
+              >
+                <h2 style={{ color: data.colors.heading, fontWeight: 700, fontSize: '1.5rem' }}>
+                  Heading Text Preview
+                </h2>
+                <p style={{ color: data.colors.subtext, fontSize: '0.875rem', lineHeight: 1.6 }}>
+                  This is how your sub text and body content will appear on the site.
+                  It uses the sub text color you configured above.
+                </p>
+                <p>
+                  <a href="#" onClick={(e) => e.preventDefault()} style={{ color: data.colors.hyperlink, textDecoration: 'underline' }}>
+                    This is a hyperlink example
+                  </a>
+                </p>
+                <div className="flex gap-3 items-center">
+                  <button
+                    style={{
+                      backgroundColor: data.colors.buttonBg,
+                      color: data.colors.buttonText,
+                      padding: '0.625rem 1.5rem',
+                      borderRadius: '0.75rem',
+                      fontWeight: 600,
+                      fontSize: '0.875rem',
+                      border: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Button Preview
+                  </button>
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      width: '2rem',
+                      height: '2rem',
+                      borderRadius: '0.5rem',
+                      backgroundColor: data.colors.accent,
+                      border: `2px solid ${data.colors.accent}`,
+                    }}
+                    title="Accent color"
+                  />
+                  <span style={{ color: data.colors.subtext, fontSize: '0.75rem' }}>Accent</span>
                 </div>
               </div>
             </div>

@@ -12,6 +12,15 @@ interface SiteData {
   logoColorFrom?: string;
   logoColorTo?: string;
   navLinks?: Array<{ href: string; label: string }>;
+  colors?: {
+    buttonBg?: string;
+    buttonText?: string;
+    heading?: string;
+    subtext?: string;
+    hyperlink?: string;
+    background?: string;
+    accent?: string;
+  };
   seo?: {
     title?: string;
     description?: string;
@@ -129,12 +138,27 @@ export default async function RootLayout({
     );
   }
 
+  // Build color overrides CSS
+  const c = site.colors;
+  const colorCSS = c ? `:root {
+${c.buttonBg ? `--color-button-bg: ${c.buttonBg};` : ''}
+${c.buttonText ? `--color-button-text: ${c.buttonText};` : ''}
+${c.heading ? `--color-heading: ${c.heading};` : ''}
+${c.subtext ? `--color-subtext: ${c.subtext};` : ''}
+${c.hyperlink ? `--color-hyperlink: ${c.hyperlink};` : ''}
+${c.background ? `--color-background: ${c.background};` : ''}
+${c.accent ? `--color-accent: ${c.accent};` : ''}
+}` : '';
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{
           __html: `(function(){try{var t=localStorage.getItem('theme');if(t!=='light')document.documentElement.classList.add('dark');}catch(e){}})();`
         }} />
+        {colorCSS && (
+          <style dangerouslySetInnerHTML={{ __html: colorCSS }} />
+        )}
       </head>
       <body className="antialiased">
         <ThemeProvider>

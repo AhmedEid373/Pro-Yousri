@@ -116,7 +116,7 @@ export default function AboutPage() {
                   className="glass rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1"
                 >
                   <div className="text-3xl mb-4">
-                    {expertiseIcons[item.icon] || '⚡'}
+                    {expertiseIcons[item.icon] || item.icon || '⚡'}
                   </div>
                   <h3 className="text-[var(--text-primary)] font-bold mb-3">{item.title}</h3>
                   <p className="text-[var(--text-muted)] text-sm leading-relaxed">
