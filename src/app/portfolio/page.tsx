@@ -33,7 +33,7 @@ export default function PortfolioPage() {
               <T k="ui.portfolio">Portfolio</T>
             </h1>
             <p className="text-[var(--text-muted)] text-lg max-w-2xl mx-auto leading-relaxed">
-              A collection of projects I&apos;ve built — from WordPress sites to VPS setups and everything in between.
+              <T k="ui.portfolioSubtitle">{"A collection of projects I've built — from WordPress sites to VPS setups and everything in between."}</T>
             </p>
           </div>
         </section>
@@ -44,7 +44,7 @@ export default function PortfolioPage() {
             {items.length === 0 ? (
               <div className="text-center py-20 text-[var(--text-muted)]">
                 <p className="text-5xl mb-4">🚀</p>
-                <p className="text-lg font-medium">Projects coming soon</p>
+                <p className="text-lg font-medium"><T k="ui.projectsComingSoon">Projects coming soon</T></p>
               </div>
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -69,7 +69,7 @@ export default function PortfolioPage() {
                       {item.featured && (
                         <div className="absolute top-3 right-3">
                           <span className="px-2.5 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full shadow">
-                            ★ Featured
+                            ★ <T k="ui.featured">Featured</T>
                           </span>
                         </div>
                       )}
@@ -106,7 +106,7 @@ export default function PortfolioPage() {
                           rel="noopener noreferrer"
                           className="mt-5 inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors self-start"
                         >
-                          View Project
+                          <T k="ui.viewProject">View Project</T>
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
                             <path fillRule="evenodd" d="M4.25 5.5a.75.75 0 0 0-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 0 0 .75-.75v-4a.75.75 0 0 1 1.5 0v4A2.25 2.25 0 0 1 12.75 17h-8.5A2.25 2.25 0 0 1 2 14.75v-8.5A2.25 2.25 0 0 1 4.25 4h4a.75.75 0 0 1 0 1.5h-4Zm6.5-1a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0V6.06l-5.22 5.22a.75.75 0 0 1-1.06-1.06L14.44 5H10.75a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
                           </svg>

@@ -154,14 +154,49 @@ function collectAllPageContent(): Record<string, string> {
   content['ui.projectsSubtitle'] = 'Some of my recent work that showcases my expertise.';
   content['ui.sendMessage'] = 'Send Message';
   content['ui.yourName'] = 'Your Name';
-  content['ui.yourEmail'] = 'Your Email';
+  content['ui.yourEmail'] = 'Email Address';
   content['ui.subject'] = 'Subject';
-  content['ui.yourMessage'] = 'Your Message';
+  content['ui.yourMessage'] = 'Message';
   content['ui.hireForProject'] = 'Hire Me for Your Project';
   content['ui.myWork'] = 'My Work';
   content['ui.portfolio'] = 'Portfolio';
   content['ui.privacyPolicy'] = 'Privacy Policy';
   content['ui.termsOfService'] = 'Terms of Service';
+
+  // Services page
+  content['ui.mostPopular'] = 'Most Popular';
+  content['ui.getStarted'] = 'Get Started';
+  content['ui.howIWork'] = 'How I Work';
+  content['ui.processSubtitle'] = 'A simple, transparent process from start to finish.';
+  content['ui.needCustomSolution'] = 'Need a Custom Solution?';
+  content['ui.customSolutionDesc'] = "Don't see exactly what you need? Let's discuss your project and I'll create a custom package for you.";
+  content['ui.contactMe'] = 'Contact Me';
+
+  // Portfolio page
+  content['ui.portfolioSubtitle'] = "A collection of projects I've built — from WordPress sites to VPS setups and everything in between.";
+  content['ui.projectsComingSoon'] = 'Projects coming soon';
+  content['ui.featured'] = 'Featured';
+
+  // Contact page
+  content['ui.letsConnect'] = "Let's Connect";
+  content['ui.sendAMessage'] = 'Send a Message';
+  content['ui.messageSent'] = 'Message Sent!';
+  content['ui.messageSentDesc'] = "Thank you for reaching out. I'll get back to you within 24 hours.";
+  content['ui.sendAnother'] = 'Send Another Message';
+  content['ui.sendFailed'] = 'Failed to send message. Please try again.';
+  content['ui.sending'] = 'Sending...';
+
+  // Contact page - availability & response time
+  try {
+    const contact = readData<Record<string, unknown>>('contact.json', {});
+    const availability = contact.availabilityOptions as Record<string, string> | undefined;
+    if (availability) {
+      if (availability.green) content['contact.availability.green'] = availability.green;
+      if (availability.orange) content['contact.availability.orange'] = availability.orange;
+      if (availability.red) content['contact.availability.red'] = availability.red;
+    }
+    if (contact.responseTime) content['contact.responseTime'] = contact.responseTime as string;
+  } catch { /* skip */ }
 
   return content;
 }
