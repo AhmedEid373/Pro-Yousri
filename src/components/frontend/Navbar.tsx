@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/context/ThemeContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 const defaultNavLinks = [
   { href: '/', label: 'Home' },
@@ -38,6 +39,9 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { currentLang, languages, setLanguage } = useLanguage();
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
   const [logoType, setLogoType] = useState('text');
   const [logoText, setLogoText] = useState('Y');
   const [logoImage, setLogoImage] = useState('');
@@ -51,6 +55,16 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) setLangOpen(false);
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const currentFlag = languages.find((l) => l.code === currentLang)?.flag || '🌐';
 
   useEffect(() => {
     fetch('/api/content/site')
@@ -110,7 +124,7 @@ export default function Navbar() {
               </Link>
             ))}
 
-            {/* Theme Toggle — before Hire Me */}
+            {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
               aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -118,6 +132,39 @@ export default function Navbar() {
             >
               {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
             </button>
+
+            {/* Language Switcher */}
+            {languages.length > 1 && (
+              <div className="relative" ref={langRef}>
+                <button
+                  onClick={() => setLangOpen(!langOpen)}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/10 transition-all duration-200 text-sm"
+                >
+                  <span className="text-base">{currentFlag}</span>
+                  <svg className={`w-3 h-3 transition-transform ${langOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {langOpen && (
+                  <div className="absolute right-0 top-full mt-2 bg-[var(--surface)] border border-[var(--border)] rounded-xl shadow-xl overflow-hidden min-w-[160px] z-50">
+                    {languages.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => { setLanguage(lang.code); setLangOpen(false); }}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
+                          currentLang === lang.code
+                            ? 'bg-blue-600/20 text-blue-400'
+                            : 'text-[var(--text-secondary)] hover:bg-white/5 hover:text-[var(--text-primary)]'
+                        }`}
+                      >
+                        <span className="text-base">{lang.flag}</span>
+                        <span>{lang.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             <Link
               href="/contact"
@@ -169,7 +216,7 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            {/* Theme Toggle + Hire Me row */}
+            {/* Language + Theme Toggle + Hire Me row */}
             <div className="px-4 pt-2 flex items-center gap-3">
               <button
                 onClick={toggleTheme}
@@ -178,6 +225,17 @@ export default function Navbar() {
               >
                 {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
               </button>
+              {languages.length > 1 && (
+                <select
+                  value={currentLang}
+                  onChange={(e) => setLanguage(e.target.value)}
+                  className="bg-transparent border border-[var(--border)] text-[var(--text-secondary)] text-sm rounded-lg px-2 py-1.5 focus:outline-none"
+                >
+                  {languages.map((lang) => (
+                    <option key={lang.code} value={lang.code}>{lang.flag} {lang.name}</option>
+                  ))}
+                </select>
+              )}
               <Link
                 href="/contact"
                 onClick={() => setIsOpen(false)}

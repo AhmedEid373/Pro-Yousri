@@ -111,7 +111,31 @@ const builtInPages: NavLink[] = [
   { href: '/contact', label: 'Contact' },
 ];
 
-type Tab = 'brand' | 'colors' | 'navigation' | 'seo' | 'security' | 'maintenance';
+interface LangItem {
+  code: string;
+  name: string;
+  flag: string;
+  dir: 'ltr' | 'rtl';
+}
+
+interface LanguagesData {
+  defaultLang: string;
+  languages: LangItem[];
+  translations: Record<string, Record<string, string>>;
+}
+
+const defaultLangsData: LanguagesData = {
+  defaultLang: 'en',
+  languages: [
+    { code: 'en', name: 'English', flag: '🇺🇸', dir: 'ltr' },
+    { code: 'ar', name: 'Arabic', flag: '🇸🇦', dir: 'rtl' },
+    { code: 'es', name: 'Spanish', flag: '🇪🇸', dir: 'ltr' },
+    { code: 'fr', name: 'French', flag: '🇫🇷', dir: 'ltr' },
+  ],
+  translations: {},
+};
+
+type Tab = 'brand' | 'colors' | 'navigation' | 'seo' | 'security' | 'languages' | 'maintenance';
 
 export default function DashboardSettingsPage() {
   const [data, setData] = useState<SiteData>(defaultData);
@@ -122,6 +146,14 @@ export default function DashboardSettingsPage() {
   const [uploadingOg, setUploadingOg] = useState(false);
   const [uploadingGif, setUploadingGif] = useState(false);
   const [customPages, setCustomPages] = useState<Page[]>([]);
+  const [langData, setLangData] = useState<LanguagesData>(defaultLangsData);
+  const [langSaving, setLangSaving] = useState(false);
+  const [langSaved, setLangSaved] = useState(false);
+  const [editingTranslation, setEditingTranslation] = useState<string | null>(null);
+  const [newLangCode, setNewLangCode] = useState('');
+  const [newLangName, setNewLangName] = useState('');
+  const [newLangFlag, setNewLangFlag] = useState('');
+  const [newLangDir, setNewLangDir] = useState<'ltr' | 'rtl'>('ltr');
   const logoFileRef = useRef<HTMLInputElement>(null);
   const ogFileRef = useRef<HTMLInputElement>(null);
   const gifFileRef = useRef<HTMLInputElement>(null);
@@ -147,6 +179,11 @@ export default function DashboardSettingsPage() {
       .then((r) => r.json())
       .then((pages: Page[]) => { if (Array.isArray(pages)) setCustomPages(pages); })
       .catch(() => {});
+
+    fetch('/api/content/languages')
+      .then((r) => r.json())
+      .then((d: LanguagesData) => { if (d?.languages) setLangData(d); })
+      .catch(() => {});
   }, []);
 
   const handleSave = async () => {
@@ -162,6 +199,54 @@ export default function DashboardSettingsPage() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleSaveLangs = async () => {
+    setLangSaving(true);
+    try {
+      await fetch('/api/content/languages', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(langData),
+      });
+      setLangSaved(true);
+      setTimeout(() => setLangSaved(false), 3000);
+    } finally {
+      setLangSaving(false);
+    }
+  };
+
+  const addLanguage = () => {
+    if (!newLangCode.trim() || !newLangName.trim()) return;
+    if (langData.languages.some((l) => l.code === newLangCode.trim())) return;
+    setLangData((d) => ({
+      ...d,
+      languages: [...d.languages, { code: newLangCode.trim(), name: newLangName.trim(), flag: newLangFlag.trim() || '🏳️', dir: newLangDir }],
+      translations: { ...d.translations, [newLangCode.trim()]: {} },
+    }));
+    setNewLangCode('');
+    setNewLangName('');
+    setNewLangFlag('');
+    setNewLangDir('ltr');
+  };
+
+  const removeLanguage = (code: string) => {
+    if (code === langData.defaultLang) return; // can't remove default
+    setLangData((d) => {
+      const newTranslations = { ...d.translations };
+      delete newTranslations[code];
+      return { ...d, languages: d.languages.filter((l) => l.code !== code), translations: newTranslations };
+    });
+  };
+
+  const updateTranslation = (langCode: string, key: string, value: string) => {
+    setLangData((d) => ({
+      ...d,
+      translations: {
+        ...d.translations,
+        [langCode]: { ...(d.translations[langCode] || {}), [key]: value },
+      },
+    }));
   };
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -247,6 +332,7 @@ export default function DashboardSettingsPage() {
     { key: 'navigation', label: 'Navigation' },
     { key: 'seo', label: 'SEO' },
     { key: 'security', label: 'Security' },
+    { key: 'languages', label: 'Languages' },
     { key: 'maintenance', label: 'Maintenance' },
   ];
 
@@ -790,6 +876,224 @@ export default function DashboardSettingsPage() {
                   </div>
                 </>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Languages */}
+        {tab === 'languages' && (
+          <div className="space-y-6">
+            {/* Languages list */}
+            <div className="bg-slate-800 rounded-xl p-6 space-y-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-white font-semibold text-sm">Languages</h2>
+                  <p className="text-slate-400 text-xs mt-0.5">Manage site languages and translations</p>
+                </div>
+                <button
+                  onClick={handleSaveLangs}
+                  disabled={langSaving}
+                  className={`px-5 py-2 rounded-xl font-medium text-sm transition-all ${
+                    langSaved ? 'bg-green-600 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50'
+                  }`}
+                >
+                  {langSaving ? 'Saving...' : langSaved ? '✓ Saved!' : 'Save Languages'}
+                </button>
+              </div>
+
+              {/* Default language selector */}
+              <div>
+                <label className="block text-slate-400 text-xs mb-1">Default Language</label>
+                <select
+                  value={langData.defaultLang}
+                  onChange={(e) => setLangData((d) => ({ ...d, defaultLang: e.target.value }))}
+                  className="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                >
+                  {langData.languages.map((l) => (
+                    <option key={l.code} value={l.code}>{l.flag} {l.name} ({l.code})</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Language cards */}
+              <div className="space-y-2">
+                {langData.languages.map((lang) => (
+                  <div key={lang.code} className={`flex items-center gap-3 bg-slate-900 border rounded-xl px-4 py-3 ${
+                    lang.code === langData.defaultLang ? 'border-blue-500/40' : 'border-slate-700'
+                  }`}>
+                    <span className="text-xl flex-shrink-0">{lang.flag}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white text-sm font-medium">{lang.name}</p>
+                      <p className="text-slate-500 text-xs">
+                        {lang.code} · {lang.dir.toUpperCase()}
+                        {lang.code === langData.defaultLang && <span className="text-blue-400 ml-2">Default</span>}
+                      </p>
+                    </div>
+                    <div className="flex gap-2 flex-shrink-0">
+                      <button
+                        onClick={() => setEditingTranslation(editingTranslation === lang.code ? null : lang.code)}
+                        className={`px-3 py-1.5 text-xs rounded-lg transition-colors ${
+                          editingTranslation === lang.code
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-slate-700 hover:bg-slate-600 text-slate-300'
+                        }`}
+                      >
+                        {editingTranslation === lang.code ? 'Close' : 'Translations'}
+                      </button>
+                      {lang.code !== langData.defaultLang && (
+                        <button
+                          onClick={() => removeLanguage(lang.code)}
+                          className="px-3 py-1.5 bg-red-900/30 hover:bg-red-900/50 text-red-400 text-xs rounded-lg transition-colors"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Translation editor */}
+              {editingTranslation && editingTranslation !== langData.defaultLang && (
+                <div className="bg-slate-900/60 rounded-xl p-5 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-white text-sm font-medium">
+                      Translations — {langData.languages.find((l) => l.code === editingTranslation)?.flag}{' '}
+                      {langData.languages.find((l) => l.code === editingTranslation)?.name}
+                    </h3>
+                  </div>
+                  <p className="text-slate-500 text-xs">Add translation keys and their values. Use keys like &quot;nav.home&quot;, &quot;hero.title&quot;, etc.</p>
+                  <div className="space-y-2">
+                    {Object.entries(langData.translations[editingTranslation] || {}).map(([key, val]) => (
+                      <div key={key} className="flex gap-2 items-center">
+                        <input
+                          type="text"
+                          value={key}
+                          disabled
+                          className="w-1/3 bg-slate-800 border border-slate-700 text-slate-400 rounded-lg px-3 py-2 text-xs font-mono"
+                        />
+                        <input
+                          type="text"
+                          value={val}
+                          onChange={(e) => updateTranslation(editingTranslation, key, e.target.value)}
+                          className="flex-1 bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+                        />
+                        <button
+                          onClick={() => {
+                            setLangData((d) => {
+                              const t = { ...(d.translations[editingTranslation] || {}) };
+                              delete t[key];
+                              return { ...d, translations: { ...d.translations, [editingTranslation]: t } };
+                            });
+                          }}
+                          className="text-red-400 hover:text-red-300 text-xs px-2"
+                        >✕</button>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        const key = prompt('Translation key (e.g. nav.home, hero.title):');
+                        if (key?.trim()) updateTranslation(editingTranslation, key.trim(), '');
+                      }}
+                      className="px-3 py-1.5 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-lg text-xs transition-colors"
+                    >+ Add Translation Key</button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Add new language */}
+            <div className="bg-slate-800 rounded-xl p-6 space-y-4">
+              <h3 className="text-white font-semibold text-sm">Add New Language</h3>
+              <div className="grid grid-cols-4 gap-3">
+                <div>
+                  <label className="block text-slate-400 text-xs mb-1">Code *</label>
+                  <input
+                    type="text"
+                    value={newLangCode}
+                    onChange={(e) => setNewLangCode(e.target.value.toLowerCase())}
+                    placeholder="de"
+                    maxLength={5}
+                    className="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-400 text-xs mb-1">Name *</label>
+                  <input
+                    type="text"
+                    value={newLangName}
+                    onChange={(e) => setNewLangName(e.target.value)}
+                    placeholder="German"
+                    className="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-400 text-xs mb-1">Flag emoji</label>
+                  <input
+                    type="text"
+                    value={newLangFlag}
+                    onChange={(e) => setNewLangFlag(e.target.value)}
+                    placeholder="🇩🇪"
+                    className="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm text-center"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-400 text-xs mb-1">Direction</label>
+                  <select
+                    value={newLangDir}
+                    onChange={(e) => setNewLangDir(e.target.value as 'ltr' | 'rtl')}
+                    className="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                  >
+                    <option value="ltr">LTR (Left to Right)</option>
+                    <option value="rtl">RTL (Right to Left)</option>
+                  </select>
+                </div>
+              </div>
+              <button
+                onClick={addLanguage}
+                disabled={!newLangCode.trim() || !newLangName.trim()}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm font-medium rounded-xl transition-colors"
+              >
+                + Add Language
+              </button>
+            </div>
+
+            {/* Common language presets */}
+            <div className="bg-slate-800 rounded-xl p-6 space-y-3">
+              <h3 className="text-white font-semibold text-sm">Quick Add</h3>
+              <p className="text-slate-400 text-xs">Click to add common languages</p>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { code: 'de', name: 'German', flag: '🇩🇪', dir: 'ltr' as const },
+                  { code: 'pt', name: 'Portuguese', flag: '🇧🇷', dir: 'ltr' as const },
+                  { code: 'zh', name: 'Chinese', flag: '🇨🇳', dir: 'ltr' as const },
+                  { code: 'ja', name: 'Japanese', flag: '🇯🇵', dir: 'ltr' as const },
+                  { code: 'ko', name: 'Korean', flag: '🇰🇷', dir: 'ltr' as const },
+                  { code: 'hi', name: 'Hindi', flag: '🇮🇳', dir: 'ltr' as const },
+                  { code: 'ru', name: 'Russian', flag: '🇷🇺', dir: 'ltr' as const },
+                  { code: 'tr', name: 'Turkish', flag: '🇹🇷', dir: 'ltr' as const },
+                  { code: 'it', name: 'Italian', flag: '🇮🇹', dir: 'ltr' as const },
+                  { code: 'nl', name: 'Dutch', flag: '🇳🇱', dir: 'ltr' as const },
+                  { code: 'ur', name: 'Urdu', flag: '🇵🇰', dir: 'rtl' as const },
+                  { code: 'he', name: 'Hebrew', flag: '🇮🇱', dir: 'rtl' as const },
+                ].filter((p) => !langData.languages.some((l) => l.code === p.code)).map((preset) => (
+                  <button
+                    key={preset.code}
+                    onClick={() => {
+                      setLangData((d) => ({
+                        ...d,
+                        languages: [...d.languages, preset],
+                        translations: { ...d.translations, [preset.code]: {} },
+                      }));
+                    }}
+                    className="px-3 py-1.5 bg-slate-700 hover:bg-blue-600 text-slate-300 hover:text-white text-xs rounded-lg transition-colors"
+                  >
+                    {preset.flag} {preset.name}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         )}
