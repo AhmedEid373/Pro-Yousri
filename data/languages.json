@@ -1,0 +1,15 @@
+{
+  "defaultLang": "en",
+  "languages": [
+    { "code": "en", "name": "English", "flag": "🇺🇸", "dir": "ltr" },
+    { "code": "ar", "name": "Arabic", "flag": "🇸🇦", "dir": "rtl" },
+    { "code": "es", "name": "Spanish", "flag": "🇪🇸", "dir": "ltr" },
+    { "code": "fr", "name": "French", "flag": "🇫🇷", "dir": "ltr" }
+  ],
+  "translations": {
+    "en": {},
+    "ar": {},
+    "es": {},
+    "fr": {}
+  }
+}
