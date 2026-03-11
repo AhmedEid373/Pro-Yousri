@@ -105,3 +105,38 @@ body {
   backdrop-filter: blur(10px);
   border: 1px solid var(--glass-border);
 }
+
+/* ===== Custom color overrides from Settings ===== */
+:root {
+  --color-button-bg: #3b82f6;
+  --color-button-text: #ffffff;
+  --color-heading: #f1f5f9;
+  --color-subtext: #94a3b8;
+  --color-hyperlink: #60a5fa;
+  --color-background: #0f172a;
+  --color-accent: #3b82f6;
+}
+
+/* Apply site colors to frontend pages (not dashboard) */
+:where(:not(.dashboard-layout)) {
+  & h1, & h2, & h3, & h4 {
+    color: var(--color-heading);
+  }
+  & a:not([class]) {
+    color: var(--color-hyperlink);
+  }
+}
+
+/* Utility classes for site colors */
+.site-btn {
+  background-color: var(--color-button-bg);
+  color: var(--color-button-text);
+}
+.site-btn:hover {
+  filter: brightness(1.1);
+}
+.site-heading { color: var(--color-heading); }
+.site-subtext { color: var(--color-subtext); }
+.site-link { color: var(--color-hyperlink); }
+.site-accent { color: var(--color-accent); }
+.site-accent-bg { background-color: var(--color-accent); }

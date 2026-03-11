@@ -203,17 +203,36 @@ export default function DashboardAboutPage() {
                 </button>
               </div>
               <div className="space-y-3">
-                <input
-                  type="text"
-                  placeholder="Title"
-                  value={item.title}
-                  onChange={(e) => {
-                    const expertise = [...data.expertise];
-                    expertise[i] = { ...item, title: e.target.value };
-                    setData({ ...data, expertise });
-                  }}
-                  className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
-                />
+                <div className="flex gap-3">
+                  <div className="w-24">
+                    <label className="block text-slate-400 text-xs mb-1">Icon</label>
+                    <input
+                      type="text"
+                      placeholder="⭐"
+                      value={item.icon}
+                      onChange={(e) => {
+                        const expertise = [...data.expertise];
+                        expertise[i] = { ...item, icon: e.target.value };
+                        setData({ ...data, expertise });
+                      }}
+                      className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm text-center text-lg"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-slate-400 text-xs mb-1">Title</label>
+                    <input
+                      type="text"
+                      placeholder="Title"
+                      value={item.title}
+                      onChange={(e) => {
+                        const expertise = [...data.expertise];
+                        expertise[i] = { ...item, title: e.target.value };
+                        setData({ ...data, expertise });
+                      }}
+                      className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                    />
+                  </div>
+                </div>
                 <textarea
                   rows={3}
                   placeholder="Description"
