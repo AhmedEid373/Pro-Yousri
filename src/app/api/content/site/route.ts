@@ -2,7 +2,35 @@ import { NextRequest, NextResponse } from 'next/server';
 import { readData, writeData } from '@/lib/db';
 import { isAuthenticated } from '@/lib/auth';
 
-const defaultSite = { logoType: 'text', logoText: 'Y', logoImage: '', brandName: 'Yousri' };
+const defaultSite = {
+  logoType: 'text',
+  logoText: 'Y',
+  logoImage: '',
+  brandName: 'Yousri',
+  logoColorFrom: '#3b82f6',
+  logoColorTo: '#9333ea',
+  navLinks: [
+    { href: '/', label: 'Home' },
+    { href: '/about', label: 'About' },
+    { href: '/services', label: 'Services' },
+    { href: '/portfolio', label: 'Portfolio' },
+    { href: '/contact', label: 'Contact' },
+  ],
+  seo: {
+    title: 'Yousri - WordPress Developer & Web Specialist',
+    description: 'Expert WordPress developer with deep knowledge in domains, VPS, and hosting solutions. Building powerful digital experiences.',
+    keywords: 'WordPress, VPS, hosting, web developer, WordPress development',
+    ogTitle: '',
+    ogDescription: '',
+    ogImage: '',
+    robots: 'index,follow',
+  },
+  maintenance: {
+    enabled: false,
+    message: "We're working on something awesome. Check back soon!",
+    gif: '',
+  },
+};
 
 export async function GET() {
   const data = readData('site.json', defaultSite);

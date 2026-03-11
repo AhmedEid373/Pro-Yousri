@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/context/ThemeContext';
 
-const navLinks = [
+const defaultNavLinks = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/services', label: 'Services' },
@@ -42,6 +42,9 @@ export default function Navbar() {
   const [logoText, setLogoText] = useState('Y');
   const [logoImage, setLogoImage] = useState('');
   const [brandName, setBrandName] = useState('Yousri');
+  const [logoColorFrom, setLogoColorFrom] = useState('#3b82f6');
+  const [logoColorTo, setLogoColorTo] = useState('#9333ea');
+  const [navLinks, setNavLinks] = useState(defaultNavLinks);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -57,6 +60,11 @@ export default function Navbar() {
         if (data.logoText) setLogoText(data.logoText);
         if (data.logoImage !== undefined) setLogoImage(data.logoImage);
         if (data.brandName) setBrandName(data.brandName);
+        if (data.logoColorFrom) setLogoColorFrom(data.logoColorFrom);
+        if (data.logoColorTo) setLogoColorTo(data.logoColorTo);
+        if (data.navLinks && Array.isArray(data.navLinks) && data.navLinks.length > 0) {
+          setNavLinks(data.navLinks);
+        }
       })
       .catch(() => {});
   }, []);
@@ -75,7 +83,10 @@ export default function Navbar() {
               {logoType === 'image' && logoImage ? (
                 <img src={logoImage} alt={brandName} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                <div
+                  className="w-full h-full flex items-center justify-center"
+                  style={{ background: `linear-gradient(to bottom right, ${logoColorFrom}, ${logoColorTo})` }}
+                >
                   <span className="text-white font-bold text-sm">{logoText || 'Y'}</span>
                 </div>
               )}

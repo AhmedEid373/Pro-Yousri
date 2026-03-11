@@ -19,7 +19,9 @@ export async function middleware(request: NextRequest) {
 
     try {
       await jwtVerify(token, secret);
-      return NextResponse.next();
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set('x-next-pathname', pathname);
+      return NextResponse.next({ request: { headers: requestHeaders } });
     } catch {
       return NextResponse.redirect(new URL('/login', request.url));
     }
@@ -38,9 +40,12 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next();
+  // Pass x-next-pathname header for all other routes
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-next-pathname', pathname);
+  return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/login'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
