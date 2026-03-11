@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import FrontendWrapper from '@/components/frontend/FrontendWrapper';
+import Script from 'next/script';
 
 interface ContactInfo {
   icon: string;
@@ -50,25 +51,70 @@ export default function ContactPage() {
   const [contactData, setContactData] = useState<ContactData>(defaultContactData);
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [turnstileConfig, setTurnstileConfig] = useState<{ enabled: boolean; siteKey: string }>({ enabled: false, siteKey: '' });
+  const turnstileRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     fetch('/api/content/contact')
       .then((r) => r.json())
       .then((data) => { if (data.title) setContactData(data); })
       .catch(() => {});
+
+    fetch('/api/content/site')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.turnstile?.enabled && data.turnstile.siteKey) {
+          setTurnstileConfig({ enabled: true, siteKey: data.turnstile.siteKey });
+        }
+      })
+      .catch(() => {});
   }, []);
+
+  const renderTurnstile = useCallback(() => {
+    if (!turnstileConfig.enabled || !turnstileRef.current) return;
+    if (widgetIdRef.current !== null && window.turnstile) {
+      window.turnstile.reset(widgetIdRef.current);
+      return;
+    }
+    if (window.turnstile && turnstileRef.current) {
+      widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
+        sitekey: turnstileConfig.siteKey,
+        callback: (token: string) => setTurnstileToken(token),
+        'expired-callback': () => setTurnstileToken(''),
+        theme: 'dark',
+      });
+    }
+  }, [turnstileConfig]);
+
+  useEffect(() => {
+    if (turnstileConfig.enabled && window.turnstile) {
+      renderTurnstile();
+    }
+  }, [turnstileConfig, renderTurnstile]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (turnstileConfig.enabled && !turnstileToken) return;
     setStatus('sending');
     try {
       const res = await fetch('/api/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          ...(turnstileConfig.enabled ? { turnstileToken } : {}),
+        }),
       });
-      if (res.ok) { setStatus('success'); setFormData({ name: '', email: '', subject: '', message: '' }); }
-      else setStatus('error');
+      if (res.ok) {
+        setStatus('success');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        setTurnstileToken('');
+        if (widgetIdRef.current !== null && window.turnstile) {
+          window.turnstile.reset(widgetIdRef.current);
+        }
+      } else setStatus('error');
     } catch { setStatus('error'); }
   };
 
@@ -170,8 +216,21 @@ export default function ContactPage() {
                       <label className="block text-[var(--text-secondary)] text-sm font-medium mb-2">Message *</label>
                       <textarea required rows={6} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} placeholder="Tell me about your project..." className="w-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-sm resize-none" />
                     </div>
+                    {/* Cloudflare Turnstile widget */}
+                    {turnstileConfig.enabled && (
+                      <div className="flex flex-col items-center gap-2">
+                        <div ref={turnstileRef} />
+                        {!turnstileToken && (
+                          <p className="text-slate-500 text-xs">Please complete the verification above to send your message</p>
+                        )}
+                      </div>
+                    )}
                     {status === 'error' && <p className="text-red-400 text-sm">Failed to send message. Please try again.</p>}
-                    <button type="submit" disabled={status === 'sending'} className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all duration-200 hover:scale-[1.02]">
+                    <button
+                      type="submit"
+                      disabled={status === 'sending' || (turnstileConfig.enabled && !turnstileToken)}
+                      className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all duration-200 hover:scale-[1.02]"
+                    >
                       {status === 'sending' ? 'Sending...' : 'Send Message →'}
                     </button>
                   </form>
@@ -181,6 +240,23 @@ export default function ContactPage() {
           </div>
         </section>
       </div>
+      {turnstileConfig.enabled && (
+        <Script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad"
+          strategy="afterInteractive"
+          onReady={() => renderTurnstile()}
+        />
+      )}
     </FrontendWrapper>
   );
+}
+
+declare global {
+  interface Window {
+    turnstile: {
+      render: (el: HTMLElement, opts: Record<string, unknown>) => string;
+      reset: (id: string) => void;
+      remove: (id: string) => void;
+    };
+  }
 }

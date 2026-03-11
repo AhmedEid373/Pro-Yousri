@@ -30,13 +30,33 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, subject, message } = await request.json();
+    const { name, email, subject, message, turnstileToken } = await request.json();
 
     if (!name || !email || !subject || !message) {
       return NextResponse.json(
         { error: 'All fields are required' },
         { status: 400 }
       );
+    }
+
+    // Verify Cloudflare Turnstile if enabled
+    const site = readData<{ turnstile?: { enabled?: boolean; secretKey?: string } }>('site.json', {});
+    if (site.turnstile?.enabled && site.turnstile?.secretKey) {
+      if (!turnstileToken) {
+        return NextResponse.json({ error: 'Turnstile verification required' }, { status: 400 });
+      }
+      const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          secret: site.turnstile.secretKey,
+          response: turnstileToken,
+        }),
+      });
+      const verifyData = await verifyRes.json();
+      if (!verifyData.success) {
+        return NextResponse.json({ error: 'Turnstile verification failed' }, { status: 403 });
+      }
     }
 
     const messages = readData<Message[]>('messages.json');
