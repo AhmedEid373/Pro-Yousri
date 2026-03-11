@@ -154,6 +154,8 @@ export default function DashboardSettingsPage() {
   const [newLangName, setNewLangName] = useState('');
   const [newLangFlag, setNewLangFlag] = useState('');
   const [newLangDir, setNewLangDir] = useState<'ltr' | 'rtl'>('ltr');
+  const [translating, setTranslating] = useState<string | null>(null);
+  const [translatingAll, setTranslatingAll] = useState(false);
   const logoFileRef = useRef<HTMLInputElement>(null);
   const ogFileRef = useRef<HTMLInputElement>(null);
   const gifFileRef = useRef<HTMLInputElement>(null);
@@ -247,6 +249,73 @@ export default function DashboardSettingsPage() {
         [langCode]: { ...(d.translations[langCode] || {}), [key]: value },
       },
     }));
+  };
+
+  // Translatable content keys and their English values
+  const getTranslatableContent = (): Record<string, string> => {
+    const content: Record<string, string> = {};
+    // Nav links
+    data.navLinks.forEach((link) => {
+      const key = `nav.${link.label.toLowerCase().replace(/\s+/g, '')}`;
+      content[key] = link.label;
+    });
+    // Common UI strings
+    content['cta.hireMe'] = 'Hire Me';
+    content['cta.viewWork'] = 'View My Work';
+    content['cta.contactMe'] = 'Contact Me';
+    content['cta.getInTouch'] = 'Get In Touch';
+    content['cta.viewAllProjects'] = 'View All Projects';
+    content['hero.greeting'] = "Hello, I'm";
+    content['hero.readyToStart'] = 'Ready to Start Your Project?';
+    content['hero.skills'] = 'Technical Skills';
+    content['hero.featuredProjects'] = 'Featured Projects';
+    content['footer.rights'] = 'All rights reserved.';
+    content['contact.send'] = 'Send Message';
+    content['contact.name'] = 'Your Name';
+    content['contact.email'] = 'Your Email';
+    content['contact.subject'] = 'Subject';
+    content['contact.message'] = 'Your Message';
+    content['theme.light'] = 'Light';
+    content['theme.dark'] = 'Dark';
+    return content;
+  };
+
+  const translateLanguage = async (langCode: string) => {
+    const content = getTranslatableContent();
+    const keys = Object.keys(content);
+    const texts = Object.values(content);
+    setTranslating(langCode);
+    try {
+      const res = await fetch('/api/content/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ texts, sourceLang: langData.defaultLang, targetLang: langCode }),
+      });
+      const result = await res.json();
+      if (result.translations && Array.isArray(result.translations)) {
+        const newTranslations: Record<string, string> = { ...(langData.translations[langCode] || {}) };
+        keys.forEach((key, i) => {
+          newTranslations[key] = result.translations[i];
+        });
+        setLangData((d) => ({
+          ...d,
+          translations: { ...d.translations, [langCode]: newTranslations },
+        }));
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setTranslating(null);
+    }
+  };
+
+  const translateAllLanguages = async () => {
+    setTranslatingAll(true);
+    const nonDefault = langData.languages.filter((l) => l.code !== langData.defaultLang);
+    for (const lang of nonDefault) {
+      await translateLanguage(lang.code);
+    }
+    setTranslatingAll(false);
   };
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -890,15 +959,24 @@ export default function DashboardSettingsPage() {
                   <h2 className="text-white font-semibold text-sm">Languages</h2>
                   <p className="text-slate-400 text-xs mt-0.5">Manage site languages and translations</p>
                 </div>
-                <button
-                  onClick={handleSaveLangs}
-                  disabled={langSaving}
-                  className={`px-5 py-2 rounded-xl font-medium text-sm transition-all ${
-                    langSaved ? 'bg-green-600 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50'
-                  }`}
-                >
-                  {langSaving ? 'Saving...' : langSaved ? '✓ Saved!' : 'Save Languages'}
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={translateAllLanguages}
+                    disabled={translatingAll || !!translating}
+                    className="px-4 py-2 rounded-xl font-medium text-sm transition-all bg-purple-600 hover:bg-purple-700 text-white disabled:opacity-50"
+                  >
+                    {translatingAll ? 'Translating...' : 'Translate All'}
+                  </button>
+                  <button
+                    onClick={handleSaveLangs}
+                    disabled={langSaving}
+                    className={`px-5 py-2 rounded-xl font-medium text-sm transition-all ${
+                      langSaved ? 'bg-green-600 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50'
+                    }`}
+                  >
+                    {langSaving ? 'Saving...' : langSaved ? '✓ Saved!' : 'Save Languages'}
+                  </button>
+                </div>
               </div>
 
               {/* Default language selector */}
@@ -940,6 +1018,15 @@ export default function DashboardSettingsPage() {
                       >
                         {editingTranslation === lang.code ? 'Close' : 'Translations'}
                       </button>
+                      {lang.code !== langData.defaultLang && (
+                        <button
+                          onClick={() => translateLanguage(lang.code)}
+                          disabled={translating === lang.code || translatingAll}
+                          className="px-3 py-1.5 bg-purple-900/30 hover:bg-purple-900/50 text-purple-400 text-xs rounded-lg transition-colors disabled:opacity-50"
+                        >
+                          {translating === lang.code ? 'Translating...' : 'Translate'}
+                        </button>
+                      )}
                       {lang.code !== langData.defaultLang && (
                         <button
                           onClick={() => removeLanguage(lang.code)}
