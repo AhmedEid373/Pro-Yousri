@@ -12,7 +12,7 @@ interface SectionStyle {
   paddingY?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
-interface CardItem  { icon: string; title: string; description: string; bullets: string[]; }
+interface CardItem  { icon: string; title: string; description: string; bullets: string[]; linkUrl?: string; linkTarget?: '_blank' | '_self'; }
 interface StepItem  { step: string; title: string; description: string; }
 interface TextSection  { type: 'text';  title: string; body: string; style?: SectionStyle; imageUrl?: string; imageAlt?: string; imagePosition?: 'above' | 'below' | 'left' | 'right'; }
 interface CardsSection { type: 'cards'; title: string; items: CardItem[]; style?: SectionStyle; }
@@ -249,27 +249,46 @@ export default async function CustomPage({ params }: { params: Promise<{ slug: s
                     </div>
                   )}
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {section.items.map((card, j) => (
-                      <div key={j} className={`glass rounded-2xl p-8 hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 flex flex-col ${alignClass}`}>
-                        <div className="mb-4">
-                          <span className="text-4xl">{card.icon}</span>
-                        </div>
-                        <h3 className="text-[var(--text-primary)] font-bold text-xl mb-3">{card.title}</h3>
-                        <p className={`text-[var(--text-muted)] leading-relaxed mb-4 flex-1 ${fontClass}`}>
-                          {card.description}
-                        </p>
-                        {card.bullets.length > 0 && (
-                          <ul className={`space-y-2 ${alignClass === 'text-left' ? '' : 'inline-block text-left'}`}>
-                            {card.bullets.map((b, k) => (
-                              <li key={k} className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
-                                <span className="text-green-400 text-xs">✓</span>
-                                {b}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    ))}
+                    {section.items.map((card, j) => {
+                      const isExternal = card.linkTarget === '_blank';
+                      const cardClasses = `glass rounded-2xl p-8 hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 flex flex-col ${alignClass} ${card.linkUrl ? 'cursor-pointer no-underline' : ''}`;
+                      const cardContent = (
+                        <>
+                          <div className="mb-4">
+                            <span className="text-4xl">{card.icon}</span>
+                          </div>
+                          <h3 className="text-[var(--text-primary)] font-bold text-xl mb-3">{card.title}</h3>
+                          <p className={`text-[var(--text-muted)] leading-relaxed mb-4 flex-1 ${fontClass}`}>
+                            {card.description}
+                          </p>
+                          {card.bullets.length > 0 && (
+                            <ul className={`space-y-2 ${alignClass === 'text-left' ? '' : 'inline-block text-left'}`}>
+                              {card.bullets.map((b, k) => (
+                                <li key={k} className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+                                  <span className="text-green-400 text-xs">✓</span>
+                                  {b}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                          {card.linkUrl && (
+                            <div className="mt-4 pt-3 border-t border-slate-700/30">
+                              <span className="text-blue-400 text-sm font-medium">
+                                {isExternal ? 'Visit ↗' : 'Learn more →'}
+                              </span>
+                            </div>
+                          )}
+                        </>
+                      );
+
+                      if (card.linkUrl && isExternal) {
+                        return <a key={j} href={card.linkUrl} target="_blank" rel="noopener noreferrer" className={cardClasses}>{cardContent}</a>;
+                      }
+                      if (card.linkUrl) {
+                        return <Link key={j} href={card.linkUrl} className={cardClasses}>{cardContent}</Link>;
+                      }
+                      return <div key={j} className={cardClasses}>{cardContent}</div>;
+                    })}
                   </div>
                 </div>
               </section>
