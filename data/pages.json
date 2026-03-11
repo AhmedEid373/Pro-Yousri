@@ -1,1 +1,87 @@
-[]
+[
+  {
+    "id": "privacy",
+    "title": "Privacy Policy",
+    "slug": "privacy",
+    "heroTitle": "Privacy Policy",
+    "heroSubtitle": "",
+    "heroDescription": "",
+    "heroStyle": {},
+    "sections": [
+      {
+        "id": "privacy-intro",
+        "type": "text",
+        "title": "Privacy Policy",
+        "content": "This Privacy Policy describes how your personal information is collected, used, and shared when you visit this website.",
+        "style": {}
+      },
+      {
+        "id": "privacy-collect",
+        "type": "text",
+        "title": "Information We Collect",
+        "content": "When you visit the site, we automatically collect certain information about your device, including information about your web browser, IP address, time zone, and some of the cookies that are installed on your device. Additionally, as you browse the site, we collect information about the individual web pages that you view, what websites or search terms referred you to the site, and information about how you interact with the site. When you contact us through the contact form, we collect your name, email address, and the content of your message.",
+        "style": {}
+      },
+      {
+        "id": "privacy-use",
+        "type": "text",
+        "title": "How We Use Your Information",
+        "content": "We use the information that we collect to communicate with you, respond to your inquiries, and improve and optimize our site. We do not sell, trade, or otherwise transfer your personally identifiable information to outside parties.",
+        "style": {}
+      },
+      {
+        "id": "privacy-contact",
+        "type": "text",
+        "title": "Contact Us",
+        "content": "For more information about our privacy practices, if you have questions, or if you would like to make a complaint, please contact us via the contact page.",
+        "style": {}
+      }
+    ]
+  },
+  {
+    "id": "terms",
+    "title": "Terms of Service",
+    "slug": "terms",
+    "heroTitle": "Terms of Service",
+    "heroSubtitle": "",
+    "heroDescription": "",
+    "heroStyle": {},
+    "sections": [
+      {
+        "id": "terms-intro",
+        "type": "text",
+        "title": "Terms of Service",
+        "content": "By accessing and using this website, you accept and agree to be bound by the terms and provision of this agreement.",
+        "style": {}
+      },
+      {
+        "id": "terms-use",
+        "type": "text",
+        "title": "Use of Site",
+        "content": "You may use this website for lawful purposes only. You must not use this website in any way that causes, or may cause, damage to the website or impairment of the availability or accessibility of the website. You must not use this website in any way which is unlawful, illegal, fraudulent, or harmful.",
+        "style": {}
+      },
+      {
+        "id": "terms-ip",
+        "type": "text",
+        "title": "Intellectual Property",
+        "content": "All content included on this site, such as text, graphics, logos, images, and software, is the property of the site owner and is protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works from any content on this site without express written permission.",
+        "style": {}
+      },
+      {
+        "id": "terms-liability",
+        "type": "text",
+        "title": "Limitation of Liability",
+        "content": "This website and its content are provided on an \"as is\" basis without any warranties, expressed or implied. In no event shall the site owner be liable for any damages arising out of or in connection with the use of this website.",
+        "style": {}
+      },
+      {
+        "id": "terms-changes",
+        "type": "text",
+        "title": "Changes to Terms",
+        "content": "We reserve the right to modify these terms at any time. Changes will be effective immediately upon posting on the website. Your continued use of the site constitutes acceptance of the updated terms.",
+        "style": {}
+      }
+    ]
+  }
+]

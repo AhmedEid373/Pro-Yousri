@@ -14,5 +14,9 @@
     { "label": "Domain Management", "link": "/services" },
     { "label": "Speed Optimization", "link": "/services" },
     { "label": "Website Migration", "link": "/services" }
+  ],
+  "legalLinks": [
+    { "label": "Privacy Policy", "href": "/privacy" },
+    { "label": "Terms of Service", "href": "/terms" }
   ]
 }

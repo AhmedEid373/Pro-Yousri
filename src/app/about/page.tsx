@@ -1,4 +1,5 @@
 import FrontendWrapper from '@/components/frontend/FrontendWrapper';
+import { T } from '@/components/frontend/T';
 import { readData } from '@/lib/db';
 
 interface AboutData {
@@ -38,10 +39,10 @@ export default function AboutPage() {
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <p className="text-blue-400 text-sm font-medium tracking-widest uppercase mb-3">
-                {data.subtitle}
+                <T k="about.subtitle">{data.subtitle}</T>
               </p>
               <h1 className="text-4xl sm:text-5xl font-bold text-[var(--text-primary)] mb-6">
-                {data.title}
+                <T k="about.title">{data.title}</T>
               </h1>
             </div>
 
@@ -49,11 +50,11 @@ export default function AboutPage() {
               {/* Bio */}
               <div>
                 <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center text-4xl mb-8">
-                  {data.profileIcon || '👨‍💻'}
+                  {data.profileIcon || ''}
                 </div>
                 {(data.bios ?? []).map((bio, i) => (
                   <p key={i} className={`leading-relaxed mb-6 ${i === 0 ? 'text-[var(--text-secondary)] text-lg' : 'text-[var(--text-muted)]'}`}>
-                    {bio}
+                    <T k={`about.bio.${i}`}>{bio}</T>
                   </p>
                 ))}
 
@@ -62,9 +63,9 @@ export default function AboutPage() {
                   {data.details.map((detail, i) => (
                     <div key={i} className="glass rounded-xl p-4">
                       <p className="text-[var(--text-muted)] text-xs uppercase tracking-wider mb-1">
-                        {detail.label}
+                        <T k={`about.detail.${i}.label`}>{detail.label}</T>
                       </p>
-                      <p className="text-[var(--text-primary)] font-medium text-sm">{detail.value}</p>
+                      <p className="text-[var(--text-primary)] font-medium text-sm"><T k={`about.detail.${i}.value`}>{detail.value}</T></p>
                     </div>
                   ))}
                 </div>
@@ -72,7 +73,7 @@ export default function AboutPage() {
 
               {/* Timeline */}
               <div>
-                <h3 className="text-xl font-bold text-[var(--text-primary)] mb-8">My Journey</h3>
+                <h3 className="text-xl font-bold text-[var(--text-primary)] mb-8"><T k="ui.myJourney">My Journey</T></h3>
                 <div className="space-y-6">
                   {data.timeline.map((item, i) => (
                     <div key={i} className="flex gap-4">
@@ -88,9 +89,9 @@ export default function AboutPage() {
                       </div>
                       <div className="pb-6">
                         <p className="text-blue-400 text-sm mb-1">{item.year}</p>
-                        <h4 className="text-[var(--text-primary)] font-semibold mb-1">{item.title}</h4>
+                        <h4 className="text-[var(--text-primary)] font-semibold mb-1"><T k={`about.timeline.${i}.title`}>{item.title}</T></h4>
                         <p className="text-[var(--text-muted)] text-sm leading-relaxed">
-                          {item.description}
+                          <T k={`about.timeline.${i}.desc`}>{item.description}</T>
                         </p>
                       </div>
                     </div>
@@ -106,7 +107,7 @@ export default function AboutPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold text-[var(--text-primary)] mb-4">
-                Areas of <span className="gradient-text">Expertise</span>
+                <T k="ui.areasOfExpertise">Areas of Expertise</T>
               </h2>
             </div>
 
@@ -119,9 +120,9 @@ export default function AboutPage() {
                   <div className="text-3xl mb-4">
                     {expertiseIcons[item.icon] || item.icon || '⚡'}
                   </div>
-                  <h3 className="text-[var(--text-primary)] font-bold mb-3">{item.title}</h3>
+                  <h3 className="text-[var(--text-primary)] font-bold mb-3"><T k={`about.expertise.${i}.title`}>{item.title}</T></h3>
                   <p className="text-[var(--text-muted)] text-sm leading-relaxed">
-                    {item.description}
+                    <T k={`about.expertise.${i}.desc`}>{item.description}</T>
                   </p>
                 </div>
               ))}

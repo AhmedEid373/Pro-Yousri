@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import FrontendWrapper from '@/components/frontend/FrontendWrapper';
+import { T } from '@/components/frontend/T';
 import { readData } from '@/lib/db';
 
 interface PortfolioItem {
@@ -26,10 +27,10 @@ export default function PortfolioPage() {
           <div className="absolute inset-0 bg-gradient-to-br from-[var(--surface-alt)] via-[var(--surface-alt)] to-purple-100 dark:to-purple-950" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p className="text-blue-400 text-sm font-medium tracking-widest uppercase mb-3">
-              My Work
+              <T k="ui.myWork">My Work</T>
             </p>
             <h1 className="text-4xl sm:text-5xl font-bold text-[var(--text-primary)] mb-6">
-              Portfolio
+              <T k="ui.portfolio">Portfolio</T>
             </h1>
             <p className="text-[var(--text-muted)] text-lg max-w-2xl mx-auto leading-relaxed">
               A collection of projects I&apos;ve built — from WordPress sites to VPS setups and everything in between.
@@ -77,10 +78,10 @@ export default function PortfolioPage() {
                     {/* Content */}
                     <div className="p-6 flex flex-col flex-1">
                       <h3 className="text-[var(--text-primary)] font-bold text-lg mb-2 leading-tight">
-                        {item.title}
+                        <T k={`portfolio.${items.indexOf(item)}.title`}>{item.title}</T>
                       </h3>
                       <p className="text-[var(--text-muted)] text-sm leading-relaxed line-clamp-3 flex-1">
-                        {item.description}
+                        <T k={`portfolio.${items.indexOf(item)}.desc`}>{item.description}</T>
                       </p>
 
                       {/* Tags */}
@@ -123,7 +124,7 @@ export default function PortfolioPage() {
                 href="/contact"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-xl transition-all duration-200 shadow-lg shadow-blue-500/25"
               >
-                Hire Me for Your Project →
+                <T k="ui.hireForProject">Hire Me for Your Project</T> →
               </Link>
             </div>
           </div>
