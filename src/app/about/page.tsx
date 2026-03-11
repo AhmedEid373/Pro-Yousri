@@ -6,6 +6,9 @@ interface AboutData {
   title: string;
   subtitle: string;
   profileIcon?: string;
+  showProfileIcon?: boolean;
+  profileGradientFrom?: string;
+  profileGradientTo?: string;
   bios: string[];
   details: Array<{ label: string; value: string }>;
   expertise: Array<{ icon: string; title: string; description: string }>;
@@ -49,9 +52,16 @@ export default function AboutPage() {
             <div className="grid lg:grid-cols-2 gap-16 items-start">
               {/* Bio */}
               <div>
-                <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center text-4xl mb-8">
-                  {data.profileIcon || ''}
-                </div>
+                {data.showProfileIcon !== false && (
+                  <div
+                    className="w-24 h-24 rounded-3xl flex items-center justify-center text-4xl mb-8"
+                    style={{
+                      background: `linear-gradient(to bottom right, ${data.profileGradientFrom || '#3b82f6'}, ${data.profileGradientTo || '#9333ea'})`,
+                    }}
+                  >
+                    {data.profileIcon || ''}
+                  </div>
+                )}
                 {(data.bios ?? []).map((bio, i) => (
                   <p key={i} className={`leading-relaxed mb-6 ${i === 0 ? 'text-[var(--text-secondary)] text-lg' : 'text-[var(--text-muted)]'}`}>
                     <T k={`about.bio.${i}`}>{bio}</T>
