@@ -251,55 +251,22 @@ export default function DashboardSettingsPage() {
     }));
   };
 
-  // Translatable content keys and their English values
-  const getTranslatableContent = (): Record<string, string> => {
-    const content: Record<string, string> = {};
-    // Nav links
-    data.navLinks.forEach((link) => {
-      const key = `nav.${link.label.toLowerCase().replace(/\s+/g, '')}`;
-      content[key] = link.label;
-    });
-    // Common UI strings
-    content['cta.hireMe'] = 'Hire Me';
-    content['cta.viewWork'] = 'View My Work';
-    content['cta.contactMe'] = 'Contact Me';
-    content['cta.getInTouch'] = 'Get In Touch';
-    content['cta.viewAllProjects'] = 'View All Projects';
-    content['hero.greeting'] = "Hello, I'm";
-    content['hero.readyToStart'] = 'Ready to Start Your Project?';
-    content['hero.skills'] = 'Technical Skills';
-    content['hero.featuredProjects'] = 'Featured Projects';
-    content['footer.rights'] = 'All rights reserved.';
-    content['contact.send'] = 'Send Message';
-    content['contact.name'] = 'Your Name';
-    content['contact.email'] = 'Your Email';
-    content['contact.subject'] = 'Subject';
-    content['contact.message'] = 'Your Message';
-    content['theme.light'] = 'Light';
-    content['theme.dark'] = 'Dark';
-    return content;
-  };
-
   const translateLanguage = async (langCode: string) => {
-    const content = getTranslatableContent();
-    const keys = Object.keys(content);
-    const texts = Object.values(content);
     setTranslating(langCode);
     try {
       const res = await fetch('/api/content/translate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ texts, sourceLang: langData.defaultLang, targetLang: langCode }),
+        body: JSON.stringify({ mode: 'pages', sourceLang: langData.defaultLang, targetLang: langCode }),
       });
       const result = await res.json();
-      if (result.translations && Array.isArray(result.translations)) {
-        const newTranslations: Record<string, string> = { ...(langData.translations[langCode] || {}) };
-        keys.forEach((key, i) => {
-          newTranslations[key] = result.translations[i];
-        });
+      if (result.translations && typeof result.translations === 'object') {
         setLangData((d) => ({
           ...d,
-          translations: { ...d.translations, [langCode]: newTranslations },
+          translations: {
+            ...d.translations,
+            [langCode]: { ...(d.translations[langCode] || {}), ...result.translations },
+          },
         }));
       }
     } catch {

@@ -39,7 +39,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { theme, toggleTheme } = useTheme();
-  const { currentLang, languages, setLanguage } = useLanguage();
+  const { currentLang, languages, setLanguage, t } = useLanguage();
   const [langOpen, setLangOpen] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
   const [logoType, setLogoType] = useState('text');
@@ -110,7 +110,7 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
+            {navLinks.map((link, i) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -120,7 +120,7 @@ export default function Navbar() {
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                 }`}
               >
-                {link.label}
+                {t(`nav.${i}`, link.label)}
               </Link>
             ))}
 
@@ -170,7 +170,7 @@ export default function Navbar() {
               href="/contact"
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200"
             >
-              Hire Me
+              {t('ui.hireMe', 'Hire Me')}
             </Link>
           </div>
 
@@ -202,7 +202,7 @@ export default function Navbar() {
         {/* Mobile Nav */}
         {isOpen && (
           <div className="md:hidden bg-[var(--nav-bg)] backdrop-blur-md rounded-b-2xl pb-4">
-            {navLinks.map((link) => (
+            {navLinks.map((link, i) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -213,7 +213,7 @@ export default function Navbar() {
                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/5'
                 }`}
               >
-                {link.label}
+                {t(`nav.${i}`, link.label)}
               </Link>
             ))}
             {/* Language + Theme Toggle + Hire Me row */}
@@ -241,7 +241,7 @@ export default function Navbar() {
                 onClick={() => setIsOpen(false)}
                 className="flex-1 text-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200"
               >
-                Hire Me
+                {t('ui.hireMe', 'Hire Me')}
               </Link>
             </div>
           </div>

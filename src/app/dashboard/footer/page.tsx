@@ -8,6 +8,7 @@ interface FooterData {
   bio: string;
   quickLinks: Array<{ href: string; label: string }>;
   footerServices: Array<{ label: string; link: string }>;
+  legalLinks: Array<{ label: string; href: string }>;
 }
 
 export default function DashboardFooterPage() {
@@ -209,6 +210,54 @@ export default function DashboardFooterPage() {
           className="px-4 py-2 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-xl text-sm transition-colors w-full"
         >
           + Add Service
+        </button>
+      </div>
+
+      {/* Legal Pages */}
+      <div className="bg-slate-800 rounded-xl p-6 max-w-2xl space-y-4 mt-6">
+        <div>
+          <h2 className="text-white font-semibold text-sm">Legal Pages</h2>
+          <p className="text-slate-500 text-xs mt-1">Links shown at the bottom of the footer (Privacy Policy, Terms of Service, etc.)</p>
+        </div>
+        <div className="space-y-3">
+          {(data.legalLinks ?? []).map((link, i) => (
+            <div key={i} className="flex gap-3 items-center">
+              <input
+                type="text"
+                value={link.label}
+                onChange={(e) => {
+                  const legalLinks = [...(data.legalLinks ?? [])];
+                  legalLinks[i] = { ...link, label: e.target.value };
+                  setData({ ...data, legalLinks });
+                }}
+                placeholder="Label (e.g. Privacy Policy)"
+                className="flex-1 bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+              />
+              <input
+                type="text"
+                value={link.href}
+                onChange={(e) => {
+                  const legalLinks = [...(data.legalLinks ?? [])];
+                  legalLinks[i] = { ...link, href: e.target.value };
+                  setData({ ...data, legalLinks });
+                }}
+                placeholder="URL (e.g. /privacy)"
+                className="flex-1 bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+              />
+              <button
+                onClick={() => setData({ ...data, legalLinks: (data.legalLinks ?? []).filter((_, idx) => idx !== i) })}
+                className="text-red-400 hover:text-red-300 text-sm flex-shrink-0"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={() => setData({ ...data, legalLinks: [...(data.legalLinks ?? []), { label: 'New Page', href: '/' }] })}
+          className="px-4 py-2 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-xl text-sm transition-colors w-full"
+        >
+          + Add Legal Link
         </button>
       </div>
     </div>

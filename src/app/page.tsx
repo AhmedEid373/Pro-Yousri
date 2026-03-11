@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Navbar from '@/components/frontend/Navbar';
 import Footer from '@/components/frontend/Footer';
+import { T } from '@/components/frontend/T';
 import { readData } from '@/lib/db';
 
 interface HomeData {
@@ -58,17 +59,17 @@ export default function HomePage() {
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div className="max-w-3xl">
               <p className="text-blue-400 font-medium mb-3 text-sm tracking-widest uppercase">
-                {hero.greeting}
+                <T k="home.greeting">{hero.greeting}</T>
               </p>
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[var(--text-primary)] mb-4">
-                {hero.name}
+                <T k="home.name">{hero.name}</T>
               </h1>
               <h2 className="text-2xl sm:text-3xl font-semibold gradient-text mb-4">
-                {hero.title}
+                <T k="home.title">{hero.title}</T>
               </h2>
-              <p className="text-blue-500 dark:text-blue-300 text-lg mb-6">{hero.subtitle}</p>
+              <p className="text-blue-500 dark:text-blue-300 text-lg mb-6"><T k="home.subtitle">{hero.subtitle}</T></p>
               <p className="text-[var(--text-secondary)] text-lg leading-relaxed mb-10 max-w-2xl">
-                {hero.description}
+                <T k="home.description">{hero.description}</T>
               </p>
 
               <div className="flex flex-wrap gap-4">
@@ -76,13 +77,13 @@ export default function HomePage() {
                   href={hero.ctaPrimaryLink}
                   className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-blue-500/25"
                 >
-                  {hero.ctaPrimary}
+                  <T k="home.ctaPrimary">{hero.ctaPrimary}</T>
                 </Link>
                 <Link
                   href={hero.ctaSecondaryLink}
                   className="px-8 py-4 border border-[var(--border)] hover:border-blue-500 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold rounded-xl transition-all duration-200 hover:scale-105"
                 >
-                  {hero.ctaSecondary}
+                  <T k="home.ctaSecondary">{hero.ctaSecondary}</T>
                 </Link>
               </div>
             </div>
@@ -96,7 +97,7 @@ export default function HomePage() {
               {stats.map((stat, i) => (
                 <div key={i} className="text-center">
                   <p className="text-4xl font-bold gradient-text mb-2">{stat.number}</p>
-                  <p className="text-[var(--text-muted)] text-sm">{stat.label}</p>
+                  <p className="text-[var(--text-muted)] text-sm"><T k={`home.stat.${i}.label`}>{stat.label}</T></p>
                 </div>
               ))}
             </div>
@@ -108,10 +109,10 @@ export default function HomePage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold text-[var(--text-primary)] mb-4">
-                Technical <span className="gradient-text">Skills</span>
+                <T k="ui.technicalSkills">Technical Skills</T>
               </h2>
               <p className="text-[var(--text-muted)] max-w-2xl mx-auto">
-                Years of hands-on experience have shaped my expertise across these key areas.
+                <T k="ui.skillsSubtitle">Years of hands-on experience have shaped my expertise across these key areas.</T>
               </p>
             </div>
 
@@ -119,7 +120,7 @@ export default function HomePage() {
               {skills.map((skill, i) => (
                 <div key={i}>
                   <div className="flex justify-between mb-2">
-                    <span className="text-[var(--text-secondary)] font-medium">{skill.name}</span>
+                    <span className="text-[var(--text-secondary)] font-medium"><T k={`home.skill.${i}.name`}>{skill.name}</T></span>
                     <span className="text-blue-400 font-semibold">{skill.level}%</span>
                   </div>
                   <div className="h-2 bg-[var(--surface)] rounded-full overflow-hidden">
@@ -139,10 +140,10 @@ export default function HomePage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold text-[var(--text-primary)] mb-4">
-                Featured <span className="gradient-text">Projects</span>
+                <T k="ui.featuredProjects">Featured Projects</T>
               </h2>
               <p className="text-[var(--text-muted)] max-w-2xl mx-auto">
-                Some of my recent work that showcases my expertise.
+                <T k="ui.projectsSubtitle">Some of my recent work that showcases my expertise.</T>
               </p>
             </div>
 
@@ -219,7 +220,7 @@ export default function HomePage() {
                 href="/portfolio"
                 className="px-8 py-4 border border-[var(--border)] hover:border-blue-500 text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-semibold rounded-xl transition-all duration-200 inline-block"
               >
-                View All Projects →
+                <T k="ui.viewAllProjects">View All Projects</T> →
               </Link>
             </div>
           </div>
@@ -230,16 +231,16 @@ export default function HomePage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="glass rounded-3xl p-12">
               <h2 className="text-3xl sm:text-4xl font-bold text-[var(--text-primary)] mb-4">
-                Ready to Start Your Project?
+                <T k="ui.readyToStart">Ready to Start Your Project?</T>
               </h2>
               <p className="text-[var(--text-muted)] text-lg mb-8">
-                Let&apos;s build something amazing together. I&apos;m available for freelance projects and consulting.
+                <T k="ui.ctaDescription">{"Let's build something amazing together. I'm available for freelance projects and consulting."}</T>
               </p>
               <Link
                 href="/contact"
                 className="px-10 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 shadow-lg shadow-blue-500/25 inline-block"
               >
-                Get In Touch
+                <T k="ui.getInTouch">Get In Touch</T>
               </Link>
             </div>
           </div>

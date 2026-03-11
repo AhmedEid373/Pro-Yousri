@@ -2,8 +2,15 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
+
+interface LegalLink {
+  label: string;
+  href: string;
+}
 
 export default function Footer() {
+  const { t } = useLanguage();
   const [techStack, setTechStack] = useState('Built with Next.js & Tailwind CSS');
   const [copyright, setCopyright] = useState('Yousri. All rights reserved.');
   const [bio, setBio] = useState('WordPress Developer & Web Specialist. Building powerful digital experiences with expertise in WordPress, VPS, and hosting solutions.');
@@ -20,6 +27,7 @@ export default function Footer() {
     { label: 'Speed Optimization', link: '/services' },
     { label: 'Website Migration', link: '/services' },
   ]);
+  const [legalLinks, setLegalLinks] = useState<LegalLink[]>([]);
 
   useEffect(() => {
     fetch('/api/content/footer')
@@ -30,6 +38,7 @@ export default function Footer() {
         if (data.bio) setBio(data.bio);
         if (data.quickLinks) setQuickLinks(data.quickLinks);
         if (data.footerServices) setFooterServices(data.footerServices);
+        if (data.legalLinks) setLegalLinks(data.legalLinks);
       })
       .catch(() => {});
   }, []);
@@ -49,13 +58,13 @@ export default function Footer() {
               <span className="text-[var(--text-primary)] font-bold text-lg">Yousri</span>
             </div>
             <p className="text-[var(--text-muted)] text-sm leading-relaxed">
-              {bio}
+              {t('footer.bio', bio)}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-[var(--text-primary)] font-semibold mb-4">Quick Links</h3>
+            <h3 className="text-[var(--text-primary)] font-semibold mb-4">{t('ui.quickLinks', 'Quick Links')}</h3>
             <ul className="space-y-2">
               {quickLinks.map((link, i) => (
                 <li key={i}>
@@ -66,14 +75,14 @@ export default function Footer() {
                       rel="noopener noreferrer"
                       className="text-[var(--text-muted)] hover:text-blue-400 text-sm transition-colors duration-200"
                     >
-                      {link.label}
+                      {t(`footer.quickLink.${i}`, link.label)}
                     </a>
                   ) : (
                     <Link
                       href={link.href}
                       className="text-[var(--text-muted)] hover:text-blue-400 text-sm transition-colors duration-200"
                     >
-                      {link.label}
+                      {t(`footer.quickLink.${i}`, link.label)}
                     </Link>
                   )}
                 </li>
@@ -83,7 +92,7 @@ export default function Footer() {
 
           {/* Services */}
           <div>
-            <h3 className="text-[var(--text-primary)] font-semibold mb-4">Services</h3>
+            <h3 className="text-[var(--text-primary)] font-semibold mb-4">{t('ui.services', 'Services')}</h3>
             <ul className="space-y-2">
               {footerServices.map((service, i) => (
                 <li key={i}>
@@ -94,14 +103,14 @@ export default function Footer() {
                       rel="noopener noreferrer"
                       className="text-[var(--text-muted)] hover:text-blue-400 text-sm transition-colors duration-200"
                     >
-                      {service.label}
+                      {t(`footer.service.${i}`, service.label)}
                     </a>
                   ) : (
                     <Link
                       href={service.link || '/services'}
                       className="text-[var(--text-muted)] hover:text-blue-400 text-sm transition-colors duration-200"
                     >
-                      {service.label}
+                      {t(`footer.service.${i}`, service.label)}
                     </Link>
                   )}
                 </li>
@@ -112,10 +121,21 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-[var(--text-muted)] text-sm">
-            © {new Date().getFullYear()} {copyright}
+            © {new Date().getFullYear()} {t('footer.copyright', copyright)}
           </p>
+          <div className="flex items-center gap-4">
+            {legalLinks.map((link, i) => (
+              <Link
+                key={i}
+                href={link.href}
+                className="text-[var(--text-muted)] hover:text-blue-400 text-sm transition-colors duration-200"
+              >
+                {t(`footer.legal.${i}`, link.label)}
+              </Link>
+            ))}
+          </div>
           <p className="text-[var(--text-muted)] text-sm">
-            {techStack}
+            {t('footer.techStack', techStack)}
           </p>
         </div>
       </div>
