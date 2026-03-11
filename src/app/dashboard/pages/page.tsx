@@ -11,14 +11,15 @@ interface SectionStyle {
   paddingY?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
-interface CardItem  { icon: string; title: string; description: string; bullets: string[]; linkUrl?: string; linkTarget?: '_blank' | '_self'; }
+interface SectionLink { linkUrl?: string; linkTarget?: '_blank' | '_self'; linkText?: string; }
+interface CardItem  { icon: string; title: string; description: string; bullets: string[]; linkUrl?: string; linkTarget?: '_blank' | '_self'; linkText?: string; }
 interface StepItem  { step: string; title: string; description: string; }
 
-interface TextSection  { type: 'text';  title: string; body: string; style?: SectionStyle; imageUrl?: string; imageAlt?: string; imagePosition?: 'above' | 'below' | 'left' | 'right'; }
+interface TextSection  { type: 'text';  title: string; body: string; style?: SectionStyle; imageUrl?: string; imageAlt?: string; imagePosition?: 'above' | 'below' | 'left' | 'right'; link?: SectionLink; }
 interface CardsSection { type: 'cards'; title: string; items: CardItem[]; style?: SectionStyle; }
-interface StepsSection { type: 'steps'; title: string; items: StepItem[]; style?: SectionStyle; }
+interface StepsSection { type: 'steps'; title: string; items: StepItem[]; style?: SectionStyle; link?: SectionLink; }
 interface CtaSection   { type: 'cta';   heading: string; body: string; buttonLabel: string; buttonHref: string; style?: SectionStyle; }
-interface ImageSection { type: 'image'; title: string; imageUrl: string; imageAlt: string; caption?: string; imageSize?: 'small' | 'medium' | 'large' | 'full'; style?: SectionStyle; }
+interface ImageSection { type: 'image'; title: string; imageUrl: string; imageAlt: string; caption?: string; imageSize?: 'small' | 'medium' | 'large' | 'full'; style?: SectionStyle; link?: SectionLink; }
 interface SpacerSection { type: 'spacer'; height: 'sm' | 'md' | 'lg' | 'xl'; }
 type Section = TextSection | CardsSection | StepsSection | CtaSection | ImageSection | SpacerSection;
 
@@ -226,6 +227,43 @@ function StyleEditor({ style, onChange }: { style: SectionStyle; onChange: (s: S
   );
 }
 
+// ── Link Editor (reusable for sections) ────────────────────────
+function LinkEditor({ link, onChange }: { link: SectionLink; onChange: (l: SectionLink) => void }) {
+  const l = { linkUrl: '', linkTarget: '_self' as const, linkText: '', ...link };
+  return (
+    <div className="mt-4 pt-4 border-t border-slate-700/50">
+      <p className="text-slate-400 text-xs font-medium mb-3">🔗 Section Link (optional)</p>
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-slate-400 text-xs mb-1">Link URL</label>
+          <input className={INPUT} value={l.linkUrl} onChange={(e) => onChange({ ...l, linkUrl: e.target.value })} placeholder="https://example.com or /about" />
+        </div>
+        <div>
+          <label className="block text-slate-400 text-xs mb-1">Link Text</label>
+          <input className={INPUT} value={l.linkText} onChange={(e) => onChange({ ...l, linkText: e.target.value })} placeholder="Learn more" />
+        </div>
+      </div>
+      <div className="mt-2">
+        <label className="block text-slate-400 text-xs mb-1">Open in</label>
+        <div className="flex bg-slate-900 border border-slate-700 rounded-lg overflow-hidden w-fit">
+          <button
+            onClick={() => onChange({ ...l, linkTarget: '_self' })}
+            className={`px-3 py-2 text-xs font-medium transition-colors ${
+              l.linkTarget === '_self' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+            }`}
+          >Same Tab</button>
+          <button
+            onClick={() => onChange({ ...l, linkTarget: '_blank' })}
+            className={`px-3 py-2 text-xs font-medium transition-colors ${
+              l.linkTarget === '_blank' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+            }`}
+          >New Tab</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Section editors ────────────────────────────────────────────
 function TextEditor({ s, onChange }: { s: TextSection; onChange: (p: Partial<TextSection>) => void }) {
   return (
@@ -278,6 +316,7 @@ function TextEditor({ s, onChange }: { s: TextSection; onChange: (p: Partial<Tex
       </div>
 
       <StyleEditor style={s.style || {}} onChange={(style) => onChange({ style })} />
+      <LinkEditor link={s.link || {}} onChange={(link) => onChange({ link })} />
     </div>
   );
 }
@@ -327,6 +366,7 @@ function ImageEditor({ s, onChange }: { s: ImageSection; onChange: (p: Partial<I
         </div>
       )}
       <StyleEditor style={s.style || {}} onChange={(style) => onChange({ style })} />
+      <LinkEditor link={s.link || {}} onChange={(link) => onChange({ link })} />
     </div>
   );
 }
@@ -392,31 +432,35 @@ function CardsEditor({ s, onChange }: { s: CardsSection; onChange: (p: Partial<C
           </div>
           <div className="pt-3 border-t border-slate-700/50">
             <p className="text-slate-400 text-xs font-medium mb-2">🔗 Card Link (optional)</p>
-            <div className="grid grid-cols-3 gap-3">
-              <div className="col-span-2">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
                 <label className="block text-slate-400 text-xs mb-1">Link URL</label>
                 <input className={INPUT} value={item.linkUrl || ''} onChange={(e) => update(i, { linkUrl: e.target.value })} placeholder="https://example.com or /about" />
               </div>
               <div>
-                <label className="block text-slate-400 text-xs mb-1">Open in</label>
-                <div className="flex bg-slate-900 border border-slate-700 rounded-lg overflow-hidden">
-                  <button
-                    onClick={() => update(i, { linkTarget: '_self' })}
-                    className={`flex-1 py-2 text-xs font-medium transition-colors ${
-                      (item.linkTarget || '_self') === '_self'
-                        ? 'bg-blue-600 text-white'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                    }`}
-                  >Same Tab</button>
-                  <button
-                    onClick={() => update(i, { linkTarget: '_blank' })}
-                    className={`flex-1 py-2 text-xs font-medium transition-colors ${
-                      item.linkTarget === '_blank'
-                        ? 'bg-blue-600 text-white'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                    }`}
-                  >New Tab</button>
-                </div>
+                <label className="block text-slate-400 text-xs mb-1">Link Text</label>
+                <input className={INPUT} value={item.linkText || ''} onChange={(e) => update(i, { linkText: e.target.value })} placeholder="Learn more" />
+              </div>
+            </div>
+            <div className="mt-2">
+              <label className="block text-slate-400 text-xs mb-1">Open in</label>
+              <div className="flex bg-slate-900 border border-slate-700 rounded-lg overflow-hidden w-fit">
+                <button
+                  onClick={() => update(i, { linkTarget: '_self' })}
+                  className={`px-3 py-2 text-xs font-medium transition-colors ${
+                    (item.linkTarget || '_self') === '_self'
+                      ? 'bg-blue-600 text-white'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+                >Same Tab</button>
+                <button
+                  onClick={() => update(i, { linkTarget: '_blank' })}
+                  className={`px-3 py-2 text-xs font-medium transition-colors ${
+                    item.linkTarget === '_blank'
+                      ? 'bg-blue-600 text-white'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+                >New Tab</button>
               </div>
             </div>
           </div>
@@ -475,6 +519,7 @@ function StepsEditor({ s, onChange }: { s: StepsSection; onChange: (p: Partial<S
         className="px-3 py-1.5 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-lg text-xs transition-colors"
       >+ Add Step</button>
       <StyleEditor style={s.style || {}} onChange={(style) => onChange({ style })} />
+      <LinkEditor link={s.link || {}} onChange={(link) => onChange({ link })} />
     </div>
   );
 }

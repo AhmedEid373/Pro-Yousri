@@ -6,6 +6,8 @@ export const dynamic = 'force-dynamic';
 export default function DashboardPage() {
   const messages = readData<Array<{ id: string; read: boolean }>>('messages.json', []);
   const unread = messages.filter((m) => !m.read).length;
+  const site = readData<{ maintenance?: { enabled?: boolean } }>('site.json', {});
+  const isOffline = site.maintenance?.enabled === true;
 
   const cards = [
     { title: 'Home Page', desc: 'Edit hero, stats, skills & projects', href: '/dashboard/home', icon: '🏠', color: 'blue' },
@@ -48,8 +50,10 @@ export default function DashboardPage() {
         <div className="glass rounded-xl p-4">
           <p className="text-slate-400 text-xs mb-1">Status</p>
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-            <p className="text-green-400 text-sm font-medium">Live</p>
+            <div className={`w-2 h-2 rounded-full animate-pulse ${isOffline ? 'bg-red-400' : 'bg-green-400'}`} />
+            <p className={`text-sm font-medium ${isOffline ? 'text-red-400' : 'text-green-400'}`}>
+              {isOffline ? 'Offline' : 'Live'}
+            </p>
           </div>
         </div>
       </div>

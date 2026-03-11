@@ -23,6 +23,12 @@ interface MaintenanceData {
   gif: string;
 }
 
+interface TurnstileData {
+  enabled: boolean;
+  siteKey: string;
+  secretKey: string;
+}
+
 interface SiteData {
   logoType: 'text' | 'image';
   logoText: string;
@@ -33,6 +39,7 @@ interface SiteData {
   navLinks: NavLink[];
   seo: SeoData;
   maintenance: MaintenanceData;
+  turnstile: TurnstileData;
 }
 
 interface Page {
@@ -69,6 +76,11 @@ const defaultData: SiteData = {
     message: "We're working on something awesome. Check back soon!",
     gif: '',
   },
+  turnstile: {
+    enabled: false,
+    siteKey: '',
+    secretKey: '',
+  },
 };
 
 const builtInPages: NavLink[] = [
@@ -79,7 +91,7 @@ const builtInPages: NavLink[] = [
   { href: '/contact', label: 'Contact' },
 ];
 
-type Tab = 'brand' | 'navigation' | 'seo' | 'maintenance';
+type Tab = 'brand' | 'navigation' | 'seo' | 'security' | 'maintenance';
 
 export default function DashboardSettingsPage() {
   const [data, setData] = useState<SiteData>(defaultData);
@@ -104,6 +116,7 @@ export default function DashboardSettingsPage() {
             ...d,
             seo: { ...defaultData.seo, ...(d.seo ?? {}) },
             maintenance: { ...defaultData.maintenance, ...(d.maintenance ?? {}) },
+            turnstile: { ...defaultData.turnstile, ...(d.turnstile ?? {}) },
           });
         }
       })
@@ -211,6 +224,7 @@ export default function DashboardSettingsPage() {
     { key: 'brand', label: 'Logo & Brand' },
     { key: 'navigation', label: 'Navigation' },
     { key: 'seo', label: 'SEO' },
+    { key: 'security', label: 'Security' },
     { key: 'maintenance', label: 'Maintenance' },
   ];
 
@@ -584,6 +598,77 @@ export default function DashboardSettingsPage() {
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab: Security (Cloudflare Turnstile) */}
+        {tab === 'security' && (
+          <div className="space-y-6">
+            <div className={`rounded-xl p-6 space-y-5 border ${
+              data.turnstile.enabled
+                ? 'bg-green-500/10 border-green-500/30'
+                : 'bg-slate-800 border-slate-700/50'
+            }`}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-white font-semibold text-sm">Cloudflare Turnstile</h2>
+                  <p className={`text-xs mt-0.5 ${data.turnstile.enabled ? 'text-green-400' : 'text-slate-400'}`}>
+                    {data.turnstile.enabled
+                      ? '🛡️ Bot protection is active on the contact form'
+                      : 'Contact form is unprotected — enable to block bots'}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setData((d) => ({ ...d, turnstile: { ...d.turnstile, enabled: !d.turnstile.enabled } }))}
+                  className={`relative w-14 h-7 rounded-full transition-colors flex-shrink-0 ${
+                    data.turnstile.enabled ? 'bg-green-500' : 'bg-slate-600'
+                  }`}
+                >
+                  <span
+                    className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-transform ${
+                      data.turnstile.enabled ? 'translate-x-8' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {data.turnstile.enabled && (
+                <>
+                  <div>
+                    <label className="block text-slate-400 text-xs mb-1">Site Key</label>
+                    <input
+                      type="text"
+                      value={data.turnstile.siteKey}
+                      onChange={(e) => setData((d) => ({ ...d, turnstile: { ...d.turnstile, siteKey: e.target.value } }))}
+                      placeholder="0x4AAAAAAA..."
+                      className="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm font-mono"
+                    />
+                    <p className="text-slate-500 text-xs mt-1">Public key — used in the contact form widget</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-400 text-xs mb-1">Secret Key</label>
+                    <input
+                      type="password"
+                      value={data.turnstile.secretKey}
+                      onChange={(e) => setData((d) => ({ ...d, turnstile: { ...d.turnstile, secretKey: e.target.value } }))}
+                      placeholder="0x4AAAAAAA..."
+                      className="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm font-mono"
+                    />
+                    <p className="text-slate-500 text-xs mt-1">Secret key — used server-side to verify the token</p>
+                  </div>
+
+                  <div className="bg-slate-900/60 rounded-lg p-4">
+                    <p className="text-slate-400 text-xs mb-2">How to get your keys:</p>
+                    <ol className="text-slate-500 text-xs space-y-1 list-decimal list-inside">
+                      <li>Go to the Cloudflare dashboard</li>
+                      <li>Navigate to Turnstile under Security</li>
+                      <li>Add a new site and copy the Site Key &amp; Secret Key</li>
+                    </ol>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}

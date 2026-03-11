@@ -12,13 +12,14 @@ interface SectionStyle {
   paddingY?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
-interface CardItem  { icon: string; title: string; description: string; bullets: string[]; linkUrl?: string; linkTarget?: '_blank' | '_self'; }
+interface SectionLink { linkUrl?: string; linkTarget?: '_blank' | '_self'; linkText?: string; }
+interface CardItem  { icon: string; title: string; description: string; bullets: string[]; linkUrl?: string; linkTarget?: '_blank' | '_self'; linkText?: string; }
 interface StepItem  { step: string; title: string; description: string; }
-interface TextSection  { type: 'text';  title: string; body: string; style?: SectionStyle; imageUrl?: string; imageAlt?: string; imagePosition?: 'above' | 'below' | 'left' | 'right'; }
+interface TextSection  { type: 'text';  title: string; body: string; style?: SectionStyle; imageUrl?: string; imageAlt?: string; imagePosition?: 'above' | 'below' | 'left' | 'right'; link?: SectionLink; }
 interface CardsSection { type: 'cards'; title: string; items: CardItem[]; style?: SectionStyle; }
-interface StepsSection { type: 'steps'; title: string; items: StepItem[]; style?: SectionStyle; }
+interface StepsSection { type: 'steps'; title: string; items: StepItem[]; style?: SectionStyle; link?: SectionLink; }
 interface CtaSection   { type: 'cta';   heading: string; body: string; buttonLabel: string; buttonHref: string; style?: SectionStyle; }
-interface ImageSection { type: 'image'; title: string; imageUrl: string; imageAlt: string; caption?: string; imageSize?: 'small' | 'medium' | 'large' | 'full'; style?: SectionStyle; }
+interface ImageSection { type: 'image'; title: string; imageUrl: string; imageAlt: string; caption?: string; imageSize?: 'small' | 'medium' | 'large' | 'full'; style?: SectionStyle; link?: SectionLink; }
 interface SpacerSection { type: 'spacer'; height: 'sm' | 'md' | 'lg' | 'xl'; }
 type Section = TextSection | CardsSection | StepsSection | CtaSection | ImageSection | SpacerSection;
 
@@ -73,6 +74,17 @@ function getSectionStyles(style?: SectionStyle): React.CSSProperties {
   if (style?.backgroundColor) result.backgroundColor = style.backgroundColor;
   if (style?.textColor) result.color = style.textColor;
   return result;
+}
+
+function SectionLinkRenderer({ link, align }: { link?: SectionLink; align: string }) {
+  if (!link?.linkUrl) return null;
+  const isExternal = link.linkTarget === '_blank';
+  const text = link.linkText || (isExternal ? 'Visit ↗' : 'Learn more →');
+  const classes = `inline-block mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-all duration-200 hover:scale-105 text-sm no-underline`;
+  if (isExternal) {
+    return <div className={align}><a href={link.linkUrl} target="_blank" rel="noopener noreferrer" className={classes}>{text}</a></div>;
+  }
+  return <div className={align}><Link href={link.linkUrl} className={classes}>{text}</Link></div>;
 }
 
 export const dynamic = 'force-dynamic';
@@ -180,6 +192,7 @@ export default async function CustomPage({ params }: { params: Promise<{ slug: s
                       <p className="text-[var(--text-muted)] text-sm mt-3 italic">{section.caption}</p>
                     )}
                   </div>
+                  <SectionLinkRenderer link={section.link} align={alignClass} />
                 </div>
               </section>
             );
@@ -231,6 +244,7 @@ export default async function CustomPage({ params }: { params: Promise<{ slug: s
                       {imgPos === 'below' && imageContent && <div className="mt-8">{imageContent}</div>}
                     </>
                   )}
+                  <SectionLinkRenderer link={section.link} align={alignClass} />
                 </div>
               </section>
             );
@@ -274,7 +288,7 @@ export default async function CustomPage({ params }: { params: Promise<{ slug: s
                           {card.linkUrl && (
                             <div className="mt-4 pt-3 border-t border-slate-700/30">
                               <span className="text-blue-400 text-sm font-medium">
-                                {isExternal ? 'Visit ↗' : 'Learn more →'}
+                                {card.linkText || (isExternal ? 'Visit ↗' : 'Learn more →')}
                               </span>
                             </div>
                           )}
@@ -324,6 +338,7 @@ export default async function CustomPage({ params }: { params: Promise<{ slug: s
                       </div>
                     ))}
                   </div>
+                  <SectionLinkRenderer link={section.link} align={alignClass} />
                 </div>
               </section>
             );
