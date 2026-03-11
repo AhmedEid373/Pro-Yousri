@@ -1,6 +1,9 @@
 {
   "title": "About Me",
   "subtitle": "WordPress Developer & Web Specialist",
+  "showProfileIcon": true,
+  "profileGradientFrom": "#3b82f6",
+  "profileGradientTo": "#9333ea",
   "bios": [
     "I'm Yousri, a passionate WordPress developer with over 5 years of hands-on experience building and managing websites. My expertise goes beyond just WordPress development — I have deep knowledge in domain management, VPS server configuration, and hosting optimization that allows me to deliver complete web solutions.",
     "I believe in clean code, performance optimization, and creating websites that not only look great but also perform exceptionally. Whether it's setting up a fresh VPS, configuring DNS records, or building a complex WordPress theme from scratch, I handle every aspect of web development with precision."

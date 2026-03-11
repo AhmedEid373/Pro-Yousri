@@ -6,6 +6,9 @@ interface AboutData {
   title: string;
   subtitle: string;
   profileIcon: string;
+  showProfileIcon: boolean;
+  profileGradientFrom: string;
+  profileGradientTo: string;
   bios: string[];
   details: Array<{ label: string; value: string }>;
   expertise: Array<{ icon: string; title: string; description: string }>;
@@ -89,30 +92,110 @@ export default function DashboardAboutPage() {
             </div>
           ))}
 
-          {/* Profile Icon */}
-          <div>
-            <label className="block text-slate-300 text-sm font-medium mb-2">Profile Icon</label>
-            <p className="text-slate-500 text-xs mb-2">The icon/emoji shown in the gradient box on the about page. Remove to show gradient box only.</p>
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0">
-                {data.profileIcon || ''}
+          {/* Profile Icon Box */}
+          <div className="glass rounded-xl p-5 space-y-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="block text-slate-300 text-sm font-medium">Profile Icon Box</label>
+                <p className="text-slate-500 text-xs mt-1">The gradient box with icon/emoji shown on the about page</p>
               </div>
-              <input
-                type="text"
-                value={data.profileIcon ?? ''}
-                onChange={(e) => setData({ ...data, profileIcon: e.target.value })}
-                placeholder="Enter emoji..."
-                className="w-32 bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 text-sm text-center text-2xl"
-              />
-              {data.profileIcon && (
-                <button
-                  onClick={() => setData({ ...data, profileIcon: '' })}
-                  className="px-3 py-2 bg-red-900/30 hover:bg-red-900/50 text-red-400 text-xs rounded-lg transition-colors"
-                >
-                  Remove Icon
-                </button>
-              )}
+              <button
+                onClick={() => setData({ ...data, showProfileIcon: !data.showProfileIcon })}
+                className={`relative w-11 h-6 rounded-full transition-colors ${
+                  data.showProfileIcon !== false ? 'bg-blue-600' : 'bg-slate-600'
+                }`}
+              >
+                <span
+                  className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+                    data.showProfileIcon !== false ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </button>
             </div>
+
+            {data.showProfileIcon !== false && (
+              <>
+                {/* Preview + Icon input */}
+                <div className="flex items-center gap-4">
+                  <div
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"
+                    style={{
+                      background: `linear-gradient(to bottom right, ${data.profileGradientFrom || '#3b82f6'}, ${data.profileGradientTo || '#9333ea'})`,
+                    }}
+                  >
+                    {data.profileIcon || ''}
+                  </div>
+                  <div>
+                    <label className="block text-slate-400 text-xs mb-1">Icon / Emoji</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={data.profileIcon ?? ''}
+                        onChange={(e) => setData({ ...data, profileIcon: e.target.value })}
+                        placeholder="Enter emoji..."
+                        className="w-28 bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm text-center text-2xl"
+                      />
+                      {data.profileIcon && (
+                        <button
+                          onClick={() => setData({ ...data, profileIcon: '' })}
+                          className="px-3 py-2 bg-red-900/30 hover:bg-red-900/50 text-red-400 text-xs rounded-lg transition-colors"
+                        >
+                          Clear
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Gradient Colors */}
+                <div>
+                  <label className="block text-slate-400 text-xs mb-2">Gradient Colors</label>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        value={data.profileGradientFrom || '#3b82f6'}
+                        onChange={(e) => setData({ ...data, profileGradientFrom: e.target.value })}
+                        className="w-10 h-10 rounded-lg border border-slate-700 cursor-pointer bg-transparent"
+                      />
+                      <div>
+                        <span className="text-slate-500 text-xs block">From</span>
+                        <input
+                          type="text"
+                          value={data.profileGradientFrom || '#3b82f6'}
+                          onChange={(e) => setData({ ...data, profileGradientFrom: e.target.value })}
+                          className="w-24 bg-slate-800 border border-slate-700 text-white rounded-lg px-2 py-1 focus:outline-none focus:border-blue-500 text-xs font-mono"
+                        />
+                      </div>
+                    </div>
+                    <span className="text-slate-600">→</span>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        value={data.profileGradientTo || '#9333ea'}
+                        onChange={(e) => setData({ ...data, profileGradientTo: e.target.value })}
+                        className="w-10 h-10 rounded-lg border border-slate-700 cursor-pointer bg-transparent"
+                      />
+                      <div>
+                        <span className="text-slate-500 text-xs block">To</span>
+                        <input
+                          type="text"
+                          value={data.profileGradientTo || '#9333ea'}
+                          onChange={(e) => setData({ ...data, profileGradientTo: e.target.value })}
+                          className="w-24 bg-slate-800 border border-slate-700 text-white rounded-lg px-2 py-1 focus:outline-none focus:border-blue-500 text-xs font-mono"
+                        />
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setData({ ...data, profileGradientFrom: '#3b82f6', profileGradientTo: '#9333ea' })}
+                      className="px-3 py-1.5 text-slate-400 hover:text-white text-xs border border-slate-700 hover:border-slate-500 rounded-lg transition-colors"
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           <div>
