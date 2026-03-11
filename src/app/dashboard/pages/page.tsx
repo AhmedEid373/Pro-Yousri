@@ -11,7 +11,7 @@ interface SectionStyle {
   paddingY?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
-interface CardItem  { icon: string; title: string; description: string; bullets: string[]; }
+interface CardItem  { icon: string; title: string; description: string; bullets: string[]; linkUrl?: string; linkTarget?: '_blank' | '_self'; }
 interface StepItem  { step: string; title: string; description: string; }
 
 interface TextSection  { type: 'text';  title: string; body: string; style?: SectionStyle; imageUrl?: string; imageAlt?: string; imagePosition?: 'above' | 'below' | 'left' | 'right'; }
@@ -390,10 +390,40 @@ function CardsEditor({ s, onChange }: { s: CardsSection; onChange: (p: Partial<C
             <label className="block text-slate-400 text-xs mb-1">Bullet points (one per line)</label>
             <textarea className={TEXTAREA} rows={3} value={item.bullets.join('\n')} onChange={(e) => update(i, { bullets: e.target.value.split('\n').filter(Boolean) })} />
           </div>
+          <div className="pt-3 border-t border-slate-700/50">
+            <p className="text-slate-400 text-xs font-medium mb-2">🔗 Card Link (optional)</p>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="col-span-2">
+                <label className="block text-slate-400 text-xs mb-1">Link URL</label>
+                <input className={INPUT} value={item.linkUrl || ''} onChange={(e) => update(i, { linkUrl: e.target.value })} placeholder="https://example.com or /about" />
+              </div>
+              <div>
+                <label className="block text-slate-400 text-xs mb-1">Open in</label>
+                <div className="flex bg-slate-900 border border-slate-700 rounded-lg overflow-hidden">
+                  <button
+                    onClick={() => update(i, { linkTarget: '_self' })}
+                    className={`flex-1 py-2 text-xs font-medium transition-colors ${
+                      (item.linkTarget || '_self') === '_self'
+                        ? 'bg-blue-600 text-white'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    }`}
+                  >Same Tab</button>
+                  <button
+                    onClick={() => update(i, { linkTarget: '_blank' })}
+                    className={`flex-1 py-2 text-xs font-medium transition-colors ${
+                      item.linkTarget === '_blank'
+                        ? 'bg-blue-600 text-white'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    }`}
+                  >New Tab</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       ))}
       <button
-        onClick={() => onChange({ items: [...s.items, { icon: '⭐', title: 'New Card', description: '', bullets: [] }] })}
+        onClick={() => onChange({ items: [...s.items, { icon: '⭐', title: 'New Card', description: '', bullets: [], linkUrl: '', linkTarget: '_self' }] })}
         className="px-3 py-1.5 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-lg text-xs transition-colors"
       >+ Add Card</button>
       <StyleEditor style={s.style || {}} onChange={(style) => onChange({ style })} />
