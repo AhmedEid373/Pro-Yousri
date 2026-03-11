@@ -80,7 +80,7 @@ export default function ContactPage() {
       <div className="min-h-screen bg-[var(--background)] pt-16">
         {/* Hero */}
         <section className="relative py-20 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[var(--surface-alt)] via-[var(--surface-alt)] to-green-950" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--surface-alt)] via-[var(--surface-alt)] to-green-100 dark:to-green-950" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p className="text-green-400 text-sm font-medium tracking-widest uppercase mb-3">
               {contactData.subtitle}

@@ -51,7 +51,7 @@ export default function HomePage() {
       <main className="min-h-screen bg-[var(--background)]">
         {/* Hero Section */}
         <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[var(--surface-alt)] via-[var(--surface-alt)] to-blue-950" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--surface-alt)] via-[var(--surface-alt)] to-blue-100 dark:to-blue-950" />
           <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl" />
           <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl" />
 
@@ -66,7 +66,7 @@ export default function HomePage() {
               <h2 className="text-2xl sm:text-3xl font-semibold gradient-text mb-4">
                 {hero.title}
               </h2>
-              <p className="text-blue-300 text-lg mb-6">{hero.subtitle}</p>
+              <p className="text-blue-500 dark:text-blue-300 text-lg mb-6">{hero.subtitle}</p>
               <p className="text-[var(--text-secondary)] text-lg leading-relaxed mb-10 max-w-2xl">
                 {hero.description}
               </p>
@@ -152,7 +152,7 @@ export default function HomePage() {
                 const Card = (
                   <div className="glass rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 group flex flex-col h-full">
                     {/* Image */}
-                    <div className="relative h-44 bg-gradient-to-br from-blue-900/40 to-purple-900/40 overflow-hidden">
+                    <div className="relative h-44 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/40 dark:to-purple-900/40 overflow-hidden">
                       {project.image ? (
                         <img
                           src={project.image}
@@ -185,7 +185,7 @@ export default function HomePage() {
                         ))}
                       </div>
                       {hasLink && (
-                        <div className="mt-4 text-blue-400 text-xs font-medium group-hover:text-blue-300 transition-colors flex items-center gap-1">
+                        <div className="mt-4 text-blue-400 text-xs font-medium group-hover:text-blue-300 dark:group-hover:text-blue-300 transition-colors flex items-center gap-1">
                           View Project
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3">
                             <path fillRule="evenodd" d="M4.5 11.5A.5.5 0 0 1 5 11h5.793L5.146 5.354a.5.5 0 1 1 .708-.708l5.647 5.646V5a.5.5 0 0 1 1 0v6.5a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5Z" clipRule="evenodd" />

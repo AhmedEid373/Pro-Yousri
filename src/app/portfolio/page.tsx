@@ -23,7 +23,7 @@ export default function PortfolioPage() {
 
         {/* Hero */}
         <section className="relative py-20 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[var(--surface-alt)] via-[var(--surface-alt)] to-purple-950" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--surface-alt)] via-[var(--surface-alt)] to-purple-100 dark:to-purple-950" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p className="text-blue-400 text-sm font-medium tracking-widest uppercase mb-3">
               My Work
@@ -53,7 +53,7 @@ export default function PortfolioPage() {
                     className="glass rounded-2xl overflow-hidden hover:-translate-y-1 hover:border-blue-500/50 transition-all duration-300 flex flex-col group"
                   >
                     {/* Image */}
-                    <div className="relative h-48 overflow-hidden bg-gradient-to-br from-blue-900/40 to-purple-900/40">
+                    <div className="relative h-48 overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/40 dark:to-purple-900/40">
                       {item.image ? (
                         <img
                           src={item.image}

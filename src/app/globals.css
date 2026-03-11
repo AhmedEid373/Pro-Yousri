@@ -44,8 +44,8 @@ html:not(.dark) {
   --scrollbar-thumb: #94a3b8;
   --scrollbar-thumb-hover: #64748b;
 
-  --glass-bg: rgba(0, 0, 0, 0.04);
-  --glass-border: rgba(0, 0, 0, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(0, 0, 0, 0.12);
 }
 
 body {
