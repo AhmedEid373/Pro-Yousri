@@ -69,7 +69,7 @@ const defaultSite: SiteData = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const site = readData<SiteData>('site.json', defaultSite);
+  const site = await readData<SiteData>('site.json', defaultSite);
   const seo = site.seo ?? defaultSite.seo!;
 
   return {
@@ -90,7 +90,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const site = readData<SiteData>('site.json', defaultSite);
+  const site = await readData<SiteData>('site.json', defaultSite);
   const headersList = await headers();
   const pathname = headersList.get('x-next-pathname') ?? '/';
 

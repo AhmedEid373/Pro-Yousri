@@ -3,12 +3,12 @@ import { isAuthenticated } from '@/lib/auth';
 import { readData } from '@/lib/db';
 
 // Collect all translatable strings from all page data files
-function collectAllPageContent(): Record<string, string> {
+async function collectAllPageContent(): Promise<Record<string, string>> {
   const content: Record<string, string> = {};
 
   // Home page
   try {
-    const home = readData<Record<string, unknown>>('home.json', {});
+    const home = await readData<Record<string, unknown>>('home.json', {});
     const hero = home.hero as Record<string, string> | undefined;
     if (hero) {
       if (hero.greeting) content['home.greeting'] = hero.greeting;
@@ -35,7 +35,7 @@ function collectAllPageContent(): Record<string, string> {
 
   // About page
   try {
-    const about = readData<Record<string, unknown>>('about.json', {});
+    const about = await readData<Record<string, unknown>>('about.json', {});
     if (about.title) content['about.title'] = about.title as string;
     if (about.subtitle) content['about.subtitle'] = about.subtitle as string;
     const bios = about.bios as string[] | undefined;
@@ -67,7 +67,7 @@ function collectAllPageContent(): Record<string, string> {
 
   // Services page
   try {
-    const svc = readData<Record<string, unknown>>('services.json', {});
+    const svc = await readData<Record<string, unknown>>('services.json', {});
     if (svc.title) content['services.title'] = svc.title as string;
     if (svc.subtitle) content['services.subtitle'] = svc.subtitle as string;
     if (svc.description) content['services.description'] = svc.description as string;
@@ -93,7 +93,7 @@ function collectAllPageContent(): Record<string, string> {
 
   // Portfolio page
   try {
-    const portfolio = readData<Array<{ title: string; description: string }>>('portfolio.json', []);
+    const portfolio = await readData<Array<{ title: string; description: string }>>('portfolio.json', []);
     portfolio.forEach((p, i) => {
       if (p.title) content[`portfolio.${i}.title`] = p.title;
       if (p.description) content[`portfolio.${i}.desc`] = p.description;
@@ -102,7 +102,7 @@ function collectAllPageContent(): Record<string, string> {
 
   // Contact page
   try {
-    const contact = readData<Record<string, unknown>>('contact.json', {});
+    const contact = await readData<Record<string, unknown>>('contact.json', {});
     if (contact.title) content['contact.title'] = contact.title as string;
     if (contact.subtitle) content['contact.subtitle'] = contact.subtitle as string;
     if (contact.description) content['contact.description'] = contact.description as string;
@@ -116,7 +116,7 @@ function collectAllPageContent(): Record<string, string> {
 
   // Footer
   try {
-    const footer = readData<Record<string, unknown>>('footer.json', {});
+    const footer = await readData<Record<string, unknown>>('footer.json', {});
     if (footer.copyright) content['footer.copyright'] = footer.copyright as string;
     if (footer.techStack) content['footer.techStack'] = footer.techStack as string;
     if (footer.bio) content['footer.bio'] = footer.bio as string;
@@ -128,7 +128,7 @@ function collectAllPageContent(): Record<string, string> {
 
   // Site nav links
   try {
-    const site = readData<Record<string, unknown>>('site.json', {});
+    const site = await readData<Record<string, unknown>>('site.json', {});
     const navLinks = site.navLinks as Array<{ label: string }> | undefined;
     if (navLinks) {
       navLinks.forEach((l, i) => {
@@ -188,7 +188,7 @@ function collectAllPageContent(): Record<string, string> {
 
   // Contact page - availability & response time
   try {
-    const contact = readData<Record<string, unknown>>('contact.json', {});
+    const contact = await readData<Record<string, unknown>>('contact.json', {});
     const availability = contact.availabilityOptions as Record<string, string> | undefined;
     if (availability) {
       if (availability.green) content['contact.availability.green'] = availability.green;
@@ -223,7 +223,7 @@ export async function POST(request: NextRequest) {
     // Mode 2: Auto-translate all page content
     if (body.targetLang && body.mode === 'pages') {
       const { sourceLang, targetLang } = body;
-      const content = collectAllPageContent();
+      const content = await collectAllPageContent();
       const keys = Object.keys(content);
       const texts = Object.values(content);
 
@@ -238,7 +238,7 @@ export async function POST(request: NextRequest) {
 
     // Mode 3: Get all translatable content (for preview)
     if (body.mode === 'collect') {
-      const content = collectAllPageContent();
+      const content = await collectAllPageContent();
       return NextResponse.json({ content });
     }
 

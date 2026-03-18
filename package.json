@@ -10,12 +10,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed": "MONGODB_URI=$MONGODB_URI npx ts-node --skip-project scripts/seed-mongo.ts"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.0",
+    "mongodb": "^7.1.0",
     "next": "^15.5.12",
     "next-auth": "^5.0.0-beta.30",
     "react": "19.2.3",

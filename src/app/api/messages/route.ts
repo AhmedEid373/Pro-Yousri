@@ -21,7 +21,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const messages = readData<Message[]>('messages.json');
+    const messages = await readData<Message[]>('messages.json');
     return NextResponse.json(messages);
   } catch {
     return NextResponse.json({ error: 'Failed to read messages' }, { status: 500 });
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify Cloudflare Turnstile if enabled
-    const site = readData<{ turnstile?: { enabled?: boolean; secretKey?: string } }>('site.json', {});
+    const site = await readData<{ turnstile?: { enabled?: boolean; secretKey?: string } }>('site.json', {});
     if (site.turnstile?.enabled && site.turnstile?.secretKey) {
       if (!turnstileToken) {
         return NextResponse.json({ error: 'Turnstile verification required' }, { status: 400 });
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const messages = readData<Message[]>('messages.json');
+    const messages = await readData<Message[]>('messages.json');
     const newMessage: Message = {
       id: Date.now().toString(),
       name,
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     };
 
     messages.unshift(newMessage);
-    writeData('messages.json', messages);
+    await writeData('messages.json', messages);
 
     return NextResponse.json({ success: true });
   } catch {
@@ -88,7 +88,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     const { id, action } = await request.json();
-    const messages = readData<Message[]>('messages.json');
+    const messages = await readData<Message[]>('messages.json');
     const msg = messages.find((m) => m.id === id);
     if (!msg) {
       return NextResponse.json({ error: 'Message not found' }, { status: 404 });
@@ -103,7 +103,7 @@ export async function PATCH(request: NextRequest) {
       msg.status = action as Message['status'];
     }
 
-    writeData('messages.json', messages);
+    await writeData('messages.json', messages);
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: 'Failed to update message' }, { status: 500 });
@@ -118,9 +118,9 @@ export async function DELETE(request: NextRequest) {
     }
 
     const { id } = await request.json();
-    const messages = readData<Message[]>('messages.json');
+    const messages = await readData<Message[]>('messages.json');
     const filtered = messages.filter((m) => m.id !== id);
-    writeData('messages.json', filtered);
+    await writeData('messages.json', filtered);
 
     return NextResponse.json({ success: true });
   } catch {

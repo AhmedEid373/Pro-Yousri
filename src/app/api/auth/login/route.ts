@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const admin = readData<AdminData>('admin.json');
+    const admin = await readData<AdminData>('admin.json');
 
     if (username !== admin.username) {
       return NextResponse.json(
