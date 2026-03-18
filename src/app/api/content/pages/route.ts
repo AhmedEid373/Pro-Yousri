@@ -4,7 +4,7 @@ import { isAuthenticated } from '@/lib/auth';
 
 export async function GET() {
   try {
-    const data = readData('pages.json');
+    const data = await readData('pages.json');
     return NextResponse.json(data);
   } catch {
     return NextResponse.json([], { status: 200 });
@@ -18,7 +18,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const data = await request.json();
-    writeData('pages.json', data);
+    await writeData('pages.json', data);
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: 'Failed to save data' }, { status: 500 });

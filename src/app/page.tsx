@@ -38,11 +38,11 @@ const defaultHome: HomeData = {
   skills: [],
 };
 
-export default function HomePage() {
-  const data = readData<HomeData>('home.json', defaultHome);
+export default async function HomePage() {
+  const data = await readData<HomeData>('home.json', defaultHome);
   const { hero, stats, skills } = data;
 
-  const allPortfolio = readData<PortfolioItem[]>('portfolio.json', []);
+  const allPortfolio = await readData<PortfolioItem[]>('portfolio.json', []);
   const featuredProjects = allPortfolio.filter((p) => p.featured).slice(0, 3);
   const displayProjects = featuredProjects.length > 0 ? featuredProjects : allPortfolio.slice(0, 3);
 

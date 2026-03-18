@@ -14,7 +14,7 @@ const defaultLanguages = {
 };
 
 export async function GET() {
-  const data = readData('languages.json', defaultLanguages);
+  const data = await readData('languages.json', defaultLanguages);
   return NextResponse.json(data);
 }
 
@@ -25,7 +25,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const data = await request.json();
-    writeData('languages.json', data);
+    await writeData('languages.json', data);
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: 'Failed to save data' }, { status: 500 });

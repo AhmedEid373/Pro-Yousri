@@ -3,10 +3,10 @@ import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-export default function DashboardPage() {
-  const messages = readData<Array<{ id: string; read: boolean }>>('messages.json', []);
+export default async function DashboardPage() {
+  const messages = await readData<Array<{ id: string; read: boolean }>>('messages.json', []);
   const unread = messages.filter((m) => !m.read).length;
-  const site = readData<{ maintenance?: { enabled?: boolean } }>('site.json', {});
+  const site = await readData<{ maintenance?: { enabled?: boolean } }>('site.json', {});
   const isOffline = site.maintenance?.enabled === true;
 
   const cards = [

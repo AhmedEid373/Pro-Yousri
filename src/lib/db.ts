@@ -1,28 +1,27 @@
 import 'server-only';
-import fs from 'fs';
-import path from 'path';
+import clientPromise from './mongodb';
 
-const dataDir = path.join(process.cwd(), 'data');
+const DB_NAME = 'pro-yousri';
+const COLLECTION = 'content';
 
-export function readData<T>(filename: string, fallback?: T): T {
-  const filePath = path.join(dataDir, filename);
-  try {
-    const content = fs.readFileSync(filePath, 'utf-8');
-    return JSON.parse(content) as T;
-  } catch {
+export async function readData<T>(key: string, fallback?: T): Promise<T> {
+  const client = await clientPromise;
+  const doc = await client.db(DB_NAME).collection(COLLECTION).findOne({ _key: key });
+  if (!doc) {
     if (fallback !== undefined) {
-      // Auto-create the file so future dashboard saves work
-      try { writeData(filename, fallback); } catch { /* ignore */ }
+      await writeData(key, fallback);
       return fallback;
     }
-    throw new Error(`Failed to read data file: ${filename}`);
+    throw new Error(`Data not found: ${key}`);
   }
+  return doc.value as T;
 }
 
-export function writeData(filename: string, data: unknown): void {
-  const filePath = path.join(dataDir, filename);
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
-  }
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+export async function writeData(key: string, data: unknown): Promise<void> {
+  const client = await clientPromise;
+  await client.db(DB_NAME).collection(COLLECTION).replaceOne(
+    { _key: key },
+    { _key: key, value: data },
+    { upsert: true }
+  );
 }
