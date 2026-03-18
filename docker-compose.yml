@@ -1,0 +1,23 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: pro-yousri
+
+  app:
+    build: .
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/pro-yousri
+      JWT_SECRET: ${JWT_SECRET}
+      NODE_ENV: production
+
+volumes:
+  mongo_data:
