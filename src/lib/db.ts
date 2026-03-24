@@ -15,16 +15,25 @@ async function ensureTable() {
 }
 
 export async function readData<T>(key: string, fallback?: T): Promise<T> {
-  await ensureTable();
-  const result = await pool.query('SELECT value FROM content WHERE key = $1', [key]);
-  if (result.rows.length === 0) {
+  try {
+    await ensureTable();
+    const result = await pool.query('SELECT value FROM content WHERE key = $1', [key]);
+    if (result.rows.length === 0) {
+      if (fallback !== undefined) {
+        await writeData(key, fallback);
+        return fallback;
+      }
+      throw new Error(`Data not found: ${key}`);
+    }
+    return result.rows[0].value as T;
+  } catch (err) {
+    // During build time the DB is unavailable — return fallback so the build succeeds
     if (fallback !== undefined) {
-      await writeData(key, fallback);
+      console.warn(`[db] Could not read "${key}", using fallback:`, (err as Error).message);
       return fallback;
     }
-    throw new Error(`Data not found: ${key}`);
+    throw err;
   }
-  return result.rows[0].value as T;
 }
 
 export async function writeData(key: string, data: unknown): Promise<void> {
