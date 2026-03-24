@@ -1,11 +1,13 @@
 services:
-  mongo:
-    image: mongo:7
+  postgres:
+    image: postgres:16
     restart: always
     volumes:
-      - mongo_data:/data/db
+      - postgres_data:/var/lib/postgresql/data
     environment:
-      MONGO_INITDB_DATABASE: pro-yousri
+      POSTGRES_DB: pro-yousri
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
   app:
     build: .
@@ -13,11 +15,15 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - mongo
+      - postgres
     environment:
-      MONGODB_URI: mongodb://mongo:27017/pro-yousri
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: pro-yousri
       JWT_SECRET: ${JWT_SECRET}
       NODE_ENV: production
 
 volumes:
-  mongo_data:
+  postgres_data:

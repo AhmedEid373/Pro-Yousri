@@ -11,13 +11,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed": "MONGODB_URI=$MONGODB_URI npx ts-node --skip-project scripts/seed-mongo.ts"
+    "seed": "npx ts-node --skip-project scripts/seed-postgres.ts"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.0",
-    "mongodb": "^7.1.0",
+    "pg": "^8.13.1",
     "next": "^15.5.12",
     "next-auth": "^5.0.0-beta.30",
     "react": "19.2.3",
@@ -28,6 +28,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/pg": "^8.11.11",
     "eslint": "^9",
     "eslint-config-next": "^15.5.12",
     "server-only": "^0.0.1",

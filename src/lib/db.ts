@@ -1,27 +1,37 @@
 import 'server-only';
-import clientPromise from './mongodb';
+import pool from './postgres';
 
-const DB_NAME = 'pro-yousri';
-const COLLECTION = 'content';
+let tableReady = false;
+
+async function ensureTable() {
+  if (tableReady) return;
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS content (
+      key TEXT PRIMARY KEY,
+      value JSONB NOT NULL
+    )
+  `);
+  tableReady = true;
+}
 
 export async function readData<T>(key: string, fallback?: T): Promise<T> {
-  const client = await clientPromise;
-  const doc = await client.db(DB_NAME).collection(COLLECTION).findOne({ _key: key });
-  if (!doc) {
+  await ensureTable();
+  const result = await pool.query('SELECT value FROM content WHERE key = $1', [key]);
+  if (result.rows.length === 0) {
     if (fallback !== undefined) {
       await writeData(key, fallback);
       return fallback;
     }
     throw new Error(`Data not found: ${key}`);
   }
-  return doc.value as T;
+  return result.rows[0].value as T;
 }
 
 export async function writeData(key: string, data: unknown): Promise<void> {
-  const client = await clientPromise;
-  await client.db(DB_NAME).collection(COLLECTION).replaceOne(
-    { _key: key },
-    { _key: key, value: data },
-    { upsert: true }
+  await ensureTable();
+  await pool.query(
+    `INSERT INTO content (key, value) VALUES ($1, $2::jsonb)
+     ON CONFLICT (key) DO UPDATE SET value = $2::jsonb`,
+    [key, JSON.stringify(data)]
   );
 }
