@@ -25,6 +25,28 @@
     { "name": "Domain & DNS", "level": 90 },
     { "name": "cPanel / WHM", "level": 88 }
   ],
+  "brandTicker": {
+    "speed": 30,
+    "brands": [
+      { "name": "WordPress" },
+      { "name": "WooCommerce" },
+      { "name": "Cloudflare" },
+      { "name": "cPanel" },
+      { "name": "GoDaddy" },
+      { "name": "Namecheap" },
+      { "name": "VPS Linux" },
+      { "name": "Elementor" }
+    ]
+  },
+  "testimonialTicker": {
+    "speed": 25,
+    "testimonials": [
+      { "name": "Ahmed K.", "source": "google", "text": "Excellent work, very professional and fast delivery!", "avatar": "" },
+      { "name": "Sara M.", "source": "trustpilot", "text": "Best developer I've worked with. Highly recommended!", "avatar": "" },
+      { "name": "John D.", "source": "google", "text": "Fixed my server issues in minutes. Great expertise!", "avatar": "" },
+      { "name": "Layla H.", "source": "trustpilot", "text": "Amazing WordPress setup, everything works perfectly!", "avatar": "" }
+    ]
+  },
   "featuredProjects": [
     {
       "id": 1,
