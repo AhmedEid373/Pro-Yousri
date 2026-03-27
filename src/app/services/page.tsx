@@ -11,7 +11,10 @@ interface Service {
   description: string;
   features: string[];
   price: string;
+  showPrice?: boolean;
   popular: boolean;
+  ctaText?: string;
+  ctaLink?: string;
 }
 
 interface ServicesData {
@@ -92,12 +95,14 @@ export default async function ServicesPage() {
                   </ul>
 
                   <div className="flex items-center justify-between pt-4 border-t border-[var(--border)]">
-                    <span className="text-blue-400 font-semibold text-sm"><T k={`services.item.${data.services.indexOf(service)}.price`}>{service.price}</T></span>
+                    {(service.showPrice ?? true) && (
+                      <span className="text-blue-400 font-semibold text-sm"><T k={`services.item.${data.services.indexOf(service)}.price`}>{service.price}</T></span>
+                    )}
                     <Link
-                      href="/contact"
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors"
+                      href={service.ctaLink || '/contact'}
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors ml-auto"
                     >
-                      <T k="ui.getStarted">Get Started</T>
+                      <T k="ui.getStarted">{service.ctaText || 'Get Started'}</T>
                     </Link>
                   </div>
                 </div>
