@@ -26,6 +26,7 @@
     { "name": "cPanel / WHM", "level": 88 }
   ],
   "brandTicker": {
+    "enabled": true,
     "speed": 30,
     "brands": [
       { "name": "WordPress" },
@@ -39,12 +40,13 @@
     ]
   },
   "testimonialTicker": {
-    "speed": 25,
+    "enabled": true,
+    "pauseDuration": 4,
     "testimonials": [
-      { "name": "Ahmed K.", "source": "google", "text": "Excellent work, very professional and fast delivery!", "avatar": "" },
-      { "name": "Sara M.", "source": "trustpilot", "text": "Best developer I've worked with. Highly recommended!", "avatar": "" },
-      { "name": "John D.", "source": "google", "text": "Fixed my server issues in minutes. Great expertise!", "avatar": "" },
-      { "name": "Layla H.", "source": "trustpilot", "text": "Amazing WordPress setup, everything works perfectly!", "avatar": "" }
+      { "name": "Ahmed K.", "source": "google", "sourceCustom": "", "text": "Excellent work, very professional and fast delivery!", "avatar": "" },
+      { "name": "Sara M.", "source": "trustpilot", "sourceCustom": "", "text": "Best developer I've worked with. Highly recommended!", "avatar": "" },
+      { "name": "John D.", "source": "google", "sourceCustom": "", "text": "Fixed my server issues in minutes. Great expertise!", "avatar": "" },
+      { "name": "Layla H.", "source": "trustpilot", "sourceCustom": "", "text": "Amazing WordPress setup, everything works perfectly!", "avatar": "" }
     ]
   },
   "featuredProjects": [
