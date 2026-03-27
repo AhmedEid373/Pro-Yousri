@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import FrontendWrapper from '@/components/frontend/FrontendWrapper';
 import { useLanguage } from '@/context/LanguageContext';
 import Script from 'next/script';
+import Image from 'next/image';
 
 interface ContactInfo {
   icon: string;
@@ -159,9 +160,9 @@ export default function ContactPage() {
                       rel="noopener noreferrer"
                       className="flex items-center gap-4 glass rounded-xl p-4 hover:border-blue-500/50 transition-all duration-200 group"
                     >
-                      <div className="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center text-xl flex-shrink-0 group-hover:bg-blue-600/30 transition-colors overflow-hidden">
+                      <div className="relative w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center text-xl flex-shrink-0 group-hover:bg-blue-600/30 transition-colors overflow-hidden">
                         {info.iconUrl ? (
-                          <img src={info.iconUrl} alt={info.label} className="w-full h-full object-cover" />
+                          <Image src={info.iconUrl} alt={info.label} fill className="object-cover" unoptimized />
                         ) : (
                           info.icon
                         )}

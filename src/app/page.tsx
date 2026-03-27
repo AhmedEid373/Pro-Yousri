@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import Navbar from '@/components/frontend/Navbar';
 import Footer from '@/components/frontend/Footer';
 import { T } from '@/components/frontend/T';
@@ -192,10 +193,12 @@ export default async function HomePage() {
                     {/* Image */}
                     <div className="relative h-44 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/40 dark:to-purple-900/40 overflow-hidden">
                       {project.image ? (
-                        <img
+                        <Image
                           src={project.image}
                           alt={project.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          unoptimized
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface HomeData {
   hero: {
@@ -355,8 +356,8 @@ export default function DashboardHomePage() {
                     {/* Avatar + name row */}
                     <div className="flex items-center gap-3">
                       <div className="relative flex-shrink-0">
-                        <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
-                          {t.avatar ? <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" /> : (t.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase())}
+                        <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
+                          {t.avatar ? <Image src={t.avatar} alt={t.name} fill className="object-cover" unoptimized /> : (t.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase())}
                         </div>
                         <label className="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-600 hover:bg-blue-500 rounded-full flex items-center justify-center cursor-pointer">
                           <span className="text-white text-xs leading-none">+</span>

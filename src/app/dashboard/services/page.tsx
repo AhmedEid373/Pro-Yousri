@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 
 interface Service {
   id: number;
@@ -40,9 +41,9 @@ function ServiceIconUploader({ service, index, onChange }: {
 
   return (
     <div className="flex items-center gap-3">
-      <div className="w-10 h-10 bg-slate-700 rounded-lg flex items-center justify-center text-xl overflow-hidden flex-shrink-0">
+      <div className="w-10 h-10 bg-slate-700 rounded-lg flex items-center justify-center text-xl overflow-hidden flex-shrink-0 relative">
         {service.iconUrl ? (
-          <img src={service.iconUrl} alt={service.title} className="w-full h-full object-cover" />
+          <Image src={service.iconUrl} alt={service.title} fill className="object-cover" unoptimized />
         ) : (
           service.icon || '❓'
         )}
@@ -219,9 +220,9 @@ export default function DashboardServicesPage() {
                 className="w-full flex items-center justify-between p-4 text-left hover:bg-white/5 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded flex items-center justify-center text-xl overflow-hidden flex-shrink-0">
+                  <div className="w-7 h-7 rounded flex items-center justify-center text-xl overflow-hidden flex-shrink-0 relative">
                     {service.iconUrl ? (
-                      <img src={service.iconUrl} alt={service.title} className="w-full h-full object-cover rounded" />
+                      <Image src={service.iconUrl} alt={service.title} fill className="object-cover rounded" unoptimized />
                     ) : (
                       service.icon
                     )}

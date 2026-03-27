@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import FrontendWrapper from '@/components/frontend/FrontendWrapper';
 import { T } from '@/components/frontend/T';
 import { readData } from '@/lib/db';
@@ -56,10 +57,12 @@ export default async function PortfolioPage() {
                     {/* Image */}
                     <div className="relative h-48 overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/40 dark:to-purple-900/40">
                       {item.image ? (
-                        <img
+                        <Image
                           src={item.image}
                           alt={item.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          unoptimized
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
