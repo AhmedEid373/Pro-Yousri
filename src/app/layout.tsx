@@ -5,6 +5,8 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import { headers } from "next/headers";
 import { readData } from "@/lib/db";
 
+export const dynamic = 'force-dynamic';
+
 interface SiteData {
   logoType?: string;
   logoText?: string;
