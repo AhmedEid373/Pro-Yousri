@@ -38,6 +38,7 @@ export async function readData<T>(filename: string, fallback?: T): Promise<T> {
   const model = fileToModel[filename];
   if (!model) throw new Error(`Unknown data file: ${filename}`);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const record = await (prisma[model] as any).findUnique({ where: { id: 1 } });
 
   if (!record) {
@@ -55,6 +56,7 @@ export async function writeData(filename: string, data: unknown): Promise<void> 
   const model = fileToModel[filename];
   if (!model) throw new Error(`Unknown data file: ${filename}`);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   await (prisma[model] as any).upsert({
     where: { id: 1 },
     create: { id: 1, data },
