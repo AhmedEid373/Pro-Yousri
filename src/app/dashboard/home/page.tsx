@@ -383,6 +383,14 @@ export default function DashboardHomePage() {
                         setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { enabled: true, pauseDuration: 4 }), testimonials } });
                       }} className="text-red-400 hover:text-red-300 px-1">✕</button>
                     </div>
+                    {/* Avatar URL input */}
+                    <input
+                      type="text"
+                      value={t.avatar ?? ''}
+                      onChange={(e) => updateT({ avatar: e.target.value })}
+                      placeholder="Or paste avatar image URL…"
+                      className="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-3 py-1.5 focus:outline-none focus:border-blue-500 text-xs placeholder-slate-500"
+                    />
                     {/* Source */}
                     <div className="flex gap-2">
                       <select

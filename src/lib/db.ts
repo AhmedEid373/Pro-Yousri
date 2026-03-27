@@ -16,7 +16,8 @@ type ModelName =
   | 'languagesConfig'
   | 'pagesContent'
   | 'messagesContent'
-  | 'adminConfig';
+  | 'adminConfig'
+  | 'mediaLibrary';
 
 const fileToModel: Record<string, ModelName> = {
   'site.json': 'siteConfig',
@@ -30,6 +31,7 @@ const fileToModel: Record<string, ModelName> = {
   'pages.json': 'pagesContent',
   'messages.json': 'messagesContent',
   'admin.json': 'adminConfig',
+  'media.json': 'mediaLibrary',
 };
 
 export async function readData<T>(filename: string, fallback?: T): Promise<T> {

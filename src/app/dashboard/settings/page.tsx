@@ -514,14 +514,23 @@ export default function DashboardSettingsPage() {
                       </button>
                     </div>
                   )}
-                  <input ref={logoFileRef} type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
-                  <button
-                    onClick={() => logoFileRef.current?.click()}
-                    disabled={uploading}
-                    className="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg transition-colors disabled:opacity-50"
-                  >
-                    {uploading ? 'Uploading…' : '📁 Upload Image'}
-                  </button>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={data.logoImage ?? ''}
+                      onChange={(e) => setData((d) => ({ ...d, logoImage: e.target.value }))}
+                      placeholder="Paste image URL or upload…"
+                      className="flex-1 bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                    />
+                    <input ref={logoFileRef} type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
+                    <button
+                      onClick={() => logoFileRef.current?.click()}
+                      disabled={uploading}
+                      className="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg transition-colors disabled:opacity-50 whitespace-nowrap"
+                    >
+                      {uploading ? '…' : '📁 Upload'}
+                    </button>
+                  </div>
                 </div>
               )}
 

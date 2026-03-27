@@ -83,3 +83,10 @@ model AdminConfig {
 
   @@map("admin_config")
 }
+
+model MediaLibrary {
+  id   Int  @id @default(1)
+  data Json
+
+  @@map("media_library")
+}
