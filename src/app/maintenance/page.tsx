@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { readData } from '@/lib/db';
 
 interface SiteData {
@@ -26,10 +27,13 @@ export default async function MaintenancePage() {
     >
       <div style={{ textAlign: 'center', padding: '2rem', maxWidth: '500px' }}>
         {gif ? (
-          <img
+          <Image
             src={gif}
             alt="Maintenance"
-            style={{ width: '200px', height: '200px', objectFit: 'contain', margin: '0 auto 2rem', borderRadius: '12px' }}
+            width={200}
+            height={200}
+            style={{ objectFit: 'contain', margin: '0 auto 2rem', borderRadius: '12px' }}
+            unoptimized
           />
         ) : (
           <div style={{ fontSize: '80px', marginBottom: '2rem' }}>⚙️</div>

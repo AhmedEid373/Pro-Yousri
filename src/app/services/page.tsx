@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import FrontendWrapper from '@/components/frontend/FrontendWrapper';
 import { T } from '@/components/frontend/T';
 import { readData } from '@/lib/db';
@@ -77,7 +78,7 @@ export default async function ServicesPage() {
 
                   <div className="mb-4">
                     {service.iconUrl ? (
-                      <img src={service.iconUrl} alt={service.title} className="w-12 h-12 object-cover rounded-lg" />
+                      <Image src={service.iconUrl} alt={service.title} width={48} height={48} className="w-12 h-12 object-cover rounded-lg" unoptimized />
                     ) : (
                       <span className="text-4xl">{service.icon}</span>
                     )}

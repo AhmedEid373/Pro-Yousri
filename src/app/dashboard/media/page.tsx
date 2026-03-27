@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 
 interface MediaFile {
   id: string;
@@ -123,11 +124,13 @@ export default function MediaPage() {
           {files.map((file) => (
             <div key={file.id} className="bg-slate-800 rounded-xl overflow-hidden">
               {/* Thumbnail */}
-              <div className="aspect-square bg-slate-900 flex items-center justify-center overflow-hidden">
-                <img
+              <div className="aspect-square bg-slate-900 flex items-center justify-center overflow-hidden relative">
+                <Image
                   src={file.url}
                   alt={file.filename}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
+                  unoptimized
                   onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                 />
               </div>

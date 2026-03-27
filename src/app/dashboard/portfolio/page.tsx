@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 
 interface PortfolioItem {
   id: string;
@@ -42,9 +43,9 @@ function ImageUploader({
 
   return (
     <div className="flex items-center gap-3">
-      <div className="w-16 h-16 bg-slate-700 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0 border border-slate-600">
+      <div className="w-16 h-16 bg-slate-700 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0 border border-slate-600 relative">
         {value ? (
-          <img src={value} alt="Preview" className="w-full h-full object-cover" />
+          <Image src={value} alt="Preview" fill className="object-cover" unoptimized />
         ) : (
           <span className="text-2xl">🖼️</span>
         )}
@@ -176,9 +177,9 @@ export default function DashboardPortfolioPage() {
                 className="w-full flex items-center gap-4 p-4 text-left hover:bg-white/5 transition-colors"
               >
                 {/* Thumbnail */}
-                <div className="w-10 h-10 rounded-lg overflow-hidden bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 rounded-lg overflow-hidden bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center flex-shrink-0 relative">
                   {item.image ? (
-                    <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                    <Image src={item.image} alt={item.title} fill className="object-cover" unoptimized />
                   ) : (
                     <span className="text-lg">🚀</span>
                   )}

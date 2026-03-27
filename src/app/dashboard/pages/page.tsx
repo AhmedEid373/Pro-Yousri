@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 // ── Types ──────────────────────────────────────────────────────
 interface SectionStyle {
@@ -310,7 +311,7 @@ function TextEditor({ s, onChange }: { s: TextSection; onChange: (p: Partial<Tex
         </div>
         {s.imageUrl && (
           <div className="mt-2 rounded-lg overflow-hidden border border-slate-700 max-w-xs">
-            <img src={s.imageUrl} alt={s.imageAlt || ''} className="w-full h-auto" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+            <Image src={s.imageUrl} alt={s.imageAlt || ''} width={400} height={300} className="w-full h-auto" unoptimized onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
           </div>
         )}
       </div>
@@ -362,7 +363,7 @@ function ImageEditor({ s, onChange }: { s: ImageSection; onChange: (p: Partial<I
       </div>
       {s.imageUrl && (
         <div className="rounded-lg overflow-hidden border border-slate-700 max-w-sm">
-          <img src={s.imageUrl} alt={s.imageAlt || ''} className="w-full h-auto" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+          <Image src={s.imageUrl} alt={s.imageAlt || ''} width={400} height={300} className="w-full h-auto" unoptimized onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
         </div>
       )}
       <StyleEditor style={s.style || {}} onChange={(style) => onChange({ style })} />

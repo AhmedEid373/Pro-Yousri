@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import FrontendWrapper from '@/components/frontend/FrontendWrapper';
 import { readData } from '@/lib/db';
@@ -182,10 +183,13 @@ export default async function CustomPage({ params }: { params: Promise<{ slug: s
                   )}
                   <div className={`${sizeClass} ${alignClass === 'text-center' ? 'mx-auto' : alignClass === 'text-right' ? 'ml-auto' : ''}`}>
                     {section.imageUrl && (
-                      <img
+                      <Image
                         src={section.imageUrl}
                         alt={section.imageAlt || ''}
+                        width={800}
+                        height={600}
                         className="w-full h-auto rounded-2xl shadow-lg"
+                        unoptimized
                       />
                     )}
                     {section.caption && (
@@ -222,10 +226,13 @@ export default async function CustomPage({ params }: { params: Promise<{ slug: s
 
             const imageContent = hasImage ? (
               <div className={isHorizontal ? 'flex-1' : ''}>
-                <img
-                  src={section.imageUrl}
+                <Image
+                  src={section.imageUrl!}
                   alt={section.imageAlt || ''}
+                  width={800}
+                  height={600}
                   className="w-full h-auto rounded-2xl shadow-lg"
+                  unoptimized
                 />
               </div>
             ) : null;

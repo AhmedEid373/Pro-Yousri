@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 
 interface ContactInfo {
   icon: string;
@@ -50,9 +51,9 @@ function IconUploader({ info, index, onChange }: {
 
   return (
     <div className="flex items-center gap-3">
-      <div className="w-10 h-10 bg-slate-700 rounded-lg flex items-center justify-center text-xl overflow-hidden flex-shrink-0">
+      <div className="relative w-10 h-10 bg-slate-700 rounded-lg flex items-center justify-center text-xl overflow-hidden flex-shrink-0">
         {info.iconUrl ? (
-          <img src={info.iconUrl} alt={info.label} className="w-full h-full object-cover" />
+          <Image src={info.iconUrl} alt={info.label} fill className="object-cover" unoptimized />
         ) : (
           info.icon || '❓'
         )}

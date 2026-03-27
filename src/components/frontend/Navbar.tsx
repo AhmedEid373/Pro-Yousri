@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
+import Image from 'next/image';
 
 const defaultNavLinks = [
   { href: '/', label: 'Home' },
@@ -93,9 +94,9 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
+            <div className="relative w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
               {logoType === 'image' && logoImage ? (
-                <img src={logoImage} alt={brandName} className="w-full h-full object-cover" />
+                <Image src={logoImage} alt={brandName} fill className="object-cover" unoptimized />
               ) : (
                 <div
                   className="w-full h-full flex items-center justify-center"

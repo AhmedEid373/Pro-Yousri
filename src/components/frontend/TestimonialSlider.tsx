@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface Testimonial {
   name: string;
@@ -17,9 +18,9 @@ function initials(name: string) {
 function Avatar({ name, src }: { name: string; src?: string }) {
   const [error, setError] = useState(false);
   return (
-    <div className="w-9 h-9 rounded-full flex-shrink-0 overflow-hidden bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
+    <div className="relative w-9 h-9 rounded-full flex-shrink-0 overflow-hidden bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
       {src && !error ? (
-        <img src={src} alt={name} className="w-full h-full object-cover" onError={() => setError(true)} />
+        <Image src={src} alt={name} fill className="object-cover" unoptimized onError={() => setError(true)} />
       ) : (
         initials(name)
       )}

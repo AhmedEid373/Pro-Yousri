@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 
 interface NavLink {
   href: string;
@@ -505,7 +506,7 @@ export default function DashboardSettingsPage() {
                   <label className="block text-slate-400 text-xs">Logo Image</label>
                   {data.logoImage && (
                     <div className="flex items-center gap-3">
-                      <img src={data.logoImage} alt="Logo" className="w-12 h-12 rounded-xl object-cover border border-slate-700" />
+                      <Image src={data.logoImage} alt="Logo" width={48} height={48} className="w-12 h-12 rounded-xl object-cover border border-slate-700" unoptimized />
                       <button
                         onClick={() => setData((d) => ({ ...d, logoImage: '' }))}
                         className="text-red-400 hover:text-red-300 text-sm"
@@ -538,9 +539,9 @@ export default function DashboardSettingsPage() {
               <div>
                 <label className="block text-slate-400 text-xs mb-2">Preview</label>
                 <div className="flex items-center gap-2 bg-slate-900 rounded-lg px-4 py-3 w-fit">
-                  <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
+                  <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0 relative">
                     {data.logoType === 'image' && data.logoImage ? (
-                      <img src={data.logoImage} alt={data.brandName} className="w-full h-full object-cover" />
+                      <Image src={data.logoImage} alt={data.brandName} fill className="object-cover" unoptimized />
                     ) : (
                       <div
                         className="w-full h-full flex items-center justify-center"
@@ -823,7 +824,7 @@ export default function DashboardSettingsPage() {
                 <label className="block text-slate-400 text-xs mb-1">OG Image</label>
                 {data.seo.ogImage && (
                   <div className="mb-2 flex items-center gap-3">
-                    <img src={data.seo.ogImage} alt="OG" className="w-20 h-12 rounded-lg object-cover border border-slate-700" />
+                    <Image src={data.seo.ogImage} alt="OG" width={80} height={48} className="w-20 h-12 rounded-lg object-cover border border-slate-700" unoptimized />
                     <button
                       onClick={() => setData((d) => ({ ...d, seo: { ...d.seo, ogImage: '' } }))}
                       className="text-red-400 hover:text-red-300 text-sm"
@@ -1232,10 +1233,13 @@ export default function DashboardSettingsPage() {
                   style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)' }}
                 >
                   {data.maintenance.gif ? (
-                    <img
+                    <Image
                       src={data.maintenance.gif}
                       alt="Maintenance"
+                      width={96}
+                      height={96}
                       className="w-24 h-24 object-contain rounded-xl mb-4"
+                      unoptimized
                     />
                   ) : (
                     <div className="text-5xl mb-4">⚙️</div>
