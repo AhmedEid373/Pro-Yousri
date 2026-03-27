@@ -18,6 +18,8 @@ interface HomeData {
   };
   stats: Array<{ number: string; label: string }>;
   skills: Array<{ name: string; level: number }>;
+  brandTicker?: { speed: number; brands: Array<{ name: string }> };
+  testimonialTicker?: { speed: number; testimonials: Array<{ name: string; source: string; text: string; avatar?: string }> };
 }
 
 interface PortfolioItem {
@@ -36,11 +38,15 @@ const defaultHome: HomeData = {
   hero: { greeting: "Hello, I'm", name: 'Yousri', title: 'WordPress Developer & Web Specialist', subtitle: 'Expert in WordPress, Domains, VPS & Hosting Solutions', description: '', ctaPrimary: 'View My Work', ctaPrimaryLink: '/services', ctaSecondary: 'Contact Me', ctaSecondaryLink: '/contact' },
   stats: [],
   skills: [],
+  brandTicker: { speed: 30, brands: [] },
+  testimonialTicker: { speed: 25, testimonials: [] },
 };
 
 export default async function HomePage() {
   const data = await readData<HomeData>('home.json', defaultHome);
   const { hero, stats, skills } = data;
+  const brandTicker = data.brandTicker ?? { speed: 30, brands: [] };
+  const testimonialTicker = data.testimonialTicker ?? { speed: 25, testimonials: [] };
 
   const allPortfolio = await readData<PortfolioItem[]>('portfolio.json', []);
   const featuredProjects = allPortfolio.filter((p) => p.featured).slice(0, 3);
@@ -89,6 +95,58 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* Brand Ticker — left to right */}
+        {brandTicker.brands.length > 0 && (
+          <section className="border-b border-[var(--border)] overflow-hidden py-4 bg-[var(--surface)]/30">
+            <div
+              className="ticker-ltr flex w-max"
+              style={{ animationDuration: `${brandTicker.speed}s` }}
+            >
+              {[...brandTicker.brands, ...brandTicker.brands].map((b, i) => (
+                <span key={i} className="flex items-center text-sm font-semibold text-[var(--text-muted)] whitespace-nowrap px-6 tracking-wide uppercase">
+                  {b.name}
+                  <span className="ml-6 text-[var(--border)]">·</span>
+                </span>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Testimonials Ticker — right to left */}
+        {testimonialTicker.testimonials.length > 0 && (
+          <section className="border-b border-[var(--border)] overflow-hidden py-5 bg-[var(--surface)]/20">
+            <div
+              className="ticker-rtl flex w-max gap-4"
+              style={{ animationDuration: `${testimonialTicker.speed}s` }}
+            >
+              {[...testimonialTicker.testimonials, ...testimonialTicker.testimonials].map((t, i) => (
+                <div key={i} className="flex items-start gap-3 bg-[var(--surface)] border border-[var(--border)] rounded-xl px-4 py-3 w-72 flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full flex-shrink-0 overflow-hidden bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
+                    {t.avatar ? (
+                      <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" />
+                    ) : (
+                      t.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs text-[var(--text-secondary)] line-clamp-2 mb-1">{t.text}</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-medium text-[var(--text-muted)]">{t.name}</span>
+                      <span className="text-xs">
+                        {t.source === 'trustpilot' ? (
+                          <span className="text-green-400">★ Trustpilot</span>
+                        ) : (
+                          <span className="text-blue-400">G Google</span>
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Stats Section */}
         <section className="bg-[var(--surface)]/50 border-y border-[var(--border)]">

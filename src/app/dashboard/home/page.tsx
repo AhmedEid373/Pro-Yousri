@@ -23,6 +23,8 @@ interface HomeData {
     tags: string[];
     link: string;
   }>;
+  brandTicker: { speed: number; brands: Array<{ name: string }> };
+  testimonialTicker: { speed: number; testimonials: Array<{ name: string; source: string; text: string; avatar?: string }> };
 }
 
 export default function DashboardHomePage() {
@@ -52,7 +54,7 @@ export default function DashboardHomePage() {
 
   if (!data) return <div className="p-8 text-slate-400">Loading...</div>;
 
-  const tabs = ['hero', 'stats', 'skills', 'projects'];
+  const tabs = ['hero', 'stats', 'skills', 'projects', 'tickers'];
 
   return (
     <div className="p-8">
@@ -211,6 +213,123 @@ export default function DashboardHomePage() {
           >
             + Add Skill
           </button>
+        </div>
+      )}
+
+      {/* Tickers Tab */}
+      {activeTab === 'tickers' && (
+        <div className="space-y-8 max-w-2xl">
+
+          {/* Brand Ticker */}
+          <div className="glass rounded-xl p-6 space-y-4">
+            <h2 className="text-white font-semibold">Brand Ticker (left → right)</h2>
+            <div>
+              <label className="block text-slate-400 text-xs mb-1">Scroll Speed: {data.brandTicker?.speed ?? 30}s per loop</label>
+              <input
+                type="range" min="5" max="120" step="5"
+                value={data.brandTicker?.speed ?? 30}
+                onChange={(e) => setData({ ...data, brandTicker: { ...(data.brandTicker ?? { brands: [] }), speed: Number(e.target.value) } })}
+                className="w-full accent-blue-500"
+              />
+              <div className="flex justify-between text-xs text-slate-500 mt-1"><span>Fast (5s)</span><span>Slow (120s)</span></div>
+            </div>
+            <div className="space-y-2">
+              {(data.brandTicker?.brands ?? []).map((b, i) => (
+                <div key={i} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={b.name}
+                    onChange={(e) => {
+                      const brands = [...(data.brandTicker?.brands ?? [])];
+                      brands[i] = { name: e.target.value };
+                      setData({ ...data, brandTicker: { ...(data.brandTicker ?? { speed: 30 }), brands } });
+                    }}
+                    className="flex-1 bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                    placeholder="Brand name"
+                  />
+                  <button
+                    onClick={() => {
+                      const brands = (data.brandTicker?.brands ?? []).filter((_, idx) => idx !== i);
+                      setData({ ...data, brandTicker: { ...(data.brandTicker ?? { speed: 30 }), brands } });
+                    }}
+                    className="text-red-400 hover:text-red-300 px-2"
+                  >✕</button>
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={() => setData({ ...data, brandTicker: { ...(data.brandTicker ?? { speed: 30 }), brands: [...(data.brandTicker?.brands ?? []), { name: 'New Brand' }] } })}
+              className="px-4 py-2 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-xl text-sm transition-colors"
+            >+ Add Brand</button>
+          </div>
+
+          {/* Testimonial Ticker */}
+          <div className="glass rounded-xl p-6 space-y-4">
+            <h2 className="text-white font-semibold">Testimonials Ticker (right → left)</h2>
+            <div>
+              <label className="block text-slate-400 text-xs mb-1">Scroll Speed: {data.testimonialTicker?.speed ?? 25}s per loop</label>
+              <input
+                type="range" min="5" max="120" step="5"
+                value={data.testimonialTicker?.speed ?? 25}
+                onChange={(e) => setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { testimonials: [] }), speed: Number(e.target.value) } })}
+                className="w-full accent-blue-500"
+              />
+              <div className="flex justify-between text-xs text-slate-500 mt-1"><span>Fast (5s)</span><span>Slow (120s)</span></div>
+            </div>
+            <div className="space-y-4">
+              {(data.testimonialTicker?.testimonials ?? []).map((t, i) => (
+                <div key={i} className="bg-slate-800 rounded-lg p-4 space-y-3">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={t.name}
+                      onChange={(e) => {
+                        const testimonials = [...(data.testimonialTicker?.testimonials ?? [])];
+                        testimonials[i] = { ...t, name: e.target.value };
+                        setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { speed: 25 }), testimonials } });
+                      }}
+                      className="flex-1 bg-slate-700 border border-slate-600 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="Reviewer name"
+                    />
+                    <select
+                      value={t.source}
+                      onChange={(e) => {
+                        const testimonials = [...(data.testimonialTicker?.testimonials ?? [])];
+                        testimonials[i] = { ...t, source: e.target.value };
+                        setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { speed: 25 }), testimonials } });
+                      }}
+                      className="bg-slate-700 border border-slate-600 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                    >
+                      <option value="google">Google</option>
+                      <option value="trustpilot">Trustpilot</option>
+                    </select>
+                    <button
+                      onClick={() => {
+                        const testimonials = (data.testimonialTicker?.testimonials ?? []).filter((_, idx) => idx !== i);
+                        setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { speed: 25 }), testimonials } });
+                      }}
+                      className="text-red-400 hover:text-red-300 px-2"
+                    >✕</button>
+                  </div>
+                  <textarea
+                    rows={2}
+                    value={t.text}
+                    onChange={(e) => {
+                      const testimonials = [...(data.testimonialTicker?.testimonials ?? [])];
+                      testimonials[i] = { ...t, text: e.target.value };
+                      setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { speed: 25 }), testimonials } });
+                    }}
+                    className="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm resize-none"
+                    placeholder="Review text"
+                  />
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={() => setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { speed: 25 }), testimonials: [...(data.testimonialTicker?.testimonials ?? []), { name: 'New Reviewer', source: 'google', text: 'Great work!', avatar: '' }] } })}
+              className="px-4 py-2 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-xl text-sm transition-colors"
+            >+ Add Testimonial</button>
+          </div>
         </div>
       )}
 

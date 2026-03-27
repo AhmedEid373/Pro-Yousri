@@ -91,6 +91,24 @@ body {
 .animate-delay-300 { animation-delay: 0.3s; }
 .animate-delay-400 { animation-delay: 0.4s; }
 
+/* Ticker animations */
+@keyframes ticker-ltr {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0%); }
+}
+@keyframes ticker-rtl {
+  from { transform: translateX(0%); }
+  to   { transform: translateX(-50%); }
+}
+.ticker-ltr {
+  animation: ticker-ltr linear infinite;
+  will-change: transform;
+}
+.ticker-rtl {
+  animation: ticker-rtl linear infinite;
+  will-change: transform;
+}
+
 /* Gradient text */
 .gradient-text {
   background: linear-gradient(135deg, #60a5fa, #a78bfa);
