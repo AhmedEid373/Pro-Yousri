@@ -229,12 +229,11 @@ export default function DashboardContactPage() {
             <div key={i} className="bg-slate-800 rounded-xl p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-slate-400 text-xs">Contact #{i + 1}</span>
-                <button
-                  onClick={() => removeContactInfo(i)}
-                  className="text-red-400 hover:text-red-300 text-sm"
-                >
-                  Remove
-                </button>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => { const a=[...data.contactInfo];if(i>0){[a[i],a[i-1]]=[a[i-1],a[i]];setData({...data,contactInfo:a});} }} disabled={i===0} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-1.5 py-0.5 bg-slate-700 rounded">↑</button>
+                  <button onClick={() => { const a=[...data.contactInfo];if(i<a.length-1){[a[i],a[i+1]]=[a[i+1],a[i]];setData({...data,contactInfo:a});} }} disabled={i===data.contactInfo.length-1} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-1.5 py-0.5 bg-slate-700 rounded">↓</button>
+                  <button onClick={() => removeContactInfo(i)} className="text-red-400 hover:text-red-300 text-sm">Remove</button>
+                </div>
               </div>
               <IconUploader info={info} index={i} onChange={updateContactInfo} />
               <div className="grid grid-cols-2 gap-3">
