@@ -3,6 +3,8 @@ import FrontendWrapper from '@/components/frontend/FrontendWrapper';
 import { T } from '@/components/frontend/T';
 import { readData } from '@/lib/db';
 
+const isExternal = (url: string) => /^https?:\/\//.test(url);
+
 interface Service {
   id: number;
   icon: string;
@@ -98,12 +100,23 @@ export default async function ServicesPage() {
                     {(service.showPrice ?? true) && (
                       <span className="text-blue-400 font-semibold text-sm"><T k={`services.item.${data.services.indexOf(service)}.price`}>{service.price}</T></span>
                     )}
-                    <Link
-                      href={service.ctaLink || '/contact'}
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors ml-auto"
-                    >
-                      <T k="ui.getStarted">{service.ctaText || 'Get Started'}</T>
-                    </Link>
+                    {isExternal(service.ctaLink || '') ? (
+                      <a
+                        href={service.ctaLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors ml-auto"
+                      >
+                        {service.ctaText || 'Get Started'}
+                      </a>
+                    ) : (
+                      <Link
+                        href={service.ctaLink || '/contact'}
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors ml-auto"
+                      >
+                        <T k="ui.getStarted">{service.ctaText || 'Get Started'}</T>
+                      </Link>
+                    )}
                   </div>
                 </div>
               ))}
