@@ -8,85 +8,97 @@ datasource db {
 }
 
 model SiteConfig {
-  id   Int  @id @default(1)
-  data Json
+  id        Int      @id @default(1)
+  data      Json
+  updatedAt DateTime @updatedAt
 
   @@map("site_config")
 }
 
 model HomeContent {
-  id   Int  @id @default(1)
-  data Json
+  id        Int      @id @default(1)
+  data      Json
+  updatedAt DateTime @updatedAt
 
   @@map("home_content")
 }
 
 model AboutContent {
-  id   Int  @id @default(1)
-  data Json
+  id        Int      @id @default(1)
+  data      Json
+  updatedAt DateTime @updatedAt
 
   @@map("about_content")
 }
 
 model ServicesContent {
-  id   Int  @id @default(1)
-  data Json
+  id        Int      @id @default(1)
+  data      Json
+  updatedAt DateTime @updatedAt
 
   @@map("services_content")
 }
 
 model PortfolioContent {
-  id   Int  @id @default(1)
-  data Json
+  id        Int      @id @default(1)
+  data      Json
+  updatedAt DateTime @updatedAt
 
   @@map("portfolio_content")
 }
 
 model ContactContent {
-  id   Int  @id @default(1)
-  data Json
+  id        Int      @id @default(1)
+  data      Json
+  updatedAt DateTime @updatedAt
 
   @@map("contact_content")
 }
 
 model FooterContent {
-  id   Int  @id @default(1)
-  data Json
+  id        Int      @id @default(1)
+  data      Json
+  updatedAt DateTime @updatedAt
 
   @@map("footer_content")
 }
 
 model LanguagesConfig {
-  id   Int  @id @default(1)
-  data Json
+  id        Int      @id @default(1)
+  data      Json
+  updatedAt DateTime @updatedAt
 
   @@map("languages_config")
 }
 
 model PagesContent {
-  id   Int  @id @default(1)
-  data Json
+  id        Int      @id @default(1)
+  data      Json
+  updatedAt DateTime @updatedAt
 
   @@map("pages_content")
 }
 
 model MessagesContent {
-  id   Int  @id @default(1)
-  data Json
+  id        Int      @id @default(1)
+  data      Json
+  updatedAt DateTime @updatedAt
 
   @@map("messages_content")
 }
 
 model AdminConfig {
-  id   Int  @id @default(1)
-  data Json
+  id        Int      @id @default(1)
+  data      Json
+  updatedAt DateTime @updatedAt
 
   @@map("admin_config")
 }
 
 model MediaLibrary {
-  id   Int  @id @default(1)
-  data Json
+  id        Int      @id @default(1)
+  data      Json
+  updatedAt DateTime @updatedAt
 
   @@map("media_library")
 }

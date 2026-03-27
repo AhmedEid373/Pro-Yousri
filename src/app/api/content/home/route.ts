@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { readData, writeData } from '@/lib/db';
 import { isAuthenticated } from '@/lib/auth';
+import { validatePayload } from '@/lib/validate';
 
 export async function GET() {
   try {
@@ -19,6 +20,10 @@ export async function PUT(request: NextRequest) {
     }
 
     const data = await request.json();
+    const error = validatePayload(data, 'object');
+    if (error) {
+      return NextResponse.json({ error }, { status: 400 });
+    }
     await writeData('home.json', data);
     return NextResponse.json({ success: true });
   } catch {

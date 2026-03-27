@@ -210,11 +210,26 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
 
+    // Validate language codes
+    const langRegex = /^[a-z]{2,5}$/i;
+    if (body.sourceLang && !langRegex.test(body.sourceLang)) {
+      return NextResponse.json({ error: 'Invalid source language code' }, { status: 400 });
+    }
+    if (body.targetLang && !langRegex.test(body.targetLang)) {
+      return NextResponse.json({ error: 'Invalid target language code' }, { status: 400 });
+    }
+
     // Mode 1: Translate specific texts
     if (body.texts && Array.isArray(body.texts)) {
       const { texts, sourceLang, targetLang } = body;
       if (!targetLang || !sourceLang) {
         return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
+      }
+      if (texts.length > 500) {
+        return NextResponse.json({ error: 'Too many texts (max 500)' }, { status: 400 });
+      }
+      if (texts.some((t: unknown) => typeof t === 'string' && t.length > 5000)) {
+        return NextResponse.json({ error: 'Text too long (max 5000 chars)' }, { status: 400 });
       }
       const translations = await translateTexts(texts, sourceLang, targetLang);
       return NextResponse.json({ translations });

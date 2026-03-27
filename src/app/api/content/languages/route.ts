@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { readData, writeData } from '@/lib/db';
 import { isAuthenticated } from '@/lib/auth';
+import { validatePayload } from '@/lib/validate';
 
 const defaultLanguages = {
   defaultLang: 'en',
@@ -25,6 +26,10 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const data = await request.json();
+    const error = validatePayload(data, 'object');
+    if (error) {
+      return NextResponse.json({ error }, { status: 400 });
+    }
     await writeData('languages.json', data);
     return NextResponse.json({ success: true });
   } catch {
