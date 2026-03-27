@@ -62,7 +62,7 @@ export default function LoginPage() {
                 required
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                placeholder="admin"
+                placeholder=""
                 className="w-full bg-slate-800 border border-slate-700 text-white placeholder-slate-500 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors"
               />
             </div>
@@ -96,11 +96,6 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-slate-700">
-            <p className="text-slate-500 text-xs text-center">
-              Default credentials: admin / password
-            </p>
-          </div>
         </div>
       </div>
     </div>
