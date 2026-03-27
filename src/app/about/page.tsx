@@ -22,8 +22,8 @@ const defaultAbout: AboutData = {
   details: [], expertise: [], timeline: [],
 };
 
-export default function AboutPage() {
-  const data = readData<AboutData>('about.json', defaultAbout);
+export default async function AboutPage() {
+  const data = await readData<AboutData>('about.json', defaultAbout);
 
   const expertiseIcons: Record<string, string> = {
     wordpress: '🌐',

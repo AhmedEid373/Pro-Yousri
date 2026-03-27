@@ -91,7 +91,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function CustomPage({ params }: { params: Promise<{ slug: string[] }> }) {
   const { slug: slugParts } = await params;
-  const pages = readData<Page[]>('pages.json', []);
+  const pages = await readData<Page[]>('pages.json', []);
   const slug = slugParts.join('/');
   const page = pages.find((p) => p.slug === slug);
 

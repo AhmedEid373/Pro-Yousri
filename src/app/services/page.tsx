@@ -29,8 +29,8 @@ const defaultServices: ServicesData = {
   services: [], process: [],
 };
 
-export default function ServicesPage() {
-  const data = readData<ServicesData>('services.json', defaultServices);
+export default async function ServicesPage() {
+  const data = await readData<ServicesData>('services.json', defaultServices);
 
   return (
     <FrontendWrapper>
