@@ -141,16 +141,17 @@ export default async function RootLayout({
     );
   }
 
-  // Build color overrides CSS
+  // Build color overrides CSS — only allow valid hex colors to prevent XSS
+  const isValidColor = (v: string) => /^#[0-9A-Fa-f]{3}([0-9A-Fa-f]{3})?$/.test(v);
   const c = site.colors;
   const colorCSS = c ? `:root {
-${c.buttonBg ? `--color-button-bg: ${c.buttonBg};` : ''}
-${c.buttonText ? `--color-button-text: ${c.buttonText};` : ''}
-${c.heading ? `--color-heading: ${c.heading};` : ''}
-${c.subtext ? `--color-subtext: ${c.subtext};` : ''}
-${c.hyperlink ? `--color-hyperlink: ${c.hyperlink};` : ''}
-${c.background ? `--color-background: ${c.background};` : ''}
-${c.accent ? `--color-accent: ${c.accent};` : ''}
+${c.buttonBg && isValidColor(c.buttonBg) ? `--color-button-bg: ${c.buttonBg};` : ''}
+${c.buttonText && isValidColor(c.buttonText) ? `--color-button-text: ${c.buttonText};` : ''}
+${c.heading && isValidColor(c.heading) ? `--color-heading: ${c.heading};` : ''}
+${c.subtext && isValidColor(c.subtext) ? `--color-subtext: ${c.subtext};` : ''}
+${c.hyperlink && isValidColor(c.hyperlink) ? `--color-hyperlink: ${c.hyperlink};` : ''}
+${c.background && isValidColor(c.background) ? `--color-background: ${c.background};` : ''}
+${c.accent && isValidColor(c.accent) ? `--color-accent: ${c.accent};` : ''}
 }` : '';
 
   return (

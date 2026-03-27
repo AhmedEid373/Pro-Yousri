@@ -9,8 +9,36 @@ interface AdminData {
   name: string;
 }
 
+// Rate limiter: 5 attempts per 15 minutes per IP
+const loginAttempts = new Map<string, { count: number; firstAt: number }>();
+const WINDOW_MS = 15 * 60 * 1000;
+const MAX_ATTEMPTS = 5;
+
+function getIp(request: NextRequest): string {
+  return request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown';
+}
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = loginAttempts.get(ip);
+  if (!entry || now - entry.firstAt > WINDOW_MS) {
+    loginAttempts.set(ip, { count: 1, firstAt: now });
+    return false;
+  }
+  entry.count++;
+  return entry.count > MAX_ATTEMPTS;
+}
+
 export async function POST(request: NextRequest) {
   try {
+    const ip = getIp(request);
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: 'Too many attempts. Try again in 15 minutes.' },
+        { status: 429 }
+      );
+    }
+
     const { username, password } = await request.json();
 
     if (!username || !password) {
@@ -22,16 +50,11 @@ export async function POST(request: NextRequest) {
 
     const admin = await readData<AdminData>('admin.json');
 
-    if (username !== admin.username) {
-      return NextResponse.json(
-        { error: 'Invalid credentials' },
-        { status: 401 }
-      );
-    }
-
+    // Always run bcrypt to prevent timing attacks
     const isValid = await bcrypt.compare(password, admin.password);
+    const usernameMatch = username === admin.username;
 
-    if (!isValid) {
+    if (!isValid || !usernameMatch) {
       return NextResponse.json(
         { error: 'Invalid credentials' },
         { status: 401 }
@@ -45,7 +68,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 7,
       path: '/',
     });
 

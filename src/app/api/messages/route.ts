@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { readData, writeData } from '@/lib/db';
 import { isAuthenticated } from '@/lib/auth';
 
@@ -12,6 +13,34 @@ interface Message {
   read: boolean;
   readAt?: string;
   status: 'unread' | 'processing' | 'completed' | 'archived' | 'trashed';
+}
+
+const messageSchema = z.object({
+  name: z.string().min(1).max(100),
+  email: z.string().email().max(200),
+  subject: z.string().min(1).max(200),
+  message: z.string().min(1).max(5000),
+  turnstileToken: z.string().optional(),
+});
+
+// Rate limiter: 3 messages per hour per IP
+const messageAttempts = new Map<string, { count: number; firstAt: number }>();
+const MSG_WINDOW_MS = 60 * 60 * 1000;
+const MSG_MAX = 3;
+
+function getIp(request: NextRequest): string {
+  return request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown';
+}
+
+function isMsgRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = messageAttempts.get(ip);
+  if (!entry || now - entry.firstAt > MSG_WINDOW_MS) {
+    messageAttempts.set(ip, { count: 1, firstAt: now });
+    return false;
+  }
+  entry.count++;
+  return entry.count > MSG_MAX;
 }
 
 export async function GET() {
@@ -30,14 +59,23 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, subject, message, turnstileToken } = await request.json();
-
-    if (!name || !email || !subject || !message) {
+    const ip = getIp(request);
+    if (isMsgRateLimited(ip)) {
       return NextResponse.json(
-        { error: 'All fields are required' },
+        { error: 'Too many messages. Try again later.' },
+        { status: 429 }
+      );
+    }
+
+    const body = await request.json();
+    const parsed = messageSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.errors[0].message },
         { status: 400 }
       );
     }
+    const { name, email, subject, message, turnstileToken } = parsed.data;
 
     // Verify Cloudflare Turnstile if enabled
     const site = await readData<{ turnstile?: { enabled?: boolean; secretKey?: string } }>('site.json', {});
