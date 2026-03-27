@@ -23,8 +23,8 @@ interface HomeData {
     tags: string[];
     link: string;
   }>;
-  brandTicker: { speed: number; brands: Array<{ name: string }> };
-  testimonialTicker: { speed: number; testimonials: Array<{ name: string; source: string; text: string; avatar?: string }> };
+  brandTicker: { enabled: boolean; speed: number; brands: Array<{ name: string }> };
+  testimonialTicker: { enabled: boolean; pauseDuration: number; testimonials: Array<{ name: string; source: string; sourceCustom?: string; text: string; avatar?: string }> };
 }
 
 export default function DashboardHomePage() {
@@ -222,13 +222,21 @@ export default function DashboardHomePage() {
 
           {/* Brand Ticker */}
           <div className="glass rounded-xl p-6 space-y-4">
-            <h2 className="text-white font-semibold">Brand Ticker (left → right)</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-white font-semibold">Brand Ticker (left → right)</h2>
+              <button
+                onClick={() => setData({ ...data, brandTicker: { ...(data.brandTicker ?? { speed: 30, brands: [] }), enabled: !(data.brandTicker?.enabled ?? true) } })}
+                className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 overflow-hidden ${(data.brandTicker?.enabled ?? true) ? 'bg-green-500' : 'bg-slate-600'}`}
+              >
+                <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${(data.brandTicker?.enabled ?? true) ? 'translate-x-6' : 'translate-x-0.5'}`} />
+              </button>
+            </div>
             <div>
               <label className="block text-slate-400 text-xs mb-1">Scroll Speed: {data.brandTicker?.speed ?? 30}s per loop</label>
               <input
                 type="range" min="5" max="120" step="5"
                 value={data.brandTicker?.speed ?? 30}
-                onChange={(e) => setData({ ...data, brandTicker: { ...(data.brandTicker ?? { brands: [] }), speed: Number(e.target.value) } })}
+                onChange={(e) => setData({ ...data, brandTicker: { ...(data.brandTicker ?? { enabled: true, brands: [] }), speed: Number(e.target.value) } })}
                 className="w-full accent-blue-500"
               />
               <div className="flex justify-between text-xs text-slate-500 mt-1"><span>Fast (5s)</span><span>Slow (120s)</span></div>
@@ -242,7 +250,7 @@ export default function DashboardHomePage() {
                     onChange={(e) => {
                       const brands = [...(data.brandTicker?.brands ?? [])];
                       brands[i] = { name: e.target.value };
-                      setData({ ...data, brandTicker: { ...(data.brandTicker ?? { speed: 30 }), brands } });
+                      setData({ ...data, brandTicker: { ...(data.brandTicker ?? { enabled: true, speed: 30 }), brands } });
                     }}
                     className="flex-1 bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
                     placeholder="Brand name"
@@ -250,7 +258,7 @@ export default function DashboardHomePage() {
                   <button
                     onClick={() => {
                       const brands = (data.brandTicker?.brands ?? []).filter((_, idx) => idx !== i);
-                      setData({ ...data, brandTicker: { ...(data.brandTicker ?? { speed: 30 }), brands } });
+                      setData({ ...data, brandTicker: { ...(data.brandTicker ?? { enabled: true, speed: 30 }), brands } });
                     }}
                     className="text-red-400 hover:text-red-300 px-2"
                   >✕</button>
@@ -258,75 +266,107 @@ export default function DashboardHomePage() {
               ))}
             </div>
             <button
-              onClick={() => setData({ ...data, brandTicker: { ...(data.brandTicker ?? { speed: 30 }), brands: [...(data.brandTicker?.brands ?? []), { name: 'New Brand' }] } })}
+              onClick={() => setData({ ...data, brandTicker: { ...(data.brandTicker ?? { enabled: true, speed: 30 }), brands: [...(data.brandTicker?.brands ?? []), { name: 'New Brand' }] } })}
               className="px-4 py-2 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-xl text-sm transition-colors"
             >+ Add Brand</button>
           </div>
 
-          {/* Testimonial Ticker */}
+          {/* Testimonials Slider */}
           <div className="glass rounded-xl p-6 space-y-4">
-            <h2 className="text-white font-semibold">Testimonials Ticker (right → left)</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-white font-semibold">Testimonials Slider (3 per view)</h2>
+              <button
+                onClick={() => setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { pauseDuration: 4, testimonials: [] }), enabled: !(data.testimonialTicker?.enabled ?? true) } })}
+                className={`relative w-12 h-6 rounded-full transition-colors flex-shrink-0 overflow-hidden ${(data.testimonialTicker?.enabled ?? true) ? 'bg-green-500' : 'bg-slate-600'}`}
+              >
+                <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${(data.testimonialTicker?.enabled ?? true) ? 'translate-x-6' : 'translate-x-0.5'}`} />
+              </button>
+            </div>
             <div>
-              <label className="block text-slate-400 text-xs mb-1">Scroll Speed: {data.testimonialTicker?.speed ?? 25}s per loop</label>
+              <label className="block text-slate-400 text-xs mb-1">Pause between slides: {data.testimonialTicker?.pauseDuration ?? 4}s</label>
               <input
-                type="range" min="5" max="120" step="5"
-                value={data.testimonialTicker?.speed ?? 25}
-                onChange={(e) => setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { testimonials: [] }), speed: Number(e.target.value) } })}
+                type="range" min="1" max="30" step="1"
+                value={data.testimonialTicker?.pauseDuration ?? 4}
+                onChange={(e) => setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { enabled: true, testimonials: [] }), pauseDuration: Number(e.target.value) } })}
                 className="w-full accent-blue-500"
               />
-              <div className="flex justify-between text-xs text-slate-500 mt-1"><span>Fast (5s)</span><span>Slow (120s)</span></div>
+              <div className="flex justify-between text-xs text-slate-500 mt-1"><span>1s</span><span>30s</span></div>
             </div>
             <div className="space-y-4">
-              {(data.testimonialTicker?.testimonials ?? []).map((t, i) => (
-                <div key={i} className="bg-slate-800 rounded-lg p-4 space-y-3">
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={t.name}
-                      onChange={(e) => {
-                        const testimonials = [...(data.testimonialTicker?.testimonials ?? [])];
-                        testimonials[i] = { ...t, name: e.target.value };
-                        setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { speed: 25 }), testimonials } });
-                      }}
-                      className="flex-1 bg-slate-700 border border-slate-600 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
-                      placeholder="Reviewer name"
-                    />
-                    <select
-                      value={t.source}
-                      onChange={(e) => {
-                        const testimonials = [...(data.testimonialTicker?.testimonials ?? [])];
-                        testimonials[i] = { ...t, source: e.target.value };
-                        setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { speed: 25 }), testimonials } });
-                      }}
-                      className="bg-slate-700 border border-slate-600 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
-                    >
-                      <option value="google">Google</option>
-                      <option value="trustpilot">Trustpilot</option>
-                    </select>
-                    <button
-                      onClick={() => {
+              {(data.testimonialTicker?.testimonials ?? []).map((t, i) => {
+                const updateT = (patch: object) => {
+                  const testimonials = [...(data.testimonialTicker?.testimonials ?? [])];
+                  testimonials[i] = { ...t, ...patch };
+                  setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { enabled: true, pauseDuration: 4 }), testimonials } });
+                };
+                return (
+                  <div key={i} className="bg-slate-800 rounded-lg p-4 space-y-3">
+                    {/* Avatar + name row */}
+                    <div className="flex items-center gap-3">
+                      <div className="relative flex-shrink-0">
+                        <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
+                          {t.avatar ? <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" /> : (t.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase())}
+                        </div>
+                        <label className="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-600 hover:bg-blue-500 rounded-full flex items-center justify-center cursor-pointer">
+                          <span className="text-white text-xs leading-none">+</span>
+                          <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            const form = new FormData();
+                            form.append('file', file);
+                            const res = await fetch('/api/upload', { method: 'POST', body: form });
+                            const d = await res.json();
+                            if (d.url) updateT({ avatar: d.url });
+                          }} />
+                        </label>
+                      </div>
+                      <input
+                        type="text"
+                        value={t.name}
+                        onChange={(e) => updateT({ name: e.target.value })}
+                        className="flex-1 bg-slate-700 border border-slate-600 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                        placeholder="Reviewer name"
+                      />
+                      <button onClick={() => {
                         const testimonials = (data.testimonialTicker?.testimonials ?? []).filter((_, idx) => idx !== i);
-                        setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { speed: 25 }), testimonials } });
-                      }}
-                      className="text-red-400 hover:text-red-300 px-2"
-                    >✕</button>
+                        setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { enabled: true, pauseDuration: 4 }), testimonials } });
+                      }} className="text-red-400 hover:text-red-300 px-1">✕</button>
+                    </div>
+                    {/* Source */}
+                    <div className="flex gap-2">
+                      <select
+                        value={t.source}
+                        onChange={(e) => updateT({ source: e.target.value })}
+                        className="bg-slate-700 border border-slate-600 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      >
+                        <option value="google">Google</option>
+                        <option value="trustpilot">Trustpilot</option>
+                        <option value="custom">Custom...</option>
+                      </select>
+                      {t.source === 'custom' && (
+                        <input
+                          type="text"
+                          value={t.sourceCustom ?? ''}
+                          onChange={(e) => updateT({ sourceCustom: e.target.value })}
+                          className="flex-1 bg-slate-700 border border-slate-600 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                          placeholder="Company name"
+                        />
+                      )}
+                    </div>
+                    {/* Review text */}
+                    <textarea
+                      rows={2}
+                      value={t.text}
+                      onChange={(e) => updateT({ text: e.target.value })}
+                      className="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm resize-none"
+                      placeholder="Review text"
+                    />
                   </div>
-                  <textarea
-                    rows={2}
-                    value={t.text}
-                    onChange={(e) => {
-                      const testimonials = [...(data.testimonialTicker?.testimonials ?? [])];
-                      testimonials[i] = { ...t, text: e.target.value };
-                      setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { speed: 25 }), testimonials } });
-                    }}
-                    className="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm resize-none"
-                    placeholder="Review text"
-                  />
-                </div>
-              ))}
+                );
+              })}
             </div>
             <button
-              onClick={() => setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { speed: 25 }), testimonials: [...(data.testimonialTicker?.testimonials ?? []), { name: 'New Reviewer', source: 'google', text: 'Great work!', avatar: '' }] } })}
+              onClick={() => setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { enabled: true, pauseDuration: 4 }), testimonials: [...(data.testimonialTicker?.testimonials ?? []), { name: 'New Reviewer', source: 'google', sourceCustom: '', text: 'Great work!', avatar: '' }] } })}
               className="px-4 py-2 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-xl text-sm transition-colors"
             >+ Add Testimonial</button>
           </div>
