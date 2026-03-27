@@ -38,18 +38,23 @@ export async function readData<T>(filename: string, fallback?: T): Promise<T> {
   const model = fileToModel[filename];
   if (!model) throw new Error(`Unknown data file: ${filename}`);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const record = await (prisma[model] as any).findUnique({ where: { id: 1 } });
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const record = await (prisma[model] as any).findUnique({ where: { id: 1 } });
 
-  if (!record) {
-    if (fallback !== undefined) {
-      await writeData(filename, fallback);
-      return fallback;
+    if (!record) {
+      if (fallback !== undefined) {
+        try { await writeData(filename, fallback); } catch { /* DB write failed, still return fallback */ }
+        return fallback;
+      }
+      throw new Error(`No data found for: ${filename}`);
     }
-    throw new Error(`No data found for: ${filename}`);
-  }
 
-  return record.data as T;
+    return record.data as T;
+  } catch (err) {
+    if (fallback !== undefined) return fallback;
+    throw err;
+  }
 }
 
 export async function writeData(filename: string, data: unknown): Promise<void> {
