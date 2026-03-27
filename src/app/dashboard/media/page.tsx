@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 interface MediaFile {
+  id: string;
   filename: string;
   url: string;
   size: number;
@@ -55,11 +56,11 @@ export default function MediaPage() {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  const handleDelete = async (filename: string) => {
+  const handleDelete = async (id: string) => {
     setError('');
-    const res = await fetch(`/api/upload?filename=${encodeURIComponent(filename)}`, { method: 'DELETE' });
+    const res = await fetch(`/api/upload?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
     if (res.ok) {
-      setFiles((prev) => prev.filter((f) => f.filename !== filename));
+      setFiles((prev) => prev.filter((f) => f.id !== id));
       setSuccess('Image deleted.');
     } else {
       setError('Failed to delete image.');
@@ -120,25 +121,22 @@ export default function MediaPage() {
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {files.map((file) => (
-            <div key={file.filename} className="bg-slate-800 rounded-xl overflow-hidden group">
+            <div key={file.id} className="bg-slate-800 rounded-xl overflow-hidden">
               {/* Thumbnail */}
               <div className="aspect-square bg-slate-900 flex items-center justify-center overflow-hidden">
                 <img
                   src={file.url}
                   alt={file.filename}
                   className="w-full h-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                 />
               </div>
               {/* Info */}
               <div className="p-3">
                 <p className="text-white text-xs font-medium truncate" title={file.filename}>
-                  {file.filename.replace(/^\d+-/, '')}
+                  {file.filename}
                 </p>
                 <p className="text-slate-500 text-xs mt-0.5">{formatSize(file.size)}</p>
-                {/* Actions */}
                 <div className="flex gap-2 mt-2">
                   <button
                     onClick={() => copyUrl(file.url)}
@@ -146,16 +144,16 @@ export default function MediaPage() {
                   >
                     {copied === file.url ? '✓ Copied' : 'Copy URL'}
                   </button>
-                  {confirmDelete === file.filename ? (
+                  {confirmDelete === file.id ? (
                     <button
-                      onClick={() => handleDelete(file.filename)}
+                      onClick={() => handleDelete(file.id)}
                       className="px-2 py-1 text-xs rounded bg-red-700 hover:bg-red-600 text-white transition-colors"
                     >
                       Confirm
                     </button>
                   ) : (
                     <button
-                      onClick={() => setConfirmDelete(file.filename)}
+                      onClick={() => setConfirmDelete(file.id)}
                       className="px-2 py-1 text-xs rounded bg-slate-700 hover:bg-red-700/50 text-red-400 hover:text-red-300 transition-colors"
                     >
                       ✕
