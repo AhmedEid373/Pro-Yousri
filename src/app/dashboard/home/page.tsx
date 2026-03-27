@@ -23,6 +23,7 @@ interface HomeData {
     tags: string[];
     link: string;
   }>;
+  tickerOrder?: string[];
   brandTicker: { enabled: boolean; speed: number; brands: Array<{ name: string }> };
   testimonialTicker: { enabled: boolean; pauseDuration: number; testimonials: Array<{ name: string; source: string; sourceCustom?: string; text: string; avatar?: string }> };
 }
@@ -242,33 +243,62 @@ export default function DashboardHomePage() {
               <div className="flex justify-between text-xs text-slate-500 mt-1"><span>Fast (5s)</span><span>Slow (120s)</span></div>
             </div>
             <div className="space-y-2">
-              {(data.brandTicker?.brands ?? []).map((b, i) => (
-                <div key={i} className="flex gap-2">
-                  <input
-                    type="text"
-                    value={b.name}
-                    onChange={(e) => {
-                      const brands = [...(data.brandTicker?.brands ?? [])];
-                      brands[i] = { name: e.target.value };
-                      setData({ ...data, brandTicker: { ...(data.brandTicker ?? { enabled: true, speed: 30 }), brands } });
-                    }}
-                    className="flex-1 bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
-                    placeholder="Brand name"
-                  />
-                  <button
-                    onClick={() => {
-                      const brands = (data.brandTicker?.brands ?? []).filter((_, idx) => idx !== i);
-                      setData({ ...data, brandTicker: { ...(data.brandTicker ?? { enabled: true, speed: 30 }), brands } });
-                    }}
-                    className="text-red-400 hover:text-red-300 px-2"
-                  >✕</button>
-                </div>
-              ))}
+              {(data.brandTicker?.brands ?? []).map((b, i) => {
+                const brands = data.brandTicker?.brands ?? [];
+                const moveBrand = (dir: -1 | 1) => {
+                  const arr = [...brands];
+                  const swap = i + dir;
+                  if (swap < 0 || swap >= arr.length) return;
+                  [arr[i], arr[swap]] = [arr[swap], arr[i]];
+                  setData({ ...data, brandTicker: { ...(data.brandTicker ?? { enabled: true, speed: 30 }), brands: arr } });
+                };
+                return (
+                  <div key={i} className="flex gap-2 items-center">
+                    <div className="flex flex-col gap-0.5">
+                      <button onClick={() => moveBrand(-1)} disabled={i === 0} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs leading-none px-1">↑</button>
+                      <button onClick={() => moveBrand(1)} disabled={i === brands.length - 1} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs leading-none px-1">↓</button>
+                    </div>
+                    <input
+                      type="text"
+                      value={b.name}
+                      onChange={(e) => {
+                        const arr = [...brands];
+                        arr[i] = { name: e.target.value };
+                        setData({ ...data, brandTicker: { ...(data.brandTicker ?? { enabled: true, speed: 30 }), brands: arr } });
+                      }}
+                      className="flex-1 bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="Brand name"
+                    />
+                    <button
+                      onClick={() => {
+                        const arr = brands.filter((_, idx) => idx !== i);
+                        setData({ ...data, brandTicker: { ...(data.brandTicker ?? { enabled: true, speed: 30 }), brands: arr } });
+                      }}
+                      className="text-red-400 hover:text-red-300 px-2"
+                    >✕</button>
+                  </div>
+                );
+              })}
             </div>
             <button
               onClick={() => setData({ ...data, brandTicker: { ...(data.brandTicker ?? { enabled: true, speed: 30 }), brands: [...(data.brandTicker?.brands ?? []), { name: 'New Brand' }] } })}
               className="px-4 py-2 border border-dashed border-slate-600 text-slate-400 hover:text-white hover:border-slate-400 rounded-xl text-sm transition-colors"
             >+ Add Brand</button>
+          </div>
+
+          {/* Section order swap */}
+          <div className="flex items-center justify-center gap-3">
+            <span className="text-slate-500 text-xs">Section order on site:</span>
+            <span className="text-slate-300 text-xs font-medium">
+              {(data.tickerOrder ?? ['brand', 'testimonials'])[0] === 'brand' ? 'Brand → Testimonials' : 'Testimonials → Brand'}
+            </span>
+            <button
+              onClick={() => {
+                const current = data.tickerOrder ?? ['brand', 'testimonials'];
+                setData({ ...data, tickerOrder: [...current].reverse() });
+              }}
+              className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs rounded-lg transition-colors"
+            >⇅ Swap order</button>
           </div>
 
           {/* Testimonials Slider */}
@@ -294,13 +324,26 @@ export default function DashboardHomePage() {
             </div>
             <div className="space-y-4">
               {(data.testimonialTicker?.testimonials ?? []).map((t, i) => {
+                const allT = data.testimonialTicker?.testimonials ?? [];
                 const updateT = (patch: object) => {
-                  const testimonials = [...(data.testimonialTicker?.testimonials ?? [])];
+                  const testimonials = [...allT];
                   testimonials[i] = { ...t, ...patch };
                   setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { enabled: true, pauseDuration: 4 }), testimonials } });
                 };
+                const moveT = (dir: -1 | 1) => {
+                  const arr = [...allT];
+                  const swap = i + dir;
+                  if (swap < 0 || swap >= arr.length) return;
+                  [arr[i], arr[swap]] = [arr[swap], arr[i]];
+                  setData({ ...data, testimonialTicker: { ...(data.testimonialTicker ?? { enabled: true, pauseDuration: 4 }), testimonials: arr } });
+                };
                 return (
                   <div key={i} className="bg-slate-800 rounded-lg p-4 space-y-3">
+                    {/* Move buttons */}
+                    <div className="flex justify-end gap-1">
+                      <button onClick={() => moveT(-1)} disabled={i === 0} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-2 py-0.5 bg-slate-700 rounded">↑</button>
+                      <button onClick={() => moveT(1)} disabled={i === allT.length - 1} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-2 py-0.5 bg-slate-700 rounded">↓</button>
+                    </div>
                     {/* Avatar + name row */}
                     <div className="flex items-center gap-3">
                       <div className="relative flex-shrink-0">

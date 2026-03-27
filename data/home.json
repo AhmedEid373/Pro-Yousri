@@ -25,6 +25,7 @@
     { "name": "Domain & DNS", "level": 90 },
     { "name": "cPanel / WHM", "level": 88 }
   ],
+  "tickerOrder": ["brand", "testimonials"],
   "brandTicker": {
     "enabled": true,
     "speed": 30,
