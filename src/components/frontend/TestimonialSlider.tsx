@@ -14,6 +14,19 @@ function initials(name: string) {
   return name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase();
 }
 
+function Avatar({ name, src }: { name: string; src?: string }) {
+  const [error, setError] = useState(false);
+  return (
+    <div className="w-9 h-9 rounded-full flex-shrink-0 overflow-hidden bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
+      {src && !error ? (
+        <img src={src} alt={name} className="w-full h-full object-cover" onError={() => setError(true)} />
+      ) : (
+        initials(name)
+      )}
+    </div>
+  );
+}
+
 function SourceBadge({ source, sourceCustom }: { source: string; sourceCustom?: string }) {
   if (source === 'trustpilot') return <span className="text-green-400 text-xs">★ Trustpilot</span>;
   if (source === 'google') return <span className="text-blue-400 text-xs font-medium">G Google</span>;
@@ -66,13 +79,7 @@ export default function TestimonialSlider({
       >
         {current.map((t, i) => (
           <div key={i} className="flex items-start gap-3 bg-[var(--surface)] border border-[var(--border)] rounded-xl px-4 py-4">
-            <div className="w-9 h-9 rounded-full flex-shrink-0 overflow-hidden bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
-              {t.avatar ? (
-                <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" />
-              ) : (
-                initials(t.name)
-              )}
-            </div>
+            <Avatar name={t.name} src={t.avatar} />
             <div className="min-w-0 flex-1">
               <p className="text-xs text-[var(--text-secondary)] line-clamp-3 mb-2">{t.text}</p>
               <div className="flex items-center gap-2">
