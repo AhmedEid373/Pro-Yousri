@@ -5,7 +5,7 @@ export default function FrontendWrapper({ children }: { children: React.ReactNod
   return (
     <>
       <Navbar />
-      <main>{children}</main>
+      <main className="pt-16">{children}</main>
       <Footer />
     </>
   );
