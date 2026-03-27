@@ -159,6 +159,13 @@ export default function AccountPage() {
         />
       </div>
 
+      {/* Success */}
+      {saved && (
+        <div className="mb-4 bg-green-900/30 border border-green-700 text-green-400 rounded-lg px-4 py-3 text-sm">
+          Changes saved successfully!
+        </div>
+      )}
+
       {/* Error */}
       {error && (
         <div className="mb-4 bg-red-900/30 border border-red-700 text-red-400 rounded-lg px-4 py-3 text-sm">
