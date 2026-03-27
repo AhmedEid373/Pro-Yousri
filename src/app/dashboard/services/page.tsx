@@ -10,7 +10,10 @@ interface Service {
   description: string;
   features: string[];
   price: string;
+  showPrice?: boolean;
   popular: boolean;
+  ctaText?: string;
+  ctaLink?: string;
 }
 
 function ServiceIconUploader({ service, index, onChange }: {
@@ -255,12 +258,21 @@ export default function DashboardServicesPage() {
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-slate-400 text-xs mb-1">Price</label>
-                      <input
-                        type="text"
-                        value={service.price}
-                        onChange={(e) => updateService(i, { price: e.target.value })}
-                        className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
-                      />
+                      <div className="flex gap-2 items-center">
+                        <input
+                          type="text"
+                          value={service.price}
+                          onChange={(e) => updateService(i, { price: e.target.value })}
+                          className="flex-1 bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                        />
+                        <button
+                          onClick={() => updateService(i, { showPrice: !(service.showPrice ?? true) })}
+                          className={`relative w-10 h-5 rounded-full overflow-hidden transition-colors flex-shrink-0 ${(service.showPrice ?? true) ? 'bg-blue-600' : 'bg-slate-600'}`}
+                          title={(service.showPrice ?? true) ? 'Hide price' : 'Show price'}
+                        >
+                          <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${(service.showPrice ?? true) ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                        </button>
+                      </div>
                     </div>
                     <div>
                       <label className="block text-slate-400 text-xs mb-1">Title</label>
@@ -287,6 +299,28 @@ export default function DashboardServicesPage() {
                       onChange={(e) => updateService(i, { features: e.target.value.split('\n').filter(Boolean) })}
                       className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm resize-none"
                     />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-slate-400 text-xs mb-1">Button Text</label>
+                      <input
+                        type="text"
+                        value={service.ctaText ?? ''}
+                        onChange={(e) => updateService(i, { ctaText: e.target.value })}
+                        placeholder="Get Started"
+                        className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 text-xs mb-1">Button Link</label>
+                      <input
+                        type="text"
+                        value={service.ctaLink ?? ''}
+                        onChange={(e) => updateService(i, { ctaLink: e.target.value })}
+                        placeholder="/contact"
+                        className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      />
+                    </div>
                   </div>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
