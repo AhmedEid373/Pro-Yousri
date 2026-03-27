@@ -15,6 +15,7 @@ const navItems = [
   { href: '/dashboard/messages', label: 'Messages', icon: '💬' },
   { href: '/dashboard/pages', label: 'Pages', icon: '📄' },
   { href: '/dashboard/settings', label: 'Settings', icon: '⚙️' },
+  { href: '/dashboard/account', label: 'Account', icon: '🔑' },
 ];
 
 export default function Sidebar() {
