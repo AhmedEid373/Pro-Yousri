@@ -67,7 +67,7 @@ export default async function HomePage() {
 
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div className="max-w-3xl">
-              <p className="text-blue-400 font-medium mb-3 text-sm tracking-widest uppercase">
+              <p className="text-blue-600 dark:text-blue-400 font-medium mb-3 text-sm tracking-widest uppercase">
                 <T k="home.greeting">{hero.greeting}</T>
               </p>
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[var(--text-primary)] mb-4">
@@ -158,7 +158,7 @@ export default async function HomePage() {
                 <div key={i}>
                   <div className="flex justify-between mb-2">
                     <span className="text-[var(--text-secondary)] font-medium"><T k={`home.skill.${i}.name`}>{skill.name}</T></span>
-                    <span className="text-blue-400 font-semibold">{skill.level}%</span>
+                    <span className="text-blue-600 dark:text-blue-400 font-semibold">{skill.level}%</span>
                   </div>
                   <div className="h-2 bg-[var(--surface)] rounded-full overflow-hidden">
                     <div
@@ -216,14 +216,14 @@ export default async function HomePage() {
                         {project.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="px-2 py-1 bg-blue-500/10 text-blue-400 text-xs rounded-lg border border-blue-500/20"
+                            className="px-2 py-1 bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs rounded-lg border border-blue-500/20"
                           >
                             {tag}
                           </span>
                         ))}
                       </div>
                       {hasLink && (
-                        <div className="mt-4 text-blue-400 text-xs font-medium group-hover:text-blue-300 dark:group-hover:text-blue-300 transition-colors flex items-center gap-1">
+                        <div className="mt-4 text-blue-600 dark:text-blue-400 text-xs font-medium hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors flex items-center gap-1">
                           <T k="ui.viewProject">View Project</T>
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3">
                             <path fillRule="evenodd" d="M4.5 11.5A.5.5 0 0 1 5 11h5.793L5.146 5.354a.5.5 0 1 1 .708-.708l5.647 5.646V5a.5.5 0 0 1 1 0v6.5a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5Z" clipRule="evenodd" />

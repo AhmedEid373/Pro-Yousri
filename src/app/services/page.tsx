@@ -44,7 +44,7 @@ export default async function ServicesPage() {
         <section className="relative py-20 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-[var(--surface-alt)] via-[var(--surface-alt)] to-purple-100 dark:to-purple-950" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p className="text-purple-400 text-sm font-medium tracking-widest uppercase mb-3">
+            <p className="text-purple-600 dark:text-purple-400 text-sm font-medium tracking-widest uppercase mb-3">
               <T k="services.subtitle">{data.subtitle}</T>
             </p>
             <h1 className="text-4xl sm:text-5xl font-bold text-[var(--text-primary)] mb-6">
@@ -90,7 +90,7 @@ export default async function ServicesPage() {
                   <ul className="space-y-2 mb-6">
                     {service.features.map((feature, fi) => (
                       <li key={fi} className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
-                        <span className="text-green-400 text-xs">✓</span>
+                        <span className="text-green-600 dark:text-green-400 text-xs">✓</span>
                         <T k={`services.item.${data.services.indexOf(service)}.feature.${fi}`}>{feature}</T>
                       </li>
                     ))}
@@ -98,7 +98,7 @@ export default async function ServicesPage() {
 
                   <div className="flex items-center justify-between pt-4 border-t border-[var(--border)]">
                     {(service.showPrice ?? true) && (
-                      <span className="text-blue-400 font-semibold text-sm"><T k={`services.item.${data.services.indexOf(service)}.price`}>{service.price}</T></span>
+                      <span className="text-blue-600 dark:text-blue-400 font-semibold text-sm"><T k={`services.item.${data.services.indexOf(service)}.price`}>{service.price}</T></span>
                     )}
                     {isExternal(service.ctaLink || '') ? (
                       <a
@@ -140,7 +140,7 @@ export default async function ServicesPage() {
               {data.process.map((step, i) => (
                 <div key={i} className="text-center">
                   <div className="w-14 h-14 bg-blue-600/20 border border-blue-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <span className="text-blue-400 font-bold text-lg">{step.step}</span>
+                    <span className="text-blue-600 dark:text-blue-400 font-bold text-lg">{step.step}</span>
                   </div>
                   <h3 className="text-[var(--text-primary)] font-bold mb-2"><T k={`services.process.${i}.title`}>{step.title}</T></h3>
                   <p className="text-[var(--text-muted)] text-sm leading-relaxed"><T k={`services.process.${i}.desc`}>{step.description}</T></p>
