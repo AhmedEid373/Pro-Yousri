@@ -110,6 +110,16 @@ export default function DashboardPortfolioPage() {
     if (expanded === id) setExpanded(null);
   };
 
+  const moveItem = (index: number, dir: -1 | 1) => {
+    setItems((arr) => {
+      const next = [...arr];
+      const swap = index + dir;
+      if (swap < 0 || swap >= next.length) return arr;
+      [next[index], next[swap]] = [next[swap], next[index]];
+      return next;
+    });
+  };
+
   const addItem = () => {
     const newItem: PortfolioItem = {
       id: Date.now().toString(),
@@ -156,7 +166,7 @@ export default function DashboardPortfolioPage() {
           </div>
         )}
 
-        {items.map((item) => {
+        {items.map((item, index) => {
           const isOpen = expanded === item.id;
           return (
             <div key={item.id} className="bg-slate-800 rounded-xl overflow-hidden border border-slate-700/50">
@@ -193,7 +203,21 @@ export default function DashboardPortfolioPage() {
                   )}
                 </div>
 
-                <span className="text-slate-400 text-xs flex-shrink-0">{isOpen ? '▲' : '▼'}</span>
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  <div className="flex items-center gap-0.5" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      onClick={() => moveItem(index, -1)}
+                      disabled={index === 0}
+                      className="p-1 text-slate-400 hover:text-white disabled:opacity-30 transition-colors"
+                    >↑</button>
+                    <button
+                      onClick={() => moveItem(index, 1)}
+                      disabled={index === items.length - 1}
+                      className="p-1 text-slate-400 hover:text-white disabled:opacity-30 transition-colors"
+                    >↓</button>
+                  </div>
+                  <span className="text-slate-400 text-xs">{isOpen ? '▲' : '▼'}</span>
+                </div>
               </button>
 
               {/* Expanded editor */}
