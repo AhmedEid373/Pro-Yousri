@@ -41,7 +41,7 @@ export default async function AboutPage() {
           <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/5 rounded-full blur-3xl" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <p className="text-blue-400 text-sm font-medium tracking-widest uppercase mb-3">
+              <p className="text-blue-600 dark:text-blue-400 text-sm font-medium tracking-widest uppercase mb-3">
                 <T k="about.subtitle">{data.subtitle}</T>
               </p>
               <h1 className="text-4xl sm:text-5xl font-bold text-[var(--text-primary)] mb-6">
@@ -89,7 +89,7 @@ export default async function AboutPage() {
                     <div key={i} className="flex gap-4">
                       <div className="flex flex-col items-center">
                         <div className="w-10 h-10 bg-blue-600/20 border border-blue-500/30 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-blue-400 text-xs font-bold">
+                          <span className="text-blue-600 dark:text-blue-400 text-xs font-bold">
                             {item.year.slice(-2)}
                           </span>
                         </div>
@@ -98,7 +98,7 @@ export default async function AboutPage() {
                         )}
                       </div>
                       <div className="pb-6">
-                        <p className="text-blue-400 text-sm mb-1">{item.year}</p>
+                        <p className="text-blue-600 dark:text-blue-400 text-sm mb-1">{item.year}</p>
                         <h4 className="text-[var(--text-primary)] font-semibold mb-1"><T k={`about.timeline.${i}.title`}>{item.title}</T></h4>
                         <p className="text-[var(--text-muted)] text-sm leading-relaxed">
                           <T k={`about.timeline.${i}.desc`}>{item.description}</T>

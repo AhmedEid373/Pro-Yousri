@@ -147,11 +147,13 @@ export default async function RootLayout({
   const colorCSS = c ? `:root {
 ${c.buttonBg && isValidColor(c.buttonBg) ? `--color-button-bg: ${c.buttonBg};` : ''}
 ${c.buttonText && isValidColor(c.buttonText) ? `--color-button-text: ${c.buttonText};` : ''}
+${c.hyperlink && isValidColor(c.hyperlink) ? `--color-hyperlink: ${c.hyperlink};` : ''}
+${c.accent && isValidColor(c.accent) ? `--color-accent: ${c.accent};` : ''}
+}
+html.dark {
 ${c.heading && isValidColor(c.heading) ? `--color-heading: ${c.heading};` : ''}
 ${c.subtext && isValidColor(c.subtext) ? `--color-subtext: ${c.subtext};` : ''}
-${c.hyperlink && isValidColor(c.hyperlink) ? `--color-hyperlink: ${c.hyperlink};` : ''}
 ${c.background && isValidColor(c.background) ? `--color-background: ${c.background};` : ''}
-${c.accent && isValidColor(c.accent) ? `--color-accent: ${c.accent};` : ''}
 }` : '';
 
   return (

@@ -73,14 +73,14 @@ export default function Footer() {
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[var(--text-muted)] hover:text-blue-400 text-sm transition-colors duration-200"
+                      className="text-[var(--text-muted)] hover:text-blue-600 dark:hover:text-blue-400 text-sm transition-colors duration-200"
                     >
                       {t(`footer.quickLink.${i}`, link.label)}
                     </a>
                   ) : (
                     <Link
                       href={link.href}
-                      className="text-[var(--text-muted)] hover:text-blue-400 text-sm transition-colors duration-200"
+                      className="text-[var(--text-muted)] hover:text-blue-600 dark:hover:text-blue-400 text-sm transition-colors duration-200"
                     >
                       {t(`footer.quickLink.${i}`, link.label)}
                     </Link>
@@ -101,14 +101,14 @@ export default function Footer() {
                       href={service.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[var(--text-muted)] hover:text-blue-400 text-sm transition-colors duration-200"
+                      className="text-[var(--text-muted)] hover:text-blue-600 dark:hover:text-blue-400 text-sm transition-colors duration-200"
                     >
                       {t(`footer.service.${i}`, service.label)}
                     </a>
                   ) : (
                     <Link
                       href={service.link || '/services'}
-                      className="text-[var(--text-muted)] hover:text-blue-400 text-sm transition-colors duration-200"
+                      className="text-[var(--text-muted)] hover:text-blue-600 dark:hover:text-blue-400 text-sm transition-colors duration-200"
                     >
                       {t(`footer.service.${i}`, service.label)}
                     </Link>
@@ -128,7 +128,7 @@ export default function Footer() {
               <Link
                 key={i}
                 href={link.href}
-                className="text-[var(--text-muted)] hover:text-blue-400 text-sm transition-colors duration-200"
+                className="text-[var(--text-muted)] hover:text-blue-600 dark:hover:text-blue-400 text-sm transition-colors duration-200"
               >
                 {t(`footer.legal.${i}`, link.label)}
               </Link>

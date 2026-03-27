@@ -26,7 +26,7 @@ export default async function PortfolioPage() {
         <section className="relative py-20 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-[var(--surface-alt)] via-[var(--surface-alt)] to-purple-100 dark:to-purple-950" />
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p className="text-blue-400 text-sm font-medium tracking-widest uppercase mb-3">
+            <p className="text-blue-600 dark:text-blue-400 text-sm font-medium tracking-widest uppercase mb-3">
               <T k="ui.myWork">My Work</T>
             </p>
             <h1 className="text-4xl sm:text-5xl font-bold text-[var(--text-primary)] mb-6">
@@ -90,7 +90,7 @@ export default async function PortfolioPage() {
                           {item.tags.map((tag) => (
                             <span
                               key={tag}
-                              className="px-2.5 py-1 bg-blue-500/10 text-blue-400 text-xs rounded-full border border-blue-500/20"
+                              className="px-2.5 py-1 bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs rounded-full border border-blue-500/20"
                             >
                               {tag}
                             </span>
