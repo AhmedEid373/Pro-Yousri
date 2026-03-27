@@ -2,10 +2,12 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 
-if (!process.env.JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is not set');
+function getSecret() {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET environment variable is not set');
+  }
+  return new TextEncoder().encode(process.env.JWT_SECRET);
 }
-const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -19,7 +21,7 @@ export async function middleware(request: NextRequest) {
     }
 
     try {
-      await jwtVerify(token, secret);
+      await jwtVerify(token, getSecret());
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set('x-next-pathname', pathname);
       return NextResponse.next({ request: { headers: requestHeaders } });
@@ -33,7 +35,7 @@ export async function middleware(request: NextRequest) {
     const token = request.cookies.get('auth-token')?.value;
     if (token) {
       try {
-        await jwtVerify(token, secret);
+        await jwtVerify(token, getSecret());
         return NextResponse.redirect(new URL('/dashboard', request.url));
       } catch {
         // Token invalid, allow access to login

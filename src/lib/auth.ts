@@ -1,22 +1,24 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 
-if (!process.env.JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is not set');
+function getSecret() {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET environment variable is not set');
+  }
+  return new TextEncoder().encode(process.env.JWT_SECRET);
 }
-const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
 export async function createToken(payload: { username: string }) {
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setExpirationTime('7d')
     .setIssuedAt()
-    .sign(secret);
+    .sign(getSecret());
 }
 
 export async function verifyToken(token: string) {
   try {
-    const { payload } = await jwtVerify(token, secret);
+    const { payload } = await jwtVerify(token, getSecret());
     return payload;
   } catch {
     return null;
