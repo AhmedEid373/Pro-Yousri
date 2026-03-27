@@ -8,8 +8,8 @@ interface SiteData {
   };
 }
 
-export default function MaintenancePage() {
-  const site = readData<SiteData>('site.json', {});
+export default async function MaintenancePage() {
+  const site = await readData<SiteData>('site.json', {});
   const msg = site.maintenance?.message ?? "We're working on something awesome. Check back soon!";
   const gif = site.maintenance?.gif ?? '';
 

@@ -4,7 +4,7 @@ import { isAuthenticated } from '@/lib/auth';
 
 export async function GET() {
   try {
-    const data = readData('contact.json');
+    const data = await readData('contact.json');
     return NextResponse.json(data);
   } catch {
     return NextResponse.json({ error: 'Failed to read data' }, { status: 500 });
@@ -19,7 +19,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const data = await request.json();
-    writeData('contact.json', data);
+    await writeData('contact.json', data);
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: 'Failed to save data' }, { status: 500 });
