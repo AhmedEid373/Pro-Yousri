@@ -130,7 +130,11 @@ export default function DashboardHomePage() {
       {activeTab === 'stats' && (
         <div className="space-y-4 max-w-2xl">
           {data.stats.map((stat, i) => (
-            <div key={i} className="glass rounded-xl p-4 flex gap-4">
+            <div key={i} className="glass rounded-xl p-4 flex gap-4 items-center">
+              <div className="flex flex-col gap-0.5">
+                <button onClick={() => { const s=[...data.stats];if(i>0){[s[i],s[i-1]]=[s[i-1],s[i]];setData({...data,stats:s});} }} disabled={i===0} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-1">↑</button>
+                <button onClick={() => { const s=[...data.stats];if(i<s.length-1){[s[i],s[i+1]]=[s[i+1],s[i]];setData({...data,stats:s});} }} disabled={i===data.stats.length-1} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-1">↓</button>
+              </div>
               <div className="flex-1">
                 <label className="block text-slate-400 text-xs mb-1">Number</label>
                 <input
@@ -167,6 +171,10 @@ export default function DashboardHomePage() {
         <div className="space-y-4 max-w-2xl">
           {data.skills.map((skill, i) => (
             <div key={i} className="glass rounded-xl p-4 flex gap-4 items-center">
+              <div className="flex flex-col gap-0.5">
+                <button onClick={() => { const s=[...data.skills];if(i>0){[s[i],s[i-1]]=[s[i-1],s[i]];setData({...data,skills:s});} }} disabled={i===0} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-1">↑</button>
+                <button onClick={() => { const s=[...data.skills];if(i<s.length-1){[s[i],s[i+1]]=[s[i+1],s[i]];setData({...data,skills:s});} }} disabled={i===data.skills.length-1} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-1">↓</button>
+              </div>
               <div className="flex-1">
                 <label className="block text-slate-400 text-xs mb-1">Skill Name</label>
                 <input
@@ -423,15 +431,19 @@ export default function DashboardHomePage() {
             <div key={i} className="glass rounded-xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-white font-medium text-sm">Project #{i + 1}</h3>
-                <button
-                  onClick={() => {
-                    const projects = data.featuredProjects.filter((_, idx) => idx !== i);
-                    setData({ ...data, featuredProjects: projects });
-                  }}
-                  className="text-red-400 hover:text-red-300 text-sm"
-                >
-                  Remove
-                </button>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => { const p=[...data.featuredProjects];if(i>0){[p[i],p[i-1]]=[p[i-1],p[i]];setData({...data,featuredProjects:p});} }} disabled={i===0} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-1.5 py-0.5 bg-slate-800 rounded">↑</button>
+                  <button onClick={() => { const p=[...data.featuredProjects];if(i<p.length-1){[p[i],p[i+1]]=[p[i+1],p[i]];setData({...data,featuredProjects:p});} }} disabled={i===data.featuredProjects.length-1} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-1.5 py-0.5 bg-slate-800 rounded">↓</button>
+                  <button
+                    onClick={() => {
+                      const projects = data.featuredProjects.filter((_, idx) => idx !== i);
+                      setData({ ...data, featuredProjects: projects });
+                    }}
+                    className="text-red-400 hover:text-red-300 text-sm"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
               <div className="space-y-3">
                 <input
