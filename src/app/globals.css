@@ -128,10 +128,10 @@ body {
 :root {
   --color-button-bg: #3b82f6;
   --color-button-text: #ffffff;
-  --color-heading: #f1f5f9;
-  --color-subtext: #94a3b8;
+  --color-heading: var(--text-primary);
+  --color-subtext: var(--text-secondary);
   --color-hyperlink: #60a5fa;
-  --color-background: #0f172a;
+  --color-background: var(--background);
   --color-accent: #3b82f6;
 }
 
