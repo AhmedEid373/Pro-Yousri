@@ -14,6 +14,7 @@ const navItems = [
   { href: '/dashboard/footer', label: 'Footer', icon: '🔗' },
   { href: '/dashboard/messages', label: 'Messages', icon: '💬' },
   { href: '/dashboard/pages', label: 'Pages', icon: '📄' },
+  { href: '/dashboard/media', label: 'Media', icon: '📷' },
   { href: '/dashboard/settings', label: 'Settings', icon: '⚙️' },
   { href: '/dashboard/account', label: 'Account', icon: '🔑' },
 ];
