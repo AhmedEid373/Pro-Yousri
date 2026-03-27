@@ -126,6 +126,23 @@ export default function DashboardServicesPage() {
     setData({ ...data, services });
   };
 
+  const removeService = (index: number) => {
+    if (!data) return;
+    setData((d) => d ? { ...d, services: d.services.filter((_, i) => i !== index) } : d);
+  };
+
+  const moveService = (index: number, dir: -1 | 1) => {
+    if (!data) return;
+    setData((d) => {
+      if (!d) return d;
+      const arr = [...d.services];
+      const swap = index + dir;
+      if (swap < 0 || swap >= arr.length) return d;
+      [arr[index], arr[swap]] = [arr[swap], arr[index]];
+      return { ...d, services: arr };
+    });
+  };
+
   if (!data) return <div className="p-8 text-slate-400">Loading...</div>;
 
   const tabs = ['general', 'services', 'process'];
@@ -211,7 +228,25 @@ export default function DashboardServicesPage() {
                     <span className="px-2 py-0.5 bg-blue-600/30 text-blue-400 text-xs rounded-full">Popular</span>
                   )}
                 </div>
-                <span className="text-slate-400">{expandedService === i ? '▲' : '▼'}</span>
+                <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-0.5 mr-1" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      onClick={() => moveService(i, -1)}
+                      disabled={i === 0}
+                      className="p-1 text-slate-400 hover:text-white disabled:opacity-30 transition-colors"
+                    >↑</button>
+                    <button
+                      onClick={() => moveService(i, 1)}
+                      disabled={i === data.services.length - 1}
+                      className="p-1 text-slate-400 hover:text-white disabled:opacity-30 transition-colors"
+                    >↓</button>
+                    <button
+                      onClick={() => removeService(i)}
+                      className="p-1 text-red-400 hover:text-red-300 transition-colors"
+                    >×</button>
+                  </div>
+                  <span className="text-slate-400">{expandedService === i ? '▲' : '▼'}</span>
+                </div>
               </button>
 
               {expandedService === i && (
