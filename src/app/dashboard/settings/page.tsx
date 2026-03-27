@@ -864,7 +864,7 @@ export default function DashboardSettingsPage() {
                 </div>
                 <button
                   onClick={() => setData((d) => ({ ...d, turnstile: { ...d.turnstile, enabled: !d.turnstile.enabled } }))}
-                  className={`relative w-14 h-7 rounded-full transition-colors flex-shrink-0 ${
+                  className={`relative w-14 h-7 rounded-full transition-colors flex-shrink-0 overflow-hidden ${
                     data.turnstile.enabled ? 'bg-green-500' : 'bg-slate-600'
                   }`}
                 >
@@ -1172,7 +1172,7 @@ export default function DashboardSettingsPage() {
                 {/* Toggle */}
                 <button
                   onClick={() => setData((d) => ({ ...d, maintenance: { ...d.maintenance, enabled: !d.maintenance.enabled } }))}
-                  className={`relative w-14 h-7 rounded-full transition-colors flex-shrink-0 ${
+                  className={`relative w-14 h-7 rounded-full transition-colors flex-shrink-0 overflow-hidden ${
                     data.maintenance.enabled ? 'bg-red-500' : 'bg-slate-600'
                   }`}
                 >
