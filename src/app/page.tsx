@@ -19,6 +19,7 @@ interface HomeData {
   };
   stats: Array<{ number: string; label: string }>;
   skills: Array<{ name: string; level: number }>;
+  tickerOrder?: string[];
   brandTicker?: { enabled?: boolean; speed: number; brands: Array<{ name: string }> };
   testimonialTicker?: { enabled?: boolean; pauseDuration?: number; testimonials: Array<{ name: string; source: string; sourceCustom?: string; text: string; avatar?: string }> };
 }
@@ -48,6 +49,7 @@ export default async function HomePage() {
   const { hero, stats, skills } = data;
   const brandTicker = data.brandTicker ?? { enabled: true, speed: 30, brands: [] };
   const testimonialTicker = data.testimonialTicker ?? { enabled: true, pauseDuration: 4, testimonials: [] };
+  const tickerOrder = data.tickerOrder ?? ['brand', 'testimonials'];
 
   const allPortfolio = await readData<PortfolioItem[]>('portfolio.json', []);
   const featuredProjects = allPortfolio.filter((p) => p.featured).slice(0, 3);
@@ -97,32 +99,33 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Brand Ticker — left to right */}
-        {brandTicker.enabled !== false && brandTicker.brands.length > 0 && (
-          <section className="border-b border-[var(--border)] overflow-hidden py-4 bg-[var(--surface)]/30">
-            <div
-              className="ticker-ltr flex w-max"
-              style={{ animationDuration: `${brandTicker.speed}s` }}
-            >
-              {[...brandTicker.brands, ...brandTicker.brands].map((b, i) => (
-                <span key={i} className="flex items-center text-sm font-semibold text-[var(--text-muted)] whitespace-nowrap px-6 tracking-wide uppercase">
-                  {b.name}
-                  <span className="ml-6 text-[var(--border)]">·</span>
-                </span>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Testimonials Slider — paged, 3 per view */}
-        {testimonialTicker.enabled !== false && testimonialTicker.testimonials.length > 0 && (
-          <section className="border-b border-[var(--border)] py-8 bg-[var(--surface)]/20">
-            <TestimonialSlider
-              testimonials={testimonialTicker.testimonials}
-              pauseDuration={testimonialTicker.pauseDuration ?? 4}
-            />
-          </section>
-        )}
+        {/* Tickers — rendered in configurable order */}
+        {tickerOrder.map((key) => {
+          if (key === 'brand') {
+            return brandTicker.enabled !== false && brandTicker.brands.length > 0 ? (
+              <section key="brand" className="border-b border-[var(--border)] overflow-hidden py-4 bg-[var(--surface)]/30">
+                <div className="ticker-ltr flex w-max" style={{ animationDuration: `${brandTicker.speed}s` }}>
+                  {[...brandTicker.brands, ...brandTicker.brands].map((b, i) => (
+                    <span key={i} className="flex items-center text-sm font-semibold text-[var(--text-muted)] whitespace-nowrap px-6 tracking-wide uppercase">
+                      {b.name}<span className="ml-6 text-[var(--border)]">·</span>
+                    </span>
+                  ))}
+                </div>
+              </section>
+            ) : null;
+          }
+          if (key === 'testimonials') {
+            return testimonialTicker.enabled !== false && testimonialTicker.testimonials.length > 0 ? (
+              <section key="testimonials" className="border-b border-[var(--border)] py-8 bg-[var(--surface)]/20">
+                <TestimonialSlider
+                  testimonials={testimonialTicker.testimonials}
+                  pauseDuration={testimonialTicker.pauseDuration ?? 4}
+                />
+              </section>
+            ) : null;
+          }
+          return null;
+        })}
 
         {/* Stats Section */}
         <section className="bg-[var(--surface)]/50 border-y border-[var(--border)]">

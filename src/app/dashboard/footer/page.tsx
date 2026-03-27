@@ -126,6 +126,10 @@ export default function DashboardFooterPage() {
         <div className="space-y-3">
           {(data.quickLinks ?? []).map((link, i) => (
             <div key={i} className="flex gap-3 items-center">
+              <div className="flex flex-col gap-0.5 flex-shrink-0">
+                <button onClick={() => { const a=[...data.quickLinks];if(i>0){[a[i],a[i-1]]=[a[i-1],a[i]];setData({...data,quickLinks:a});} }} disabled={i===0} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs leading-none px-1">↑</button>
+                <button onClick={() => { const a=[...data.quickLinks];if(i<a.length-1){[a[i],a[i+1]]=[a[i+1],a[i]];setData({...data,quickLinks:a});} }} disabled={i===(data.quickLinks??[]).length-1} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs leading-none px-1">↓</button>
+              </div>
               <input
                 type="text"
                 value={link.label}
@@ -174,6 +178,10 @@ export default function DashboardFooterPage() {
         <div className="space-y-3">
           {(data.footerServices ?? []).map((service, i) => (
             <div key={i} className="flex gap-3 items-center">
+              <div className="flex flex-col gap-0.5 flex-shrink-0">
+                <button onClick={() => { const a=[...data.footerServices];if(i>0){[a[i],a[i-1]]=[a[i-1],a[i]];setData({...data,footerServices:a});} }} disabled={i===0} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs leading-none px-1">↑</button>
+                <button onClick={() => { const a=[...data.footerServices];if(i<a.length-1){[a[i],a[i+1]]=[a[i+1],a[i]];setData({...data,footerServices:a});} }} disabled={i===(data.footerServices??[]).length-1} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs leading-none px-1">↓</button>
+              </div>
               <input
                 type="text"
                 value={service.label}
@@ -222,6 +230,10 @@ export default function DashboardFooterPage() {
         <div className="space-y-3">
           {(data.legalLinks ?? []).map((link, i) => (
             <div key={i} className="flex gap-3 items-center">
+              <div className="flex flex-col gap-0.5 flex-shrink-0">
+                <button onClick={() => { const a=[...(data.legalLinks??[])];if(i>0){[a[i],a[i-1]]=[a[i-1],a[i]];setData({...data,legalLinks:a});} }} disabled={i===0} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs leading-none px-1">↑</button>
+                <button onClick={() => { const a=[...(data.legalLinks??[])];if(i<a.length-1){[a[i],a[i+1]]=[a[i+1],a[i]];setData({...data,legalLinks:a});} }} disabled={i===(data.legalLinks??[]).length-1} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs leading-none px-1">↓</button>
+              </div>
               <input
                 type="text"
                 value={link.label}

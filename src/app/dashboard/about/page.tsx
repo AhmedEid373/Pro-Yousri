@@ -205,6 +205,9 @@ export default function DashboardAboutPage() {
                 <div key={i} className="glass rounded-xl p-4">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-slate-400 text-xs">Paragraph #{i + 1}</span>
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => { const b=[...data.bios];if(i>0){[b[i],b[i-1]]=[b[i-1],b[i]];setData({...data,bios:b});} }} disabled={i===0} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-1.5 py-0.5 bg-slate-800 rounded">↑</button>
+                      <button onClick={() => { const b=[...data.bios];if(i<b.length-1){[b[i],b[i+1]]=[b[i+1],b[i]];setData({...data,bios:b});} }} disabled={i===(data.bios??[]).length-1} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-1.5 py-0.5 bg-slate-800 rounded">↓</button>
                     <button
                       onClick={() => {
                         const bios = data.bios.filter((_, idx) => idx !== i);
@@ -214,6 +217,7 @@ export default function DashboardAboutPage() {
                     >
                       Remove
                     </button>
+                    </div>
                   </div>
                   <textarea
                     rows={4}
@@ -245,15 +249,11 @@ export default function DashboardAboutPage() {
             <div key={i} className="glass rounded-xl p-4">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-slate-400 text-xs">Detail #{i + 1}</span>
-                <button
-                  onClick={() => {
-                    const details = data.details.filter((_, idx) => idx !== i);
-                    setData({ ...data, details });
-                  }}
-                  className="text-red-400 hover:text-red-300 text-sm"
-                >
-                  Remove
-                </button>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => { const a=[...data.details];if(i>0){[a[i],a[i-1]]=[a[i-1],a[i]];setData({...data,details:a});} }} disabled={i===0} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-1.5 py-0.5 bg-slate-800 rounded">↑</button>
+                  <button onClick={() => { const a=[...data.details];if(i<a.length-1){[a[i],a[i+1]]=[a[i+1],a[i]];setData({...data,details:a});} }} disabled={i===data.details.length-1} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-1.5 py-0.5 bg-slate-800 rounded">↓</button>
+                  <button onClick={() => { const details=data.details.filter((_,idx)=>idx!==i);setData({...data,details}); }} className="text-red-400 hover:text-red-300 text-sm">Remove</button>
+                </div>
               </div>
               <div className="flex gap-4">
                 <div className="flex-1">
@@ -303,15 +303,11 @@ export default function DashboardAboutPage() {
             <div key={i} className="glass rounded-xl p-6">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-slate-400 text-sm">Expertise #{i + 1}</span>
-                <button
-                  onClick={() => {
-                    const expertise = data.expertise.filter((_, idx) => idx !== i);
-                    setData({ ...data, expertise });
-                  }}
-                  className="text-red-400 hover:text-red-300 text-sm"
-                >
-                  Remove
-                </button>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => { const a=[...data.expertise];if(i>0){[a[i],a[i-1]]=[a[i-1],a[i]];setData({...data,expertise:a});} }} disabled={i===0} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-1.5 py-0.5 bg-slate-800 rounded">↑</button>
+                  <button onClick={() => { const a=[...data.expertise];if(i<a.length-1){[a[i],a[i+1]]=[a[i+1],a[i]];setData({...data,expertise:a});} }} disabled={i===data.expertise.length-1} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-1.5 py-0.5 bg-slate-800 rounded">↓</button>
+                  <button onClick={() => { const expertise=data.expertise.filter((_,idx)=>idx!==i);setData({...data,expertise}); }} className="text-red-400 hover:text-red-300 text-sm">Remove</button>
+                </div>
               </div>
               <div className="space-y-3">
                 <div className="flex gap-3">
@@ -379,15 +375,11 @@ export default function DashboardAboutPage() {
             <div key={i} className="glass rounded-xl p-6">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-slate-400 text-sm">Timeline Item #{i + 1}</span>
-                <button
-                  onClick={() => {
-                    const timeline = data.timeline.filter((_, idx) => idx !== i);
-                    setData({ ...data, timeline });
-                  }}
-                  className="text-red-400 hover:text-red-300 text-sm"
-                >
-                  Remove
-                </button>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => { const a=[...data.timeline];if(i>0){[a[i],a[i-1]]=[a[i-1],a[i]];setData({...data,timeline:a});} }} disabled={i===0} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-1.5 py-0.5 bg-slate-800 rounded">↑</button>
+                  <button onClick={() => { const a=[...data.timeline];if(i<a.length-1){[a[i],a[i+1]]=[a[i+1],a[i]];setData({...data,timeline:a});} }} disabled={i===data.timeline.length-1} className="text-slate-400 hover:text-white disabled:opacity-30 text-xs px-1.5 py-0.5 bg-slate-800 rounded">↓</button>
+                  <button onClick={() => { const timeline=data.timeline.filter((_,idx)=>idx!==i);setData({...data,timeline}); }} className="text-red-400 hover:text-red-300 text-sm">Remove</button>
+                </div>
               </div>
               <div className="space-y-3">
                 <input
